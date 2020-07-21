@@ -1,0 +1,23 @@
+import { EXTERNALS } from './context/production-context';
+import { setupContext } from './context/setup-context';
+import { withLogger } from './utils/logger';
+export async function loginWithGoogle(idToken) {
+    const { actions: { authenticateTeacher }, } = await setupContext(EXTERNALS);
+    return withLogger('loginWithGoogle', authenticateTeacher(idToken));
+}
+export async function currentTeachersInfo() {
+    const { actions: { getCurrentTeachersInfo }, } = await setupContext(EXTERNALS);
+    return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
+}
+export async function currentTeachersProfile() {
+    const { actions: { getCurrentTeachersProfile }, } = await setupContext(EXTERNALS);
+    return withLogger('currentTeachersProfile', getCurrentTeachersProfile());
+}
+export async function updateTeachersProfile(update) {
+    const { actions: { updateCurrentTeachersProfile }, } = await setupContext(EXTERNALS);
+    return withLogger('updateTeachersProfile', updateCurrentTeachersProfile(update));
+}
+export async function currentTeachersTasks() {
+    const { actions: { getCurrentTeachersTasks }, } = await setupContext(EXTERNALS);
+    return withLogger('currentTeachersTasks', getCurrentTeachersTasks());
+}

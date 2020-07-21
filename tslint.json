@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier",
+    "tslint-no-unused-expression-chai"
+  ],
+  "rulesDirectory": ["tslint-plugin-prettier"],
+  "rules": {
+    "prettier": true,
+    "interface-name": [true, "never-prefix"],
+    "max-classes-per-file": false,
+    "no-namespace": false,
+    "no-return-await": false,
+    "object-literal-sort-keys": false,
+    "only-arrow-functions": false,
+    "ordered-imports": true,
+    "no-implicit-dependencies": false,
+    "no-object-literal-type-assertion": false,
+    "no-shadowed-variable": false
+  }
+}

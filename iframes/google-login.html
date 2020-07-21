@@ -1,0 +1,35 @@
+<head>
+  <meta name="google-signin-client_id" content="303790500959-35v2blobnu5mnhf2t13899i38qasmnbj.apps.googleusercontent.com">
+</head>
+<body>
+  <div id="google-signin2"></div>
+  <script>
+    function onSuccess(googleUser) {
+      const profile = googleUser.getBasicProfile();
+      console.info('Logged in to Google as', profile.getName());
+      const email = profile.getEmail();
+      const idToken = googleUser.getAuthResponse().id_token;
+      const credentials = { idToken, email };
+      window.parent.postMessage(credentials, "*");
+      console.info('Posted message', credentials);
+    }
+
+    function onFailure(error) {
+      console.error('Failed to login to google', error);
+    }
+
+    function renderButton() {
+      gapi.signin2.render('google-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+    }
+  </script>
+
+  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+</body>
