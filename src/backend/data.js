@@ -20,11 +20,13 @@ export function TeachersInfo_beforeInsert(teachersInfo) {
 export function TeachersInfo_beforeUpdate(teachersInfo) {
     return withLogger(`Hook TeachersInfo_beforeUpdate ${teachersInfo.email}`, () => validateTeachersInfo(teachersInfo));
 }
-export function TeachersProfile_beforeInsert(teachersProfile) {
-    return withLogger(`Hook TeachersProfile_beforeInsert ${teachersProfile.email}`, () => validateTeachersProfile(teachersProfile));
+export async function TeachersProfile_beforeInsert(teachersProfile) {
+    const { actions: { updateTeachersProfileSlug }, } = await setupContext(EXTERNALS);
+    return withLogger(`Hook TeachersProfile_beforeInsert ${teachersProfile.email}`, () => updateTeachersProfileSlug(validateTeachersProfile(teachersProfile)));
 }
-export function TeachersProfile_beforeUpdate(teachersProfile) {
-    return withLogger(`Hook TeachersProfile_beforeUpdate ${teachersProfile.email}`, () => validateTeachersProfile(teachersProfile));
+export async function TeachersProfile_beforeUpdate(teachersProfile) {
+    const { actions: { updateTeachersProfileSlug }, } = await setupContext(EXTERNALS);
+    return withLogger(`Hook TeachersProfile_beforeUpdate ${teachersProfile.email}`, () => updateTeachersProfileSlug(validateTeachersProfile(teachersProfile)));
 }
 export function Tasks_beforeInsert(task) {
     return withLogger(`Hook Tasks_beforeInsert ${task.number}`, () => validateTask(task));

@@ -8,6 +8,7 @@ import { getCurrentTeachersInfoFactory } from '../business-logic/get-current-tea
 import { getCurrentTeachersProfileFactory } from '../business-logic/get-current-teachers-profile';
 import { getCurrentTeachersTasksFactory } from '../business-logic/get-current-teachers-tasks';
 import { updateCurrentTeachersProfileFactory } from '../business-logic/update-current-teachers-profile';
+import { updateTeachersProfileSlugFactory } from '../business-logic/update-teachers-profile-slug';
 import { CountryRepository } from '../repositories/country-repository';
 import { LanguageRepository } from '../repositories/language-repository';
 import { MembersRepository } from '../repositories/members-repository';
@@ -75,6 +76,7 @@ export const setupContext = memoize(async (externals: Externals) => {
     getCurrentTeachersInfo,
     completeTeachersTask
   );
+  const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
   const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(
     taskRepository,
     teachersInfoRepository,
@@ -96,6 +98,7 @@ export const setupContext = memoize(async (externals: Externals) => {
       getCurrentTeachersInfo,
       getCurrentTeachersProfile,
       updateCurrentTeachersProfile,
+      updateTeachersProfileSlug,
       getCurrentTeachersTasks,
     },
   };

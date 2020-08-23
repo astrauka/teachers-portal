@@ -21,6 +21,19 @@ export class TeachersProfileRepository {
     );
   }
 
+  public fetchTeachersProfileBySlug(slug: string): Promise<TeachersProfile | undefined> {
+    return withLogger(
+      `fetchTeachersProfileBySlug ${slug}`,
+      findSingleRecord(
+        this.externals.wixData
+          .query(TEACHERS_PROFILE_COLLECTION)
+          .eq('slug', slug)
+          .limit(1)
+          .find({ suppressAuth: true })
+      )
+    );
+  }
+
   public async updateTeachersProfile(teachersProfile: TeachersProfile): Promise<TeachersProfile> {
     return withLogger(
       `updateTeachersProfile ${teachersProfile.email}`,

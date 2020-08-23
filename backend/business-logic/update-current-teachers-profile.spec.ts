@@ -164,16 +164,5 @@ describe('updateCurrentTeachersProfile', () => {
         );
       });
     });
-    //
-    // context('on slug already taken', () => {
-    //   const otherTeachersProfile = buildTeachersProfile({ properties: sl});
-    //   const
-    //
-    //   it('should generate with -2', () => {});
-    // });
-    //
-    // context('on name change', () => {
-    //   it('should update slug', () => {});
-    // });
   });
 });

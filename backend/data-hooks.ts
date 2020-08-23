@@ -20,6 +20,7 @@ export async function TeachersInfo_afterUpdate(teachersInfo: TeachersInfo): Prom
   const {
     actions: { addTeacherToUsers },
   } = await setupContext(EXTERNALS);
+
   await withLogger(
     `Hook TeachersInfo_afterUpdate ${teachersInfo.email}`,
     addTeacherToUsers(teachersInfo)
@@ -40,17 +41,23 @@ export function TeachersInfo_beforeUpdate(teachersInfo: TeachersInfo): Promise<T
   );
 }
 
-export function TeachersProfile_beforeInsert(teachersProfile: TeachersProfile) {
+export async function TeachersProfile_beforeInsert(teachersProfile: TeachersProfile) {
+  const {
+    actions: { updateTeachersProfileSlug },
+  } = await setupContext(EXTERNALS);
   return withLogger<TeachersProfile>(
     `Hook TeachersProfile_beforeInsert ${teachersProfile.email}`,
-    () => validateTeachersProfile(teachersProfile)
+    () => updateTeachersProfileSlug(validateTeachersProfile(teachersProfile))
   );
 }
 
-export function TeachersProfile_beforeUpdate(teachersProfile: TeachersProfile) {
+export async function TeachersProfile_beforeUpdate(teachersProfile: TeachersProfile) {
+  const {
+    actions: { updateTeachersProfileSlug },
+  } = await setupContext(EXTERNALS);
   return withLogger<TeachersProfile>(
     `Hook TeachersProfile_beforeUpdate ${teachersProfile.email}`,
-    () => validateTeachersProfile(teachersProfile)
+    () => updateTeachersProfileSlug(validateTeachersProfile(teachersProfile))
   );
 }
 

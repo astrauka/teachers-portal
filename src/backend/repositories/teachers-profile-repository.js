@@ -12,6 +12,13 @@ export class TeachersProfileRepository {
             .limit(1)
             .find({ suppressAuth: true })));
     }
+    fetchTeachersProfileBySlug(slug) {
+        return withLogger(`fetchTeachersProfileBySlug ${slug}`, findSingleRecord(this.externals.wixData
+            .query(TEACHERS_PROFILE_COLLECTION)
+            .eq('slug', slug)
+            .limit(1)
+            .find({ suppressAuth: true })));
+    }
     async updateTeachersProfile(teachersProfile) {
         return withLogger(`updateTeachersProfile ${teachersProfile.email}`, this.externals.wixData.update(TEACHERS_PROFILE_COLLECTION, teachersProfile, {
             suppressAuth: true,
