@@ -1,16 +1,16 @@
 import { buildTask } from '../../test/builders/task';
-import { buildTeachersInfo } from '../../test/builders/teachers-info';
+import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
 import { expect } from '../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../test/utils/stubbing';
 import { TaskRepository } from '../repositories/task-repository';
 import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
 import { Task } from '../types/task';
-import { TeachersInfo } from '../types/teachers-info';
+import { RegisteredTeachersInfo } from '../types/teachers-info';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 import { getCurrentTeachersTasksFactory } from './get-current-teachers-tasks';
 
 describe('getCurrentTeachersTasks', () => {
-  const teachersInfo = buildTeachersInfo({ id: 'teacher' });
+  const teachersInfo = buildRegisteredTeachersInfo({ id: 'teacher' });
   const completedTask = buildTask({ id: 'completed', properties: { number: 1 } });
   const notCompletedTask = buildTask({ id: 'not-completed', properties: { number: 2 } });
   const tasks = [completedTask, notCompletedTask];
@@ -23,7 +23,7 @@ describe('getCurrentTeachersTasks', () => {
     createStubInstance(TeachersInfoRepository, (stub) => {
       stub.fetchCompletedTasks.resolves(completedTasks);
     });
-  const getGetCurrentTeachersInfo = (teachersInfo: TeachersInfo) =>
+  const getGetCurrentTeachersInfo = (teachersInfo: RegisteredTeachersInfo) =>
     stubFn<GetCurrentTeachersInfo>().resolves(teachersInfo);
   const buildTestContext = ({
     taskRepository = getTaskRepository(tasks),

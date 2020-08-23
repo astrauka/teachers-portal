@@ -5,6 +5,8 @@ import { Storable } from './storable';
 export interface TeachersProfile extends Storable {
   email: string;
   profileImage: string;
+  fullName: string;
+  slug: string;
   phoneNumber: string;
   countryId: string;
   city: string;
@@ -30,6 +32,8 @@ export interface TeachersProfileUpdate {
 const teachersProfileSchema = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
   email: { type: 'email' },
+  fullName: { type: 'string', min: 3 },
+  slug: { type: 'string', min: 3 },
   profileImage: { type: 'string', min: 3 },
   phoneNumber: { type: 'string', min: 3, max: 255 },
   countryId: { type: 'string', min: 3, max: 255 },

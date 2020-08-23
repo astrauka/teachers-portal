@@ -70,10 +70,9 @@ export const setupContext = memoize(async (externals: Externals) => {
   );
   const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(
     teachersProfileRepository,
-    usersService,
-    membersRepository,
     countryRepository,
     languageRepository,
+    getCurrentTeachersInfo,
     completeTeachersTask
   );
   const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(

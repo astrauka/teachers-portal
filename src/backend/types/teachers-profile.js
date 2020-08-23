@@ -3,6 +3,8 @@ import { buildValidator } from '../utils/validate';
 const teachersProfileSchema = {
     _id: { type: 'string', min: 3, max: 255, optional: true },
     email: { type: 'email' },
+    fullName: { type: 'string', min: 3 },
+    slug: { type: 'string', min: 3 },
     profileImage: { type: 'string', min: 3 },
     phoneNumber: { type: 'string', min: 3, max: 255 },
     countryId: { type: 'string', min: 3, max: 255 },

@@ -1,6 +1,6 @@
 import { Externals } from '../context/production-context';
 import { Task } from '../types/task';
-import { TeachersInfo } from '../types/teachers-info';
+import { RegisteredTeachersInfo, TeachersInfo } from '../types/teachers-info';
 import { fetchRecords, findSingleRecord, findSingleRecordSafe } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
@@ -10,7 +10,7 @@ const TEACHERS_TASKS = 'completedTasks';
 export class TeachersInfoRepository {
   constructor(private readonly externals: Externals) {}
 
-  public fetchTeacherByUserId(userId: string): Promise<TeachersInfo> {
+  public fetchTeacherByUserId(userId: string): Promise<RegisteredTeachersInfo> {
     return withLogger(
       `fetchTeacherByUserId ${userId}`,
       findSingleRecord(
@@ -19,7 +19,7 @@ export class TeachersInfoRepository {
     );
   }
 
-  public fetchTeacherByEmail(email: string): Promise<TeachersInfo> {
+  public fetchTeacherByEmail<T = RegisteredTeachersInfo>(email: string): Promise<T> {
     return withLogger(
       `fetchTeacherByEmail ${email}`,
       findSingleRecord(
@@ -28,7 +28,9 @@ export class TeachersInfoRepository {
     );
   }
 
-  public fetchTeacherByEmailSafe(email: string): Promise<TeachersInfo | undefined> {
+  public fetchTeacherByEmailSafe<T = RegisteredTeachersInfo>(
+    email: string
+  ): Promise<T | undefined> {
     return withLogger(
       `fetchTeacherByEmailSafe ${email}`,
       findSingleRecordSafe(
@@ -37,14 +39,16 @@ export class TeachersInfoRepository {
     );
   }
 
-  public async updateTeacher(teachersInfo: TeachersInfo): Promise<TeachersInfo> {
+  public async updateTeacher(
+    teachersInfo: RegisteredTeachersInfo
+  ): Promise<RegisteredTeachersInfo> {
     return withLogger(
       `updateTeacher ${teachersInfo.email}`,
       this.externals.wixData.update(TEACHERS_INFO_COLLECTION, teachersInfo)
     );
   }
 
-  public async fetchCompletedTasks(teachersInfo: TeachersInfo): Promise<Task[]> {
+  public async fetchCompletedTasks(teachersInfo: RegisteredTeachersInfo): Promise<Task[]> {
     return withLogger(
       `fetchCompletedTasks ${teachersInfo.email}`,
       fetchRecords(
@@ -58,7 +62,7 @@ export class TeachersInfoRepository {
     );
   }
 
-  public async completeTask(teachersInfo: TeachersInfo, task: Task): Promise<void> {
+  public async completeTask(teachersInfo: RegisteredTeachersInfo, task: Task): Promise<void> {
     return withLogger(
       `completeTask ${teachersInfo.email} ${task.number}`,
       this.externals.wixData.insertReference(

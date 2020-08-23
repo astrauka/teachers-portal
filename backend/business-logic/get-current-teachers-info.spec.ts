@@ -1,4 +1,4 @@
-import { buildTeachersInfo } from '../../test/builders/teachers-info';
+import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
 import { expect } from '../../test/utils/expectations';
 import { createStubInstance } from '../../test/utils/stubbing';
 import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
@@ -7,7 +7,7 @@ import { getCurrentTeachersInfoFactory } from './get-current-teachers-info';
 
 describe('getCurrentTeachersInfo', () => {
   const email = 'user-email';
-  const teachersInfo = buildTeachersInfo({ properties: { email } });
+  const teachersInfo = buildRegisteredTeachersInfo({ properties: { email } });
 
   const getTeachersInfoRepository = (teachersInfo) =>
     createStubInstance(TeachersInfoRepository, (stub) => {
@@ -34,7 +34,6 @@ describe('getCurrentTeachersInfo', () => {
   });
 
   context('on info not existing', () => {
-    const teachersInfo = undefined;
     const error = new Error('not found');
     const getTeachersInfoRepository = () =>
       createStubInstance(TeachersInfoRepository, (stub) => {

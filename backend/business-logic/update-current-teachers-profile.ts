@@ -5,27 +5,28 @@ import { MembersRepository } from '../repositories/members-repository';
 import { TeachersProfileRepository } from '../repositories/teachers-profile-repository';
 import { UsersService } from '../services/users-service';
 import { TaskNumber } from '../types/task';
+import { TeachersInfo } from '../types/teachers-info';
 import {
   TeachersProfile,
   TeachersProfileUpdate,
   validateTeachersProfileUpdate,
 } from '../types/teachers-profile';
 import { CompleteTeachersTask } from './complete-teachers-task';
+import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
 export function updateCurrentTeachersProfileFactory(
   teachersProfileRepository: TeachersProfileRepository,
-  usersService: UsersService,
-  membersRepository: MembersRepository,
   countryRepository: CountryRepository,
   languageRepository: LanguageRepository,
+  getCurrentTeachersInfo: GetCurrentTeachersInfo,
   completeTeachersTask: CompleteTeachersTask
 ) {
   return async function updateCurrentTeachersProfile(
     update: TeachersProfileUpdate
   ): Promise<TeachersProfile> {
     validateTeachersProfileUpdate(update);
-    const [email, country, language] = await Promise.all([
-      usersService.getCurrentUserEmail(),
+    const [teachersInfo, country, language] = await Promise.all([
+      getCurrentTeachersInfo(),
       countryRepository.fetchCountryByTitle(update.country),
       languageRepository.fetchLanguageByTitle(update.language),
     ]);
@@ -34,15 +35,16 @@ export function updateCurrentTeachersProfileFactory(
       countryId: country._id,
       languageId: language._id,
     } as TeachersProfile;
-    const teachersProfile = await persistProfile(email, updateWithIds);
+    const teachersProfile = await persistProfile(teachersInfo, updateWithIds);
     await completeTeachersTask(TaskNumber.initialProfileForm);
     return teachersProfile;
   };
 
   async function persistProfile(
-    email: string,
+    teachersInfo: TeachersInfo,
     updateWithIds: TeachersProfile
   ): Promise<TeachersProfile> {
+    const { email, userId, firstName, lastName } = teachersInfo;
     const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(email);
     if (teachersProfile) {
       return teachersProfileRepository.updateTeachersProfile({
@@ -51,11 +53,11 @@ export function updateCurrentTeachersProfileFactory(
       });
     }
 
-    const member = await membersRepository.fetchMemberByEmail(email);
     return teachersProfileRepository.insertTeachersProfile({
       ...updateWithIds,
       email,
-      userId: member._id,
+      userId,
+      fullName: `${firstName} ${lastName}`,
     } as TeachersProfile);
   }
 }

@@ -1,6 +1,11 @@
-import { TeacherLevel, TeachersInfo, TeacherStatus } from '../../backend/types/teachers-info';
-import { builder } from './builder';
+import {
+  RegisteredTeachersInfo,
+  TeacherLevel,
+  TeachersInfo,
+  TeacherStatus,
+} from '../../backend/types/teachers-info';
 import { inDaysAsDate } from '../utils/date';
+import { builder } from './builder';
 
 export const buildTeachersInfo = builder<TeachersInfo>((id) => ({
   _id: `${id}`,
@@ -11,5 +16,9 @@ export const buildTeachersInfo = builder<TeachersInfo>((id) => ({
   status: TeacherStatus.Active,
   mentor: `${id}-mentor-id`,
   certificateExpirationDate: inDaysAsDate(100),
+}));
+
+export const buildRegisteredTeachersInfo = builder<RegisteredTeachersInfo>((id) => ({
+  ...buildTeachersInfo({ id }),
   userId: `${id}-user-id`,
 }));

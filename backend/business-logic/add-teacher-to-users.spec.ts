@@ -6,6 +6,7 @@ import { createStubInstance, stubFn } from '../../test/utils/stubbing';
 import { MembersRepository } from '../repositories/members-repository';
 import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
 import { UsersService } from '../services/users-service';
+import { RegisteredTeachersInfo } from '../types/teachers-info';
 import { Member } from '../types/wix-types';
 import { addTeacherToUsersFactory } from './add-teacher-to-users';
 import { GeneratePassword } from './generate-password';
@@ -17,7 +18,7 @@ describe('addTeacherToUsers', () => {
   const memberByUserId = buildMember({ id: user.id });
   const teachersInfo = buildTeachersInfo({ id: 'teacher-id', without: ['userId'] });
   const password = 'teacher-password';
-  const teachersInfoWithUserId = { ...teachersInfo, userId: user.id };
+  const registeredTeachersInfo: RegisteredTeachersInfo = { ...teachersInfo, userId: user.id };
 
   const getMembersService = (member?: Member) =>
     createStubInstance(MembersRepository, (stub) => {
@@ -30,7 +31,7 @@ describe('addTeacherToUsers', () => {
     });
   const getTeachersService = () =>
     createStubInstance(TeachersInfoRepository, (stub) => {
-      stub.updateTeacher.resolves(teachersInfoWithUserId);
+      stub.updateTeacher.resolves(registeredTeachersInfo);
     });
   const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
 
@@ -64,7 +65,7 @@ describe('addTeacherToUsers', () => {
     expect(generatePassword).calledOnceWithExactly(teachersInfo._id);
     expect(membersRepository.fetchMemberByEmail).calledOnceWithExactly(teachersInfo.email);
     expect(usersService.registerUser).calledOnceWithExactly(teachersInfo, password);
-    expect(teachersInfoRepository.updateTeacher).calledOnceWithExactly(teachersInfoWithUserId);
+    expect(teachersInfoRepository.updateTeacher).calledOnceWithExactly(registeredTeachersInfo);
     expect(membersRepository.fetchMemberById).calledOnceWithExactly(memberByUserId._id);
   });
 

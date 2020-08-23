@@ -14,6 +14,7 @@ describe('validateTeachersInfo', () => {
       email: 'teacher@gmail.com',
       firstName: 'First',
       lastName: 'Last',
+      userId: 'user-id',
     };
 
     it('should return teachers info', () => {

@@ -1,20 +1,20 @@
 import { buildTask } from '../../test/builders/task';
-import { buildTeachersInfo } from '../../test/builders/teachers-info';
+import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
 import { expect } from '../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../test/utils/stubbing';
 import { TaskRepository } from '../repositories/task-repository';
 import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
 import { Task } from '../types/task';
-import { TeachersInfo } from '../types/teachers-info';
+import { RegisteredTeachersInfo } from '../types/teachers-info';
 import { completeTeachersTaskFactory } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
 describe('completeTeachersTask', () => {
   const task = buildTask();
-  const teachersInfo = buildTeachersInfo();
+  const teachersInfo = buildRegisteredTeachersInfo();
   const completedTasks = [];
 
-  const getGetCurrentTeachersInfo = (teachersInfo: TeachersInfo) =>
+  const getGetCurrentTeachersInfo = (teachersInfo: RegisteredTeachersInfo) =>
     stubFn<GetCurrentTeachersInfo>().resolves(teachersInfo);
   const getTeachersInfoRepository = (completedTasks: Task[]) =>
     createStubInstance(TeachersInfoRepository, (stub) => {

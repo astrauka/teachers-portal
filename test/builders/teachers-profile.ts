@@ -5,6 +5,8 @@ export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
   _id: `${id}`,
   email: `${id}-email@gmail.com`,
   profileImage: `${id}-profile-image`,
+  fullName: `${id} Full Name`,
+  slug: `${id}-full-name`,
   phoneNumber: `${id}-phone-number`,
   countryId: `${id}-country-id`,
   city: `${id}-city-id`,

@@ -12,6 +12,10 @@ export interface TeachersInfo extends Storable {
   userId?: string;
 }
 
+export interface RegisteredTeachersInfo extends TeachersInfo {
+  userId: string;
+}
+
 export enum TeacherLevel {
   NotATeacher = 'Not a teacher',
   UtaraAhikari = 'Utara Adhikari',
