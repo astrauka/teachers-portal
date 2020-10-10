@@ -1,6 +1,6 @@
 import { buildTeachersInfo } from '../../test/builders/teachers-info';
 import { expect, getErrorOf } from '../../test/utils/expectations';
-import { TeachersInfo, validateTeachersInfo } from './teachers-info';
+import { validateTeachersInfo } from './teachers-info';
 
 describe('validateTeachersInfo', () => {
   const teachersInfo = buildTeachersInfo();
@@ -10,12 +10,7 @@ describe('validateTeachersInfo', () => {
   });
 
   context('with all required fields present', () => {
-    const teachersInfo: TeachersInfo = {
-      email: 'teacher@gmail.com',
-      firstName: 'First',
-      lastName: 'Last',
-      userId: 'user-id',
-    };
+    const teachersInfo = buildTeachersInfo();
 
     it('should return teachers info', () => {
       expect(validateTeachersInfo(teachersInfo)).to.eql(teachersInfo);
