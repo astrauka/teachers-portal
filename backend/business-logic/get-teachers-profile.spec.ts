@@ -8,9 +8,9 @@ import { LanguageRepository } from '../repositories/language-repository';
 import { TeachersProfileRepository } from '../repositories/teachers-profile-repository';
 import { UsersService } from '../services/users-service';
 import { TeachersProfileView } from '../types/teachers-profile';
-import { getCurrentTeachersProfileFactory } from './get-current-teachers-profile';
+import { getTeachersProfileFactory } from './get--teachers-profile';
 
-describe('getCurrentTeachersProfile', () => {
+describe('getTeachersProfile', () => {
   const email = 'user-email';
   const country = buildCountry({ id: 'country-id' });
   const language = buildLanguage({ id: 'language-id' });
@@ -49,7 +49,7 @@ describe('getCurrentTeachersProfile', () => {
     languageRepository,
     teachersProfileRepository,
     usersService,
-    getCurrentTeachersProfile: getCurrentTeachersProfileFactory(
+    getTeachersProfile: getTeachersProfileFactory(
       countryRepository,
       languageRepository,
       teachersProfileRepository,
@@ -63,9 +63,9 @@ describe('getCurrentTeachersProfile', () => {
       usersService,
       countryRepository,
       languageRepository,
-      getCurrentTeachersProfile,
+      getTeachersProfile,
     } = buildTestContext();
-    expect(await getCurrentTeachersProfile()).to.eql(teachersProfileView);
+    expect(await getTeachersProfile()).to.eql(teachersProfileView);
     expect(usersService.getCurrentUserEmail).calledOnceWithExactly();
     expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(email);
     expect(countryRepository.fetchCountryById).calledOnceWithExactly(teachersProfile.countryId);
@@ -80,14 +80,25 @@ describe('getCurrentTeachersProfile', () => {
         teachersProfileRepository,
         countryRepository,
         languageRepository,
-        getCurrentTeachersProfile,
+        getTeachersProfile,
       } = buildTestContext({
         teachersProfileRepository: getTeachersProfileRepository(teachersProfile),
       });
-      expect(await getCurrentTeachersProfile()).to.be.undefined;
+      expect(await getTeachersProfile()).to.be.undefined;
       expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(email);
       expect(countryRepository.fetchCountryById).not.called;
       expect(languageRepository.fetchLanguageById).not.called;
+    });
+  });
+
+  context('on email provided', () => {
+    const email = teachersProfile.email;
+
+    it('should return teacher by email', async () => {
+      const { teachersProfileRepository, usersService, getTeachersProfile } = buildTestContext();
+      expect(await getTeachersProfile(email)).to.eql(teachersProfileView);
+      expect(usersService.getCurrentUserEmail).not.called;
+      expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(email);
     });
   });
 
@@ -101,11 +112,11 @@ describe('getCurrentTeachersProfile', () => {
         usersService,
         countryRepository,
         languageRepository,
-        getCurrentTeachersProfile,
+        getTeachersProfile,
       } = buildTestContext({
         teachersProfileRepository: getTeachersProfileRepository(teachersProfile),
       });
-      expect(await getCurrentTeachersProfile()).to.eql(teachersProfileView);
+      expect(await getTeachersProfile()).to.eql(teachersProfileView);
       expect(usersService.getCurrentUserEmail).calledOnceWithExactly();
       expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(email);
       expect(countryRepository.fetchCountryById).not.called;
@@ -124,12 +135,12 @@ describe('getCurrentTeachersProfile', () => {
         usersService,
         countryRepository,
         languageRepository,
-        getCurrentTeachersProfile,
+        getTeachersProfile,
       } = buildTestContext({
         countryRepository: getCountryRepository(country),
         languageRepository: getLanguageRepository(language),
       });
-      expect(await getCurrentTeachersProfile()).to.eql(teachersProfileView);
+      expect(await getTeachersProfile()).to.eql(teachersProfileView);
       expect(usersService.getCurrentUserEmail).calledOnceWithExactly();
       expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(email);
       expect(countryRepository.fetchCountryById).calledOnceWithExactly(teachersProfile.countryId);

@@ -1,7 +1,7 @@
 import { get } from 'lodash';
-export function getCurrentTeachersProfileFactory(countryRepository, languageRepository, teachersProfileRepository, usersService) {
-    return async function getCurrentTeachersProfile() {
-        const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(await usersService.getCurrentUserEmail());
+export function getTeachersProfileFactory(countryRepository, languageRepository, teachersProfileRepository, usersService) {
+    return async function getTeachersProfile(email) {
+        const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(email || (await usersService.getCurrentUserEmail()));
         if (!teachersProfile) {
             return;
         }

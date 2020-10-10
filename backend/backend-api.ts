@@ -19,11 +19,11 @@ export async function currentTeachersInfo(): Promise<RegisteredTeachersInfo> {
   return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
 }
 
-export async function currentTeachersProfile(): Promise<TeachersProfile | undefined> {
+export async function teachersProfile(email?: string): Promise<TeachersProfile | undefined> {
   const {
-    actions: { getCurrentTeachersProfile },
+    actions: { getTeachersProfile },
   } = await setupContext(EXTERNALS);
-  return withLogger('currentTeachersProfile', getCurrentTeachersProfile());
+  return withLogger('teachersProfile', getTeachersProfile(email));
 }
 
 export async function updateTeachersProfile(

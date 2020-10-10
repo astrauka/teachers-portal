@@ -8,12 +8,5 @@
     "allowSyntheticDefaultImports": true,
     "types" : ["node", "corvid-types/types/backend", "mocha"]
   },
-  "exclude": [
-    "../test",
-    "**/*.spec.ts"
-  ],
-  "files": [
-    "data-hooks.ts",
-    "backend-api.ts"
-  ]
+  "include": ["**/*.ts"]
 }

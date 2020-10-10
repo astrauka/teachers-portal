@@ -5,15 +5,17 @@ import { TeachersProfileRepository } from '../repositories/teachers-profile-repo
 import { UsersService } from '../services/users-service';
 import { TeachersProfileView } from '../types/teachers-profile';
 
-export function getCurrentTeachersProfileFactory(
+export function getTeachersProfileFactory(
   countryRepository: CountryRepository,
   languageRepository: LanguageRepository,
   teachersProfileRepository: TeachersProfileRepository,
   usersService: UsersService
 ) {
-  return async function getCurrentTeachersProfile(): Promise<TeachersProfileView | undefined> {
+  return async function getTeachersProfile(
+    email?: string
+  ): Promise<TeachersProfileView | undefined> {
     const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(
-      await usersService.getCurrentUserEmail()
+      email || (await usersService.getCurrentUserEmail())
     );
     if (!teachersProfile) {
       return;

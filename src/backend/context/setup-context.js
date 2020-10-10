@@ -4,8 +4,8 @@ import { addTeacherToUsersFactory } from '../business-logic/add-teacher-to-users
 import { authenticateTeacherFactory } from '../business-logic/authenticate-teacher';
 import { completeTeachersTaskFactory } from '../business-logic/complete-teachers-task';
 import { generatePasswordFactory } from '../business-logic/generate-password';
+import { getTeachersProfileFactory } from '../business-logic/get--teachers-profile';
 import { getCurrentTeachersInfoFactory } from '../business-logic/get-current-teachers-info';
-import { getCurrentTeachersProfileFactory } from '../business-logic/get-current-teachers-profile';
 import { getCurrentTeachersTasksFactory } from '../business-logic/get-current-teachers-tasks';
 import { updateCurrentTeachersProfileFactory } from '../business-logic/update-current-teachers-profile';
 import { updateTeachersProfileSlugFactory } from '../business-logic/update-teachers-profile-slug';
@@ -36,7 +36,7 @@ export const setupContext = memoize(async (externals) => {
     const addTeacherToUsers = addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword);
     const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersInfoRepository, usersService, generatePassword);
     const getCurrentTeachersInfo = getCurrentTeachersInfoFactory(teachersInfoRepository, usersService);
-    const getCurrentTeachersProfile = getCurrentTeachersProfileFactory(countryRepository, languageRepository, teachersProfileRepository, usersService);
+    const getTeachersProfile = getTeachersProfileFactory(countryRepository, languageRepository, teachersProfileRepository, usersService);
     const completeTeachersTask = completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository);
     const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
     const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
@@ -54,7 +54,7 @@ export const setupContext = memoize(async (externals) => {
             addTeacherToUsers,
             authenticateTeacher,
             getCurrentTeachersInfo,
-            getCurrentTeachersProfile,
+            getTeachersProfile,
             updateCurrentTeachersProfile,
             updateTeachersProfileSlug,
             getCurrentTeachersTasks,

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run build:backend",
     "build:backend": "rm -rf src/backend && npm run build:compile-backend && npm run build:configure-corvid",
-    "build:compile-backend": "tsc --build backend/tsconfig.json",
+    "build:compile-backend": "tsc --build backend/tsconfig.corvid.json",
     "build:configure-corvid": "node ./backend-integrations/configure-corvid.js",
     "lint": "tslint --fix 'backend/**/*.ts'",
     "co": "cypress open",
