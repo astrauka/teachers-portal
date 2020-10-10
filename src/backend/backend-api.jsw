@@ -9,7 +9,7 @@ export async function currentTeachersInfo() {
     const { actions: { getCurrentTeachersInfo }, } = await setupContext(EXTERNALS);
     return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
 }
-export async function teachersProfile(email) {
+export async function getTeachersProfile(email) {
     const { actions: { getTeachersProfile }, } = await setupContext(EXTERNALS);
     return withLogger('teachersProfile', getTeachersProfile(email));
 }
