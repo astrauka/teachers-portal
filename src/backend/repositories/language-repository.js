@@ -8,7 +8,7 @@ export class LanguageRepository {
     fetchLanguagesByIds(ids) {
         return withLogger(`fetchLanguagesByIds ${ids}`, fetchRecords(this.externals.wixData
             .query(LANGUAGES_COLLECTION)
-            .eq('id', ids)
+            .hasSome('_id', ids)
             .find({ suppressAuth: true })));
     }
     fetchLanguageByTitle(title) {

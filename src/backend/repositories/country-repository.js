@@ -8,7 +8,7 @@ export class CountryRepository {
     fetchCountriesByIds(ids) {
         return withLogger(`fetchCountriesByIds ${ids}`, fetchRecords(this.externals.wixData
             .query(COUNTRIES_COLLECTION)
-            .eq('id', ids)
+            .hasSome('_id', ids)
             .find({ suppressAuth: true })));
     }
     fetchCountryByTitle(title) {

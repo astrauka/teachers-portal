@@ -14,7 +14,7 @@ export class LanguageRepository {
       fetchRecords<Language>(
         this.externals.wixData
           .query(LANGUAGES_COLLECTION)
-          .eq('id', ids)
+          .hasSome('_id', ids)
           .find({ suppressAuth: true })
       )
     );

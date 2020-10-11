@@ -14,7 +14,7 @@ export class CountryRepository {
       fetchRecords<Country>(
         this.externals.wixData
           .query(COUNTRIES_COLLECTION)
-          .eq('id', ids)
+          .hasSome('_id', ids)
           .find({ suppressAuth: true })
       )
     );
