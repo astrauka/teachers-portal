@@ -1,15 +1,15 @@
-import { buildMember } from '../../../test/builders/member';
-import { buildTeachersInfo } from '../../../test/builders/teachers-info';
-import { buildRegistrationResult } from '../../../test/builders/user';
-import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
-import { MembersRepository } from '../../repositories/members-repository';
-import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
-import { UsersService } from '../../services/users-service';
-import { RegisteredTeachersInfo } from '../../types/teachers-info';
-import { Member } from '../../types/wix-types';
+import { buildMember } from '../../../../test/builders/member';
+import { buildTeachersInfo } from '../../../../test/builders/teachers-info';
+import { buildRegistrationResult } from '../../../../test/builders/user';
+import { expect } from '../../../../test/utils/expectations';
+import { createStubInstance, stubFn } from '../../../../test/utils/stubbing';
+import { MembersRepository } from '../../../repositories/members-repository';
+import { TeachersInfoRepository } from '../../../repositories/teachers-info-repository';
+import { UsersService } from '../../../services/users-service';
+import { RegisteredTeachersInfo } from '../../../types/teachers-info';
+import { Member } from '../../../types/wix-types';
+import { GeneratePassword } from '../../operations/generate-password';
 import { addTeacherToUsersFactory } from './add-teacher-to-users';
-import { GeneratePassword } from './generate-password';
 
 describe('addTeacherToUsers', () => {
   const member = undefined;

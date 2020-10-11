@@ -1,4 +1,4 @@
-import { getLogger } from '../../utils/logger';
+import { getLogger } from '../../../utils/logger';
 export function addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword) {
     return async function addTeacherToUsers(teachersInfo) {
         const member = await membersRepository.fetchMemberByEmail(teachersInfo.email);

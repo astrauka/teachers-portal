@@ -1,7 +1,7 @@
 import { RegistrationResult, RegistrationResultStatus, User } from '../../backend/types/wix-types';
 import { builder } from './builder';
 
-export const buildUser = builder<User>(id => ({
+export const buildUser = builder<User>((id) => ({
   id: `${id}`,
   loggedIn: true,
   role: 'deprecated',
@@ -10,7 +10,7 @@ export const buildUser = builder<User>(id => ({
   getRoles: async () => [],
 }));
 
-export const buildRegistrationResult = builder<RegistrationResult>(id => ({
+export const buildRegistrationResult = builder<RegistrationResult>((id) => ({
   status: RegistrationResultStatus.Active,
   sessionToken: `${id}-session-token`,
   approvalToken: `${id}-approval-token`,

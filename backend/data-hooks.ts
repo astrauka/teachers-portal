@@ -3,11 +3,12 @@ import { setupContext } from './context/setup-context';
 import { Task, validateTask } from './types/task';
 import { TeachersInfo, validateTeachersInfo } from './types/teachers-info';
 import { TeachersProfile, validateTeachersProfile } from './types/teachers-profile';
+import { WixHookContext } from './types/wix-types';
 import { withLogger } from './utils/logger';
 
 export async function TeachersInfo_afterInsert(teachersInfo: TeachersInfo): Promise<TeachersInfo> {
   const {
-    actions: { addTeacherToUsers },
+    hooks: { addTeacherToUsers },
   } = await setupContext(EXTERNALS);
   await withLogger(
     `Hook TeachersInfo_afterInsert ${teachersInfo.email}`,
@@ -16,14 +17,17 @@ export async function TeachersInfo_afterInsert(teachersInfo: TeachersInfo): Prom
   return teachersInfo;
 }
 
-export async function TeachersInfo_afterUpdate(teachersInfo: TeachersInfo): Promise<TeachersInfo> {
+export async function TeachersInfo_afterUpdate(
+  teachersInfo: TeachersInfo,
+  context: WixHookContext<TeachersInfo>
+): Promise<TeachersInfo> {
   const {
-    actions: { addTeacherToUsers },
+    hooks: { syncTeachersProfileData },
   } = await setupContext(EXTERNALS);
 
   await withLogger(
     `Hook TeachersInfo_afterUpdate ${teachersInfo.email}`,
-    addTeacherToUsers(teachersInfo)
+    syncTeachersProfileData(teachersInfo, context)
   );
 
   return teachersInfo;

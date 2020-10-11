@@ -5,6 +5,13 @@ export class TeachersProfileRepository {
     constructor(externals) {
         this.externals = externals;
     }
+    fetchTeachersProfileByTeachersInfoId(teachersInfoId) {
+        return withLogger(`fetchTeachersProfileByTeachersInfoId ${teachersInfoId}`, findSingleRecord(this.externals.wixData
+            .query(TEACHERS_PROFILE_COLLECTION)
+            .eq('teachersInfoId', teachersInfoId)
+            .limit(1)
+            .find({ suppressAuth: true })));
+    }
     fetchTeachersProfileByEmail(email) {
         return withLogger(`fetchTeachersProfileByEmail ${email}`, findSingleRecord(this.externals.wixData
             .query(TEACHERS_PROFILE_COLLECTION)

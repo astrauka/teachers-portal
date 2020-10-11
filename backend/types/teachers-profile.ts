@@ -13,6 +13,9 @@ export interface TeachersProfile extends Storable {
   streetAddress: string;
   languageId: string;
   userId: string;
+  levelId: string;
+  statusId: string;
+  teachersInfoId: string;
 }
 
 export interface TeachersProfileView extends TeachersProfile {
@@ -41,6 +44,9 @@ const teachersProfileSchema = {
   streetAddress: { type: 'string', min: 3 },
   languageId: { type: 'string', min: 3, max: 255 },
   userId: { type: 'string', min: 3, max: 255 },
+  levelId: { type: 'string', min: 3, max: 255 },
+  statusId: { type: 'string', min: 3, max: 255 },
+  teachersInfoId: { type: 'string', min: 3, max: 255 },
 };
 
 const teachersProfileUpdateSchema = {

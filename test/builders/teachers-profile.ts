@@ -13,6 +13,9 @@ export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
   streetAddress: `${id}-street-address`,
   languageId: `${id}-language-id`,
   userId: `${id}-user-id`,
+  levelId: `${id}-level-id`,
+  statusId: `${id}-status-id`,
+  teachersInfoId: `${id}-teachersInfo-id`,
 }));
 
 export const buildTeachersProfileView = builder<TeachersProfileView>((id) => ({

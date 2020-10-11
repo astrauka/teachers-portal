@@ -19,7 +19,7 @@ export function updateCurrentTeachersProfileFactory(teachersProfileRepository, c
         return teachersProfile;
     };
     async function persistProfile(teachersInfo, updateWithIds) {
-        const { email, userId, firstName, lastName } = teachersInfo;
+        const { email, userId, firstName, lastName, levelId, statusId } = teachersInfo;
         const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(email);
         if (teachersProfile) {
             return teachersProfileRepository.updateTeachersProfile({
@@ -32,6 +32,9 @@ export function updateCurrentTeachersProfileFactory(teachersProfileRepository, c
             email,
             userId,
             fullName: `${firstName} ${lastName}`,
+            levelId,
+            statusId,
+            teachersInfoId: teachersInfo._id,
         });
     }
 }

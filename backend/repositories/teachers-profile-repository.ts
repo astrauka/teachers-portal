@@ -1,12 +1,28 @@
 import { Externals } from '../context/production-context';
+import { RegisteredTeachersInfo } from '../types/teachers-info';
 import { TeachersProfile } from '../types/teachers-profile';
-import { findSingleRecord } from '../utils/database-queries';
+import { findById, findSingleRecord } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const TEACHERS_PROFILE_COLLECTION = 'TeachersProfile';
 
 export class TeachersProfileRepository {
   constructor(private readonly externals: Externals) {}
+
+  public fetchTeachersProfileByTeachersInfoId(
+    teachersInfoId: string
+  ): Promise<TeachersProfile | undefined> {
+    return withLogger(
+      `fetchTeachersProfileByTeachersInfoId ${teachersInfoId}`,
+      findSingleRecord(
+        this.externals.wixData
+          .query(TEACHERS_PROFILE_COLLECTION)
+          .eq('teachersInfoId', teachersInfoId)
+          .limit(1)
+          .find({ suppressAuth: true })
+      )
+    );
+  }
 
   public fetchTeachersProfileByEmail(email: string): Promise<TeachersProfile | undefined> {
     return withLogger(

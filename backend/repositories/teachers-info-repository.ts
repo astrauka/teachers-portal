@@ -9,7 +9,7 @@ import {
 } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
-const TEACHERS_INFO_COLLECTION = 'TeachersInfo';
+export const TEACHERS_INFO_COLLECTION = 'TeachersInfo';
 const TEACHERS_TASKS = 'completedTasks';
 
 export class TeachersInfoRepository {

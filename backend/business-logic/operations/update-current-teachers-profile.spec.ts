@@ -108,11 +108,12 @@ describe('updateCurrentTeachersProfile', () => {
     const teachersProfile = undefined;
     const createdTeachersProfile: TeachersProfile = {
       ...pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
-      ...pick(teachersInfo, ['email', 'userId']),
+      ...pick(teachersInfo, ['email', 'userId', 'levelId', 'statusId']),
       countryId: country._id,
       languageId: language._id,
       fullName,
       slug,
+      teachersInfoId: teachersInfo._id,
     };
 
     it('should create a new teachers profile and complete task', async () => {

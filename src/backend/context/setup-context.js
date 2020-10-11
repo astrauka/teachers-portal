@@ -1,6 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
 import { memoize } from 'lodash';
-import { addTeacherToUsersFactory } from '../business-logic/operations/add-teacher-to-users';
+import { addTeacherToUsersFactory } from '../business-logic/hooks/teachers-info/add-teacher-to-users';
+import { syncTeachersProfileDataFactory } from '../business-logic/hooks/teachers-info/sync-teachers-profile-data';
 import { authenticateTeacherFactory } from '../business-logic/operations/authenticate-teacher';
 import { completeTeachersTaskFactory } from '../business-logic/operations/complete-teachers-task';
 import { generatePasswordFactory } from '../business-logic/operations/generate-password';
@@ -25,17 +26,19 @@ export const setupContext = memoize(async (externals) => {
         externals.getSecret('PASSWORD_SECRET'),
         externals.getSecret('PASSWORD_SALT'),
     ]);
+    // services
     const oauthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+    const googleAuthService = new GoogleAuthService(oauthClient, GOOGLE_CLIENT_ID);
+    const usersService = new UsersService(externals);
+    // repositories
     const countryRepository = new CountryRepository(externals);
     const languageRepository = new LanguageRepository(externals);
     const membersRepository = new MembersRepository(externals);
     const taskRepository = new TaskRepository(externals);
-    const googleAuthService = new GoogleAuthService(oauthClient, GOOGLE_CLIENT_ID);
     const teachersInfoRepository = new TeachersInfoRepository(externals);
     const teachersProfileRepository = new TeachersProfileRepository(externals);
-    const usersService = new UsersService(externals);
+    // actions
     const generatePassword = generatePasswordFactory(PASSWORD_SECRET, PASSWORD_SALT);
-    const addTeacherToUsers = addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword);
     const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersInfoRepository, usersService, generatePassword);
     const getCurrentTeachersInfo = getCurrentTeachersInfoFactory(teachersInfoRepository, usersService);
     const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
@@ -44,18 +47,24 @@ export const setupContext = memoize(async (externals) => {
     const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
     const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
     const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(taskRepository, teachersInfoRepository, getCurrentTeachersInfo);
+    // views
     const makeTeachersProfileViews = makeTeachersProfileViewsFactory(countryRepository, languageRepository);
+    // hooks
+    const addTeacherToUsers = addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword);
+    const syncTeachersProfileData = syncTeachersProfileDataFactory(teachersProfileRepository);
     return {
-        repositories: { countryRepository, languageRepository },
-        services: {
-            googleAuthService,
+        repositories: {
+            countryRepository,
+            languageRepository,
             membersRepository,
             teachersInfoRepository,
             teachersProfileRepository,
+        },
+        services: {
+            googleAuthService,
             usersService,
         },
         actions: {
-            addTeacherToUsers,
             authenticateTeacher,
             getCurrentTeachersInfo,
             getTeachersProfile,
@@ -66,6 +75,10 @@ export const setupContext = memoize(async (externals) => {
         },
         views: {
             makeTeachersProfileViews,
+        },
+        hooks: {
+            addTeacherToUsers,
+            syncTeachersProfileData,
         },
     };
 });

@@ -5,13 +5,13 @@ import { validateTeachersInfo } from './types/teachers-info';
 import { validateTeachersProfile } from './types/teachers-profile';
 import { withLogger } from './utils/logger';
 export async function TeachersInfo_afterInsert(teachersInfo) {
-    const { actions: { addTeacherToUsers }, } = await setupContext(EXTERNALS);
+    const { hooks: { addTeacherToUsers }, } = await setupContext(EXTERNALS);
     await withLogger(`Hook TeachersInfo_afterInsert ${teachersInfo.email}`, addTeacherToUsers(teachersInfo));
     return teachersInfo;
 }
-export async function TeachersInfo_afterUpdate(teachersInfo) {
-    const { actions: { addTeacherToUsers }, } = await setupContext(EXTERNALS);
-    await withLogger(`Hook TeachersInfo_afterUpdate ${teachersInfo.email}`, addTeacherToUsers(teachersInfo));
+export async function TeachersInfo_afterUpdate(teachersInfo, context) {
+    const { hooks: { syncTeachersProfileData }, } = await setupContext(EXTERNALS);
+    await withLogger(`Hook TeachersInfo_afterUpdate ${teachersInfo.email}`, syncTeachersProfileData(teachersInfo, context));
     return teachersInfo;
 }
 export function TeachersInfo_beforeInsert(teachersInfo) {

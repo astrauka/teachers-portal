@@ -5,8 +5,8 @@ export interface TeachersInfo extends Storable {
   email: string;
   firstName: string;
   lastName: string;
-  level: string;
-  status: string;
+  levelId: string;
+  statusId: string;
   mentorId?: string;
   certificateExpirationDate?: Date;
   userId?: string;
@@ -34,8 +34,8 @@ const teachersInfoSchema = {
   email: { type: 'email' },
   firstName: { type: 'string', min: 3, max: 255 },
   lastName: { type: 'string', min: 3, max: 255 },
-  level: { type: 'string', min: 3, max: 255 },
-  status: { type: 'string', min: 3, max: 255 },
+  levelId: { type: 'string', min: 3, max: 255 },
+  statusId: { type: 'string', min: 3, max: 255 },
   mentorId: { type: 'string', min: 3, optional: true },
   certificateExpirationDate: { type: 'date', optional: true },
   userId: { type: 'string', min: 3, optional: true },
