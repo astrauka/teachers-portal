@@ -19,11 +19,16 @@ export async function currentTeachersInfo(): Promise<RegisteredTeachersInfo> {
   return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
 }
 
-export async function getTeachersProfile(email?: string): Promise<TeachersProfile | undefined> {
+export async function currentTeachersProfile(): Promise<TeachersProfile | undefined> {
   const {
     actions: { getTeachersProfile },
+    views: { makeTeachersProfileViews },
   } = await setupContext(EXTERNALS);
-  return withLogger('teachersProfile', getTeachersProfile(email));
+  return withLogger('getTeachersProfile', async () => {
+    const teachersProfile = await getTeachersProfile();
+    const [teachersProfileView] = await makeTeachersProfileViews([teachersProfile]);
+    return teachersProfileView;
+  });
 }
 
 export async function updateTeachersProfile(

@@ -1,7 +1,12 @@
 import { Externals } from '../context/production-context';
 import { Task } from '../types/task';
 import { RegisteredTeachersInfo, TeachersInfo } from '../types/teachers-info';
-import { fetchRecords, findSingleRecord, findSingleRecordSafe } from '../utils/database-queries';
+import {
+  fetchRecords,
+  findById,
+  findSingleRecord,
+  findSingleRecordSafe,
+} from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const TEACHERS_INFO_COLLECTION = 'TeachersInfo';
@@ -9,6 +14,13 @@ const TEACHERS_TASKS = 'completedTasks';
 
 export class TeachersInfoRepository {
   constructor(private readonly externals: Externals) {}
+
+  public fetchTeacherById<T = RegisteredTeachersInfo>(id: string): Promise<T | undefined> {
+    return withLogger(
+      `fetchTeacherById ${id}`,
+      findById<T>(this.externals, TEACHERS_INFO_COLLECTION, id)
+    );
+  }
 
   public fetchTeacherByEmail<T = RegisteredTeachersInfo>(email: string): Promise<T | undefined> {
     return withLogger(

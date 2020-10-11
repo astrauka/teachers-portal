@@ -1,7 +1,7 @@
 import { keyBy } from 'lodash';
-import { TaskRepository } from '../repositories/task-repository';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { TaskView } from '../types/task';
+import { TaskRepository } from '../../repositories/task-repository';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { TaskView } from '../../types/task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
 export function getCurrentTeachersTasksFactory(

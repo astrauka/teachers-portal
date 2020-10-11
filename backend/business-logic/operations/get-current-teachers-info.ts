@@ -1,6 +1,6 @@
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { UsersService } from '../services/users-service';
-import { RegisteredTeachersInfo } from '../types/teachers-info';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { UsersService } from '../../services/users-service';
+import { RegisteredTeachersInfo } from '../../types/teachers-info';
 
 export function getCurrentTeachersInfoFactory(
   teachersInfoRepository: TeachersInfoRepository,

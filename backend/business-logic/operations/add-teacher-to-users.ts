@@ -1,9 +1,9 @@
-import { MembersRepository } from '../repositories/members-repository';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { UsersService } from '../services/users-service';
-import { TeachersInfo } from '../types/teachers-info';
-import { Member, RegistrationResult } from '../types/wix-types';
-import { getLogger } from '../utils/logger';
+import { MembersRepository } from '../../repositories/members-repository';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { UsersService } from '../../services/users-service';
+import { TeachersInfo } from '../../types/teachers-info';
+import { Member, RegistrationResult } from '../../types/wix-types';
+import { getLogger } from '../../utils/logger';
 import { GeneratePassword } from './generate-password';
 
 export function addTeacherToUsersFactory(

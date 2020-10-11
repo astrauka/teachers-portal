@@ -1,9 +1,9 @@
-import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
-import { buildTeachersProfileView } from '../../test/builders/teachers-profile';
-import { expect } from '../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../test/utils/stubbing';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { RegisteredTeachersInfo } from '../types/teachers-info';
+import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
+import { buildTeachersProfileView } from '../../../test/builders/teachers-profile';
+import { expect } from '../../../test/utils/expectations';
+import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { RegisteredTeachersInfo } from '../../types/teachers-info';
 import { getCuratingTeachersProfileFactory } from './get-curating-teachers-profile';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
@@ -34,8 +34,11 @@ describe('getCuratingTeachersProfile', () => {
   });
 
   it('should return curating teacher profile', async () => {
-    const { getCuratingTeachersProfile } = buildTestContext();
-    // expect(await getCuratingTeachersProfile()).to.eql(curatingTeachersProfileView);
+    const { teachersInfoRepository, getCuratingTeachersProfile } = buildTestContext();
+    expect(await getCuratingTeachersProfile()).to.eql(curatingTeachersProfileView);
+    expect(teachersInfoRepository.fetchTeacherById).calledOnceWithExactly(
+      currentTeachersInfo.mentorId
+    );
   });
   //
   // context('on profile not existing', () => {

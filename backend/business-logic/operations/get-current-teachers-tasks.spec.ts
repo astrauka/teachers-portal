@@ -1,11 +1,11 @@
-import { buildTask } from '../../test/builders/task';
-import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
-import { expect } from '../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../test/utils/stubbing';
-import { TaskRepository } from '../repositories/task-repository';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { Task } from '../types/task';
-import { RegisteredTeachersInfo } from '../types/teachers-info';
+import { buildTask } from '../../../test/builders/task';
+import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
+import { expect } from '../../../test/utils/expectations';
+import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { TaskRepository } from '../../repositories/task-repository';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { Task } from '../../types/task';
+import { RegisteredTeachersInfo } from '../../types/teachers-info';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 import { getCurrentTeachersTasksFactory } from './get-current-teachers-tasks';
 

@@ -1,6 +1,6 @@
 import { Externals } from '../context/production-context';
 import { Language } from '../types/language';
-import { findById, findSingleRecord, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const LANGUAGES_COLLECTION = 'Languages';
@@ -8,10 +8,15 @@ const LANGUAGES_COLLECTION = 'Languages';
 export class LanguageRepository {
   constructor(private readonly externals: Externals) {}
 
-  public fetchLanguageById(id: string): Promise<Language> {
+  public fetchLanguagesByIds(ids: string[]): Promise<Language[]> {
     return withLogger(
-      `fetchLanguageById ${id}`,
-      findById<Language>(this.externals, LANGUAGES_COLLECTION, id)
+      `fetchLanguagesByIds ${ids}`,
+      fetchRecords<Language>(
+        this.externals.wixData
+          .query(LANGUAGES_COLLECTION)
+          .eq('id', ids)
+          .find({ suppressAuth: true })
+      )
     );
   }
 

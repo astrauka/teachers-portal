@@ -9,9 +9,13 @@ export async function currentTeachersInfo() {
     const { actions: { getCurrentTeachersInfo }, } = await setupContext(EXTERNALS);
     return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
 }
-export async function getTeachersProfile(email) {
-    const { actions: { getTeachersProfile }, } = await setupContext(EXTERNALS);
-    return withLogger('teachersProfile', getTeachersProfile(email));
+export async function currentTeachersProfile() {
+    const { actions: { getTeachersProfile }, views: { makeTeachersProfileViews }, } = await setupContext(EXTERNALS);
+    return withLogger('getTeachersProfile', async () => {
+        const teachersProfile = await getTeachersProfile();
+        const [teachersProfileView] = await makeTeachersProfileViews([teachersProfile]);
+        return teachersProfileView;
+    });
 }
 export async function updateTeachersProfile(update) {
     const { actions: { updateCurrentTeachersProfile }, } = await setupContext(EXTERNALS);

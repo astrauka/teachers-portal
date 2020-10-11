@@ -1,15 +1,16 @@
 import { OAuth2Client } from 'google-auth-library';
 import { memoize } from 'lodash';
-import { addTeacherToUsersFactory } from '../business-logic/add-teacher-to-users';
-import { authenticateTeacherFactory } from '../business-logic/authenticate-teacher';
-import { completeTeachersTaskFactory } from '../business-logic/complete-teachers-task';
-import { generatePasswordFactory } from '../business-logic/generate-password';
-import { getCuratingTeachersProfileFactory } from '../business-logic/get-curating-teachers-profile';
-import { getCurrentTeachersInfoFactory } from '../business-logic/get-current-teachers-info';
-import { getCurrentTeachersTasksFactory } from '../business-logic/get-current-teachers-tasks';
-import { getTeachersProfileFactory } from '../business-logic/get-teachers-profile';
-import { updateCurrentTeachersProfileFactory } from '../business-logic/update-current-teachers-profile';
-import { updateTeachersProfileSlugFactory } from '../business-logic/update-teachers-profile-slug';
+import { addTeacherToUsersFactory } from '../business-logic/operations/add-teacher-to-users';
+import { authenticateTeacherFactory } from '../business-logic/operations/authenticate-teacher';
+import { completeTeachersTaskFactory } from '../business-logic/operations/complete-teachers-task';
+import { generatePasswordFactory } from '../business-logic/operations/generate-password';
+import { getCuratingTeachersProfileFactory } from '../business-logic/operations/get-curating-teachers-profile';
+import { getCurrentTeachersInfoFactory } from '../business-logic/operations/get-current-teachers-info';
+import { getCurrentTeachersTasksFactory } from '../business-logic/operations/get-current-teachers-tasks';
+import { getTeachersProfileFactory } from '../business-logic/operations/get-teachers-profile';
+import { updateCurrentTeachersProfileFactory } from '../business-logic/operations/update-current-teachers-profile';
+import { updateTeachersProfileSlugFactory } from '../business-logic/operations/update-teachers-profile-slug';
+import { makeTeachersProfileViewsFactory } from '../business-logic/views/make-teachers-profile-view';
 import { CountryRepository } from '../repositories/country-repository';
 import { LanguageRepository } from '../repositories/language-repository';
 import { MembersRepository } from '../repositories/members-repository';
@@ -37,12 +38,13 @@ export const setupContext = memoize(async (externals) => {
     const addTeacherToUsers = addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword);
     const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersInfoRepository, usersService, generatePassword);
     const getCurrentTeachersInfo = getCurrentTeachersInfoFactory(teachersInfoRepository, usersService);
-    const getTeachersProfile = getTeachersProfileFactory(countryRepository, languageRepository, teachersProfileRepository, usersService);
+    const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
     const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(getCurrentTeachersInfo, teachersInfoRepository);
     const completeTeachersTask = completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository);
     const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
     const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
     const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(taskRepository, teachersInfoRepository, getCurrentTeachersInfo);
+    const makeTeachersProfileViews = makeTeachersProfileViewsFactory(countryRepository, languageRepository);
     return {
         repositories: { countryRepository, languageRepository },
         services: {
@@ -61,6 +63,9 @@ export const setupContext = memoize(async (externals) => {
             updateCurrentTeachersProfile,
             updateTeachersProfileSlug,
             getCurrentTeachersTasks,
+        },
+        views: {
+            makeTeachersProfileViews,
         },
     };
 });

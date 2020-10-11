@@ -1,16 +1,16 @@
 import { omit } from 'lodash';
-import { CountryRepository } from '../repositories/country-repository';
-import { LanguageRepository } from '../repositories/language-repository';
-import { MembersRepository } from '../repositories/members-repository';
-import { TeachersProfileRepository } from '../repositories/teachers-profile-repository';
-import { UsersService } from '../services/users-service';
-import { TaskNumber } from '../types/task';
-import { TeachersInfo } from '../types/teachers-info';
+import { CountryRepository } from '../../repositories/country-repository';
+import { LanguageRepository } from '../../repositories/language-repository';
+import { MembersRepository } from '../../repositories/members-repository';
+import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
+import { UsersService } from '../../services/users-service';
+import { TaskNumber } from '../../types/task';
+import { TeachersInfo } from '../../types/teachers-info';
 import {
   TeachersProfile,
   TeachersProfileUpdate,
   validateTeachersProfileUpdate,
-} from '../types/teachers-profile';
+} from '../../types/teachers-profile';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 

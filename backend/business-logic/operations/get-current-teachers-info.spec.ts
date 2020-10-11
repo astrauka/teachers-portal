@@ -1,8 +1,8 @@
-import { buildRegisteredTeachersInfo } from '../../test/builders/teachers-info';
-import { expect } from '../../test/utils/expectations';
-import { createStubInstance } from '../../test/utils/stubbing';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { UsersService } from '../services/users-service';
+import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
+import { expect } from '../../../test/utils/expectations';
+import { createStubInstance } from '../../../test/utils/stubbing';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { UsersService } from '../../services/users-service';
 import { getCurrentTeachersInfoFactory } from './get-current-teachers-info';
 
 describe('getCurrentTeachersInfo', () => {

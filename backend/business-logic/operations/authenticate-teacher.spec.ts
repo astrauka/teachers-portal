@@ -1,10 +1,10 @@
-import { buildGoogleUser } from '../../test/builders/google-user';
-import { buildTeachersInfo } from '../../test/builders/teachers-info';
-import { expect } from '../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../test/utils/stubbing';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { GoogleAuthService } from '../services/google-auth-service';
-import { UsersService } from '../services/users-service';
+import { buildGoogleUser } from '../../../test/builders/google-user';
+import { buildTeachersInfo } from '../../../test/builders/teachers-info';
+import { expect } from '../../../test/utils/expectations';
+import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { GoogleAuthService } from '../../services/google-auth-service';
+import { UsersService } from '../../services/users-service';
 import { authenticateTeacherFactory } from './authenticate-teacher';
 import { GeneratePassword } from './generate-password';
 

@@ -1,12 +1,15 @@
-import { findById, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 const COUNTRIES_COLLECTION = 'Countries';
 export class CountryRepository {
     constructor(externals) {
         this.externals = externals;
     }
-    fetchCountryById(id) {
-        return withLogger(`fetchCountryById ${id}`, findById(this.externals, COUNTRIES_COLLECTION, id));
+    fetchCountriesByIds(ids) {
+        return withLogger(`fetchCountriesByIds ${ids}`, fetchRecords(this.externals.wixData
+            .query(COUNTRIES_COLLECTION)
+            .eq('id', ids)
+            .find({ suppressAuth: true })));
     }
     fetchCountryByTitle(title) {
         return withLogger(`fetchCountryByTitle ${title}`, findSingleRecordSafe(this.externals.wixData

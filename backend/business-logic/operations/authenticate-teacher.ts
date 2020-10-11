@@ -1,8 +1,8 @@
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { GoogleAuthService } from '../services/google-auth-service';
-import { UsersService } from '../services/users-service';
-import { UnauthorizedError } from '../utils/errors';
-import { withLogger } from '../utils/logger';
+import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { GoogleAuthService } from '../../services/google-auth-service';
+import { UsersService } from '../../services/users-service';
+import { UnauthorizedError } from '../../utils/errors';
+import { withLogger } from '../../utils/logger';
 import { GeneratePassword } from './generate-password';
 
 export function authenticateTeacherFactory(
