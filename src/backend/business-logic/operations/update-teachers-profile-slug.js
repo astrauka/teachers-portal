@@ -1,4 +1,4 @@
-import * as urlSlug from 'url-slug';
+import urlSlug from 'url-slug';
 import { compact } from 'lodash';
 export const MAX_SLUG_POSTFIX = 20;
 export function updateTeachersProfileSlugFactory(teachersProfileRepository) {

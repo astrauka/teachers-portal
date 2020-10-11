@@ -1,4 +1,4 @@
-import * as urlSlug from 'url-slug';
+import urlSlug from 'url-slug';
 
 import { compact } from 'lodash';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
