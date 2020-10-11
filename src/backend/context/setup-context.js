@@ -39,7 +39,7 @@ export const setupContext = memoize(async (externals) => {
     const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersInfoRepository, usersService, generatePassword);
     const getCurrentTeachersInfo = getCurrentTeachersInfoFactory(teachersInfoRepository, usersService);
     const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
-    const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(getCurrentTeachersInfo, teachersInfoRepository);
+    const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(getCurrentTeachersInfo, getTeachersProfile, teachersInfoRepository);
     const completeTeachersTask = completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository);
     const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
     const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);

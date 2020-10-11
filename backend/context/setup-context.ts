@@ -63,6 +63,7 @@ export const setupContext = memoize(async (externals: Externals) => {
   const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
   const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(
     getCurrentTeachersInfo,
+    getTeachersProfile,
     teachersInfoRepository
   );
   const completeTeachersTask = completeTeachersTaskFactory(

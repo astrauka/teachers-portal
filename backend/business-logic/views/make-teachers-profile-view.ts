@@ -32,4 +32,4 @@ export function makeTeachersProfileViewsFactory(
   };
 }
 
-export type MakeTeachersProfileView = ReturnType<typeof makeTeachersProfileViewsFactory>;
+export type MakeTeachersProfileViews = ReturnType<typeof makeTeachersProfileViewsFactory>;

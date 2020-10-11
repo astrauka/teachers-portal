@@ -1,12 +1,14 @@
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
-import { TeachersProfileView } from '../../types/teachers-profile';
+import { TeachersProfile } from '../../types/teachers-profile';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
+import { GetTeachersProfile } from './get-teachers-profile';
 
 export function getCuratingTeachersProfileFactory(
   getCurrentTeachersInfo: GetCurrentTeachersInfo,
+  getTeachersProfile: GetTeachersProfile,
   teachersInfoRepository: TeachersInfoRepository
 ) {
-  return async function getCuratingTeachersProfile(): Promise<TeachersProfileView | undefined> {
+  return async function getCuratingTeachersProfile(): Promise<TeachersProfile | undefined> {
     const { mentorId } = await getCurrentTeachersInfo();
     if (!mentorId) {
       return;
@@ -15,5 +17,6 @@ export function getCuratingTeachersProfileFactory(
     if (!curatingTeacher) {
       return;
     }
+    return getTeachersProfile(curatingTeacher.email);
   };
 }

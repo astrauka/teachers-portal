@@ -1,4 +1,4 @@
-export function getCuratingTeachersProfileFactory(getCurrentTeachersInfo, teachersInfoRepository) {
+export function getCuratingTeachersProfileFactory(getCurrentTeachersInfo, getTeachersProfile, teachersInfoRepository) {
     return async function getCuratingTeachersProfile() {
         const { mentorId } = await getCurrentTeachersInfo();
         if (!mentorId) {
@@ -8,5 +8,6 @@ export function getCuratingTeachersProfileFactory(getCurrentTeachersInfo, teache
         if (!curatingTeacher) {
             return;
         }
+        return getTeachersProfile(curatingTeacher.email);
     };
 }
