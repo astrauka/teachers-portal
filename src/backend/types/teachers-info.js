@@ -19,8 +19,8 @@ const teachersInfoSchema = {
     lastName: { type: 'string', min: 3, max: 255 },
     level: { type: 'string', min: 3, max: 255 },
     status: { type: 'string', min: 3, max: 255 },
-    mentor: { type: 'string', min: 3 },
-    certificateExpirationDate: { type: 'date' },
+    mentorId: { type: 'string', min: 3, optional: true },
+    certificateExpirationDate: { type: 'date', optional: true },
     userId: { type: 'string', min: 3, optional: true },
 };
 export const validateTeachersInfo = buildValidator(teachersInfoSchema);

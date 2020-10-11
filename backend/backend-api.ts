@@ -41,3 +41,10 @@ export async function currentTeachersTasks(): Promise<TaskView[]> {
   } = await setupContext(EXTERNALS);
   return withLogger('currentTeachersTasks', getCurrentTeachersTasks());
 }
+
+export async function curatingTeachersProfile(): Promise<TeachersProfile | undefined> {
+  const {
+    actions: { getCuratingTeachersProfile },
+  } = await setupContext(EXTERNALS);
+  return withLogger('curatingTeachersProfile', getCuratingTeachersProfile());
+}

@@ -10,16 +10,7 @@ const TEACHERS_TASKS = 'completedTasks';
 export class TeachersInfoRepository {
   constructor(private readonly externals: Externals) {}
 
-  public fetchTeacherByUserId(userId: string): Promise<RegisteredTeachersInfo> {
-    return withLogger(
-      `fetchTeacherByUserId ${userId}`,
-      findSingleRecord(
-        this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('userId', userId).find()
-      )
-    );
-  }
-
-  public fetchTeacherByEmail<T = RegisteredTeachersInfo>(email: string): Promise<T> {
+  public fetchTeacherByEmail<T = RegisteredTeachersInfo>(email: string): Promise<T | undefined> {
     return withLogger(
       `fetchTeacherByEmail ${email}`,
       findSingleRecord(
@@ -28,9 +19,7 @@ export class TeachersInfoRepository {
     );
   }
 
-  public fetchTeacherByEmailSafe<T = RegisteredTeachersInfo>(
-    email: string
-  ): Promise<T | undefined> {
+  public fetchTeacherByEmailSafe<T = RegisteredTeachersInfo>(email: string): Promise<T> {
     return withLogger(
       `fetchTeacherByEmailSafe ${email}`,
       findSingleRecordSafe(

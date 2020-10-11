@@ -29,3 +29,5 @@ export function getTeachersProfileFactory(
     return { ...teachersProfile, country: get(country, 'title'), language: get(language, 'title') };
   };
 }
+
+export type GetTeachersProfile = ReturnType<typeof getTeachersProfileFactory>;

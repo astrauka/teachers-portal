@@ -4,9 +4,10 @@ import { addTeacherToUsersFactory } from '../business-logic/add-teacher-to-users
 import { authenticateTeacherFactory } from '../business-logic/authenticate-teacher';
 import { completeTeachersTaskFactory } from '../business-logic/complete-teachers-task';
 import { generatePasswordFactory } from '../business-logic/generate-password';
-import { getTeachersProfileFactory } from '../business-logic/get--teachers-profile';
+import { getCuratingTeachersProfileFactory } from '../business-logic/get-curating-teachers-profile';
 import { getCurrentTeachersInfoFactory } from '../business-logic/get-current-teachers-info';
 import { getCurrentTeachersTasksFactory } from '../business-logic/get-current-teachers-tasks';
+import { getTeachersProfileFactory } from '../business-logic/get-teachers-profile';
 import { updateCurrentTeachersProfileFactory } from '../business-logic/update-current-teachers-profile';
 import { updateTeachersProfileSlugFactory } from '../business-logic/update-teachers-profile-slug';
 import { CountryRepository } from '../repositories/country-repository';
@@ -64,6 +65,10 @@ export const setupContext = memoize(async (externals: Externals) => {
     teachersProfileRepository,
     usersService
   );
+  const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(
+    getCurrentTeachersInfo,
+    teachersInfoRepository
+  );
   const completeTeachersTask = completeTeachersTaskFactory(
     getCurrentTeachersInfo,
     teachersInfoRepository,
@@ -97,6 +102,7 @@ export const setupContext = memoize(async (externals: Externals) => {
       authenticateTeacher,
       getCurrentTeachersInfo,
       getTeachersProfile,
+      getCuratingTeachersProfile,
       updateCurrentTeachersProfile,
       updateTeachersProfileSlug,
       getCurrentTeachersTasks,

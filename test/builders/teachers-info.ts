@@ -14,7 +14,7 @@ export const buildTeachersInfo = builder<TeachersInfo>((id) => ({
   lastName: `${id}-last-name`,
   level: TeacherLevel.Basic,
   status: TeacherStatus.Active,
-  mentor: `${id}-mentor-id`,
+  mentorId: `${id}-mentor-id`,
   certificateExpirationDate: inDaysAsDate(100),
 }));
 

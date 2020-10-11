@@ -1,4 +1,4 @@
-import { TeachersProfile } from '../../backend/types/teachers-profile';
+import { TeachersProfile, TeachersProfileView } from '../../backend/types/teachers-profile';
 import { builder } from './builder';
 
 export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
@@ -13,4 +13,10 @@ export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
   streetAddress: `${id}-street-address`,
   languageId: `${id}-language-id`,
   userId: `${id}-user-id`,
+}));
+
+export const buildTeachersProfileView = builder<TeachersProfileView>((id) => ({
+  ...buildTeachersProfile({ id }),
+  country: `${id}-country-title`,
+  language: `${id}-language-title`,
 }));

@@ -8,7 +8,7 @@ import { LanguageRepository } from '../repositories/language-repository';
 import { TeachersProfileRepository } from '../repositories/teachers-profile-repository';
 import { UsersService } from '../services/users-service';
 import { TeachersProfileView } from '../types/teachers-profile';
-import { getTeachersProfileFactory } from './get--teachers-profile';
+import { getTeachersProfileFactory } from './get-teachers-profile';
 
 describe('getTeachersProfile', () => {
   const email = 'user-email';

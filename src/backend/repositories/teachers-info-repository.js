@@ -6,9 +6,6 @@ export class TeachersInfoRepository {
     constructor(externals) {
         this.externals = externals;
     }
-    fetchTeacherByUserId(userId) {
-        return withLogger(`fetchTeacherByUserId ${userId}`, findSingleRecord(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('userId', userId).find()));
-    }
     fetchTeacherByEmail(email) {
         return withLogger(`fetchTeacherByEmail ${email}`, findSingleRecord(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()));
     }

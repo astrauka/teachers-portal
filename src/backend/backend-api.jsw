@@ -21,3 +21,7 @@ export async function currentTeachersTasks() {
     const { actions: { getCurrentTeachersTasks }, } = await setupContext(EXTERNALS);
     return withLogger('currentTeachersTasks', getCurrentTeachersTasks());
 }
+export async function curatingTeachersProfile() {
+    const { actions: { getCuratingTeachersProfile }, } = await setupContext(EXTERNALS);
+    return withLogger('curatingTeachersProfile', getCuratingTeachersProfile());
+}
