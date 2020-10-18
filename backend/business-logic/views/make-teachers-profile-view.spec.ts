@@ -88,7 +88,7 @@ describe('makeTeachersProfileViews', () => {
   });
 
   context('on no teachers profiles', () => {
-    const teachersProfiles = [];
+    const teachersProfiles = [undefined];
 
     it('should not fetch anything', async () => {
       const {

@@ -8,8 +8,9 @@ export function makeTeachersProfileViewsFactory(
   languageRepository: LanguageRepository
 ) {
   return async function makeTeachersProfileViews(
-    teachersProfiles: TeachersProfile[]
+    teachersProfilesArray: TeachersProfile[]
   ): Promise<TeachersProfileView[]> {
+    const teachersProfiles = compact(teachersProfilesArray);
     const countryIds = compact(
       teachersProfiles.map((teachersProfile) => teachersProfile.countryId)
     );

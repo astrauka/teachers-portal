@@ -1,6 +1,7 @@
 import { compact, get, keyBy } from 'lodash';
 export function makeTeachersProfileViewsFactory(countryRepository, languageRepository) {
-    return async function makeTeachersProfileViews(teachersProfiles) {
+    return async function makeTeachersProfileViews(teachersProfilesArray) {
+        const teachersProfiles = compact(teachersProfilesArray);
         const countryIds = compact(teachersProfiles.map((teachersProfile) => teachersProfile.countryId));
         const languageIds = compact(teachersProfiles.map((teachersProfile) => teachersProfile.languageId));
         const [countries, languages] = await Promise.all([
