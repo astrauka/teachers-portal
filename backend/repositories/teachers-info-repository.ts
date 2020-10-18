@@ -1,12 +1,7 @@
 import { Externals } from '../context/production-context';
 import { Task } from '../types/task';
 import { RegisteredTeachersInfo, TeachersInfo } from '../types/teachers-info';
-import {
-  fetchRecords,
-  findById,
-  findSingleRecord,
-  findSingleRecordSafe,
-} from '../utils/database-queries';
+import { fetchRecords, findById, findSingleRecord } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 export const TEACHERS_INFO_COLLECTION = 'TeachersInfo';
@@ -26,15 +21,6 @@ export class TeachersInfoRepository {
     return withLogger(
       `fetchTeacherByEmail ${email}`,
       findSingleRecord(
-        this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()
-      )
-    );
-  }
-
-  public fetchTeacherByEmailSafe<T = RegisteredTeachersInfo>(email: string): Promise<T> {
-    return withLogger(
-      `fetchTeacherByEmailSafe ${email}`,
-      findSingleRecordSafe(
         this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()
       )
     );

@@ -4,7 +4,7 @@ export function authenticateTeacherFactory(googleAuthService, teachersInfoReposi
     return async function authenticateTeacher(idToken) {
         const googleUser = await googleAuthService.verifyGoogleToken(idToken);
         return withLogger(`authenticateTeacher ${googleUser.email}`, async () => {
-            const teachersInfo = await teachersInfoRepository.fetchTeacherByEmailSafe(googleUser.email);
+            const teachersInfo = await teachersInfoRepository.fetchTeacherByEmail(googleUser.email);
             if (!teachersInfo) {
                 throw new UnauthorizedError('Invalid email - not a teacher');
             }

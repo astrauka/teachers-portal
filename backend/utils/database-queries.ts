@@ -8,7 +8,7 @@ export async function findSingleRecord<T>(
   return (await queryResultPromise).items[0];
 }
 
-export async function findSingleRecordSafe<T>(
+export async function findSingleRecordOrThrow<T>(
   queryResultPromise: Promise<WixDataQueryResult>
 ): Promise<T> {
   const item = findSingleRecord<T>(queryResultPromise);

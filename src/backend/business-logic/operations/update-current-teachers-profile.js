@@ -6,8 +6,8 @@ export function updateCurrentTeachersProfileFactory(teachersProfileRepository, c
         validateTeachersProfileUpdate(update);
         const [teachersInfo, country, language] = await Promise.all([
             getCurrentTeachersInfo(),
-            countryRepository.fetchCountryByTitle(update.country),
-            languageRepository.fetchLanguageByTitle(update.language),
+            countryRepository.fetchCountryByTitleOrThrow(update.country),
+            languageRepository.fetchLanguageByTitleOrThrow(update.language),
         ]);
         const updateWithIds = {
             ...omit(update, ['country', 'language']),

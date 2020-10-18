@@ -23,7 +23,7 @@ describe('completeTeachersTask', () => {
     });
   const getTaskRepository = (task: Task) =>
     createStubInstance(TaskRepository, (stub) => {
-      stub.fetchTaskByNumberSafe.resolves(task);
+      stub.fetchTaskByNumberOrThrow.resolves(task);
     });
   const buildTestContext = ({
     getCurrentTeachersInfo = getGetCurrentTeachersInfo(teachersInfo),
@@ -49,7 +49,7 @@ describe('completeTeachersTask', () => {
     } = buildTestContext();
     await completeTeachersTask(task.number);
     expect(getCurrentTeachersInfo).calledOnceWithExactly();
-    expect(taskRepository.fetchTaskByNumberSafe).calledOnceWithExactly(task.number);
+    expect(taskRepository.fetchTaskByNumberOrThrow).calledOnceWithExactly(task.number);
     expect(teachersInfoRepository.fetchCompletedTasks).calledOnceWithExactly(teachersInfo);
     expect(teachersInfoRepository.completeTask).calledOnceWithExactly(teachersInfo, task);
   });
@@ -66,7 +66,7 @@ describe('completeTeachersTask', () => {
       } = buildTestContext({ teachersInfoRepository: getTeachersInfoRepository(completedTasks) });
       await completeTeachersTask(task.number);
       expect(getCurrentTeachersInfo).calledOnceWithExactly();
-      expect(taskRepository.fetchTaskByNumberSafe).calledOnceWithExactly(task.number);
+      expect(taskRepository.fetchTaskByNumberOrThrow).calledOnceWithExactly(task.number);
       expect(teachersInfoRepository.completeTask).not.called;
     });
   });

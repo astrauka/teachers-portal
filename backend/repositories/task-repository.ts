@@ -1,6 +1,6 @@
 import { Externals } from '../context/production-context';
 import { Task, TaskNumber } from '../types/task';
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const TASKS_COLLECTION = 'Tasks';
@@ -15,10 +15,10 @@ export class TaskRepository {
     );
   }
 
-  public fetchTaskByNumberSafe(taskNumber: TaskNumber): Promise<Task> {
+  public fetchTaskByNumberOrThrow(taskNumber: TaskNumber): Promise<Task> {
     return withLogger(
-      `fetchTaskByNumberSafe`,
-      findSingleRecordSafe(
+      `fetchTaskByNumberOrThrow`,
+      findSingleRecordOrThrow(
         this.externals.wixData
           .query(TASKS_COLLECTION)
           .eq('number', taskNumber)

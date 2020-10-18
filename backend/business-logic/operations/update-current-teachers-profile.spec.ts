@@ -51,11 +51,11 @@ describe('updateCurrentTeachersProfile', () => {
     });
   const getCountryRepository = (country) =>
     createStubInstance(CountryRepository, (stub) => {
-      stub.fetchCountryByTitle.resolves(country);
+      stub.fetchCountryByTitleOrThrow.resolves(country);
     });
   const getLanguageRepository = (language) =>
     createStubInstance(LanguageRepository, (stub) => {
-      stub.fetchLanguageByTitle.resolves(language);
+      stub.fetchLanguageByTitleOrThrow.resolves(language);
     });
   const getGetCurrentTeachersInfo = (teachersInfo: RegisteredTeachersInfo) =>
     stubFn<GetCurrentTeachersInfo>().resolves(teachersInfo);
@@ -94,7 +94,7 @@ describe('updateCurrentTeachersProfile', () => {
 
     expect(await updateCurrentTeachersProfile(update)).to.eql(updatedTeachersProfile);
     expect(getCurrentTeachersInfo).calledOnceWithExactly();
-    expect(languageRepository.fetchLanguageByTitle).calledOnceWithExactly(language.title);
+    expect(languageRepository.fetchLanguageByTitleOrThrow).calledOnceWithExactly(language.title);
     expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(
       teachersInfo.email
     );

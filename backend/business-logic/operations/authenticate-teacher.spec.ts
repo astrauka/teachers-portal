@@ -25,7 +25,7 @@ describe('authenticateTeacher', () => {
     });
   const getTeachersService = (teachersInfo) =>
     createStubInstance(TeachersInfoRepository, (stub) => {
-      stub.fetchTeacherByEmailSafe.resolves(teachersInfo);
+      stub.fetchTeacherByEmail.resolves(teachersInfo);
     });
   const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
   const buildTestContext = ({
@@ -56,7 +56,7 @@ describe('authenticateTeacher', () => {
     } = buildTestContext();
     expect(await authenticateTeacher(idToken)).to.eql(signInToken);
     expect(googleAuthService.verifyGoogleToken).calledOnceWithExactly(idToken);
-    expect(teachersInfoRepository.fetchTeacherByEmailSafe).calledOnceWithExactly(googleUser.email);
+    expect(teachersInfoRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
     expect(generatePassword).calledOnceWithExactly(teachersInfo._id);
     expect(usersService.signInTeacher).calledOnceWithExactly(teachersInfo, password);
   });

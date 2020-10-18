@@ -1,4 +1,4 @@
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 const LANGUAGES_COLLECTION = 'Languages';
 export class LanguageRepository {
@@ -11,8 +11,8 @@ export class LanguageRepository {
             .hasSome('_id', ids)
             .find({ suppressAuth: true })));
     }
-    fetchLanguageByTitle(title) {
-        return withLogger(`fetchLanguageByTitle ${title}`, findSingleRecordSafe(this.externals.wixData
+    fetchLanguageByTitleOrThrow(title) {
+        return withLogger(`fetchLanguageByTitleOrThrow ${title}`, findSingleRecordOrThrow(this.externals.wixData
             .query(LANGUAGES_COLLECTION)
             .eq('title', title)
             .limit(1)

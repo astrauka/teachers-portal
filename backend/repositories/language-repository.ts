@@ -1,6 +1,6 @@
 import { Externals } from '../context/production-context';
 import { Language } from '../types/language';
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const LANGUAGES_COLLECTION = 'Languages';
@@ -20,10 +20,10 @@ export class LanguageRepository {
     );
   }
 
-  public fetchLanguageByTitle(title: string): Promise<Language> {
+  public fetchLanguageByTitleOrThrow(title: string): Promise<Language> {
     return withLogger(
-      `fetchLanguageByTitle ${title}`,
-      findSingleRecordSafe(
+      `fetchLanguageByTitleOrThrow ${title}`,
+      findSingleRecordOrThrow(
         this.externals.wixData
           .query(LANGUAGES_COLLECTION)
           .eq('title', title)

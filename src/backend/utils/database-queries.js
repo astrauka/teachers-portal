@@ -2,7 +2,7 @@ import { RecordNotFoundError } from './errors';
 export async function findSingleRecord(queryResultPromise) {
     return (await queryResultPromise).items[0];
 }
-export async function findSingleRecordSafe(queryResultPromise) {
+export async function findSingleRecordOrThrow(queryResultPromise) {
     const item = findSingleRecord(queryResultPromise);
     if (item) {
         return item;

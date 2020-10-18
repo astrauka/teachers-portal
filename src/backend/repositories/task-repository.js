@@ -1,4 +1,4 @@
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 const TASKS_COLLECTION = 'Tasks';
 export class TaskRepository {
@@ -8,8 +8,8 @@ export class TaskRepository {
     fetchAllTasks() {
         return withLogger(`fetchTasks`, fetchRecords(this.externals.wixData.query(TASKS_COLLECTION).ascending('number').find()));
     }
-    fetchTaskByNumberSafe(taskNumber) {
-        return withLogger(`fetchTaskByNumberSafe`, findSingleRecordSafe(this.externals.wixData
+    fetchTaskByNumberOrThrow(taskNumber) {
+        return withLogger(`fetchTaskByNumberOrThrow`, findSingleRecordOrThrow(this.externals.wixData
             .query(TASKS_COLLECTION)
             .eq('number', taskNumber)
             .limit(1)

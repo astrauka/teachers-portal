@@ -1,4 +1,4 @@
-import { fetchRecords, findById, findSingleRecord, findSingleRecordSafe, } from '../utils/database-queries';
+import { fetchRecords, findById, findSingleRecord } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 export const TEACHERS_INFO_COLLECTION = 'TeachersInfo';
 const TEACHERS_TASKS = 'completedTasks';
@@ -11,9 +11,6 @@ export class TeachersInfoRepository {
     }
     fetchTeacherByEmail(email) {
         return withLogger(`fetchTeacherByEmail ${email}`, findSingleRecord(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()));
-    }
-    fetchTeacherByEmailSafe(email) {
-        return withLogger(`fetchTeacherByEmailSafe ${email}`, findSingleRecordSafe(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()));
     }
     async updateTeacher(teachersInfo) {
         return withLogger(`updateTeacher ${teachersInfo.email}`, this.externals.wixData.update(TEACHERS_INFO_COLLECTION, teachersInfo));

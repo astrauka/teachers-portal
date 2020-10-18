@@ -10,7 +10,7 @@ export function completeTeachersTaskFactory(
 ) {
   return async function completeTeachersTask(taskNumber: TaskNumber): Promise<void> {
     const teachersInfo = await getCurrentTeachersInfo();
-    const task = await taskRepository.fetchTaskByNumberSafe(taskNumber);
+    const task = await taskRepository.fetchTaskByNumberOrThrow(taskNumber);
     const completedTasks = await teachersInfoRepository.fetchCompletedTasks(teachersInfo);
     if (completedTasks.find((completedTask) => completedTask.number === taskNumber)) {
       return;

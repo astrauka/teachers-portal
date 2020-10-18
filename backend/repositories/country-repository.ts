@@ -1,6 +1,6 @@
 import { Externals } from '../context/production-context';
 import { Country } from '../types/country';
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const COUNTRIES_COLLECTION = 'Countries';
@@ -20,10 +20,10 @@ export class CountryRepository {
     );
   }
 
-  public fetchCountryByTitle(title: string): Promise<Country> {
+  public fetchCountryByTitleOrThrow(title: string): Promise<Country> {
     return withLogger(
-      `fetchCountryByTitle ${title}`,
-      findSingleRecordSafe<Country>(
+      `fetchCountryByTitleOrThrow ${title}`,
+      findSingleRecordOrThrow<Country>(
         this.externals.wixData
           .query(COUNTRIES_COLLECTION)
           .eq('title', title)

@@ -1,4 +1,4 @@
-import { fetchRecords, findSingleRecordSafe } from '../utils/database-queries';
+import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 const COUNTRIES_COLLECTION = 'Countries';
 export class CountryRepository {
@@ -11,8 +11,8 @@ export class CountryRepository {
             .hasSome('_id', ids)
             .find({ suppressAuth: true })));
     }
-    fetchCountryByTitle(title) {
-        return withLogger(`fetchCountryByTitle ${title}`, findSingleRecordSafe(this.externals.wixData
+    fetchCountryByTitleOrThrow(title) {
+        return withLogger(`fetchCountryByTitleOrThrow ${title}`, findSingleRecordOrThrow(this.externals.wixData
             .query(COUNTRIES_COLLECTION)
             .eq('title', title)
             .limit(1)
