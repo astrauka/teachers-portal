@@ -2,6 +2,11 @@
   "compilerOptions": {
     "outDir": "../src/",
     "types" : ["corvid-types/types/pages", "mocha"],
+    "baseUrl": ".",
+    "paths": {
+      "public/*": ["./public/*"],
+      "backend/backend-api": ["../backend/backend-api"]
+    },
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
