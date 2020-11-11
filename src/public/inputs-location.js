@@ -1,23 +1,20 @@
-import wixLocation from 'wix-location';
-
+import { addWixLocationQueryParams, getWixLocationQuery } from './wix-utils';
 export function setupInputChangeHandlers(inputFields, $w) {
     for (const [input, field] of Object.entries(inputFields)) {
         if ($w(input).onInput) {
-            $w(input).onInput(event => {
-                wixLocation.queryParams.add({
-                    [field]: event.target.value });
+            $w(input).onInput((event) => {
+                addWixLocationQueryParams({ [field]: event.target.value });
             });
-        } else {
-            $w(input).onChange(event => {
-                wixLocation.queryParams.add({
-                    [field]: event.target.value });
+        }
+        else {
+            $w(input).onChange((event) => {
+                addWixLocationQueryParams({ [field]: event.target.value });
             });
         }
     }
 }
-
 export function updateInputValueIfChanged(inputFields, $w) {
-    const values = wixLocation.query;
+    const values = getWixLocationQuery();
     for (const [input, field] of Object.entries(inputFields)) {
         const inputValue = $w(input).value;
         const fieldValue = values[field];
@@ -26,11 +23,10 @@ export function updateInputValueIfChanged(inputFields, $w) {
         }
     }
 }
-
-export function resetInputFieldValues(inputFields, $w) {
+export function resetInputFieldValues(inputFields) {
     const emptyFields = Object.entries(inputFields).reduce((acc, [input, field]) => {
         acc[field] = '';
         return acc;
-    }, {})
-    wixLocation.queryParams.add(emptyFields);
+    }, {});
+    addWixLocationQueryParams(emptyFields);
 }
