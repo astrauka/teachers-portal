@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "../src/",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "types" : ["node", "corvid-types/types/pages", "mocha"]
+  },
+  "include": ["**/*.ts"]
+}

@@ -1,11 +1,11 @@
 import wixData from 'wix-data';
-
-export function getFilter(fieldValues) {
-	return Object.entries(fieldValues).reduce((filter, [field, [value, operation]]) => {
+export function getFilter(fieldFilterFunctions) {
+    return fieldFilterFunctions.reduce((filter, [value, operation]) => {
         if (value) {
             return operation(filter);
-        } else {
+        }
+        else {
             return filter;
         }
-    }, wixData.filter())
+    }, wixData.filter());
 }
