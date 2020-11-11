@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "npm run build:backend && npm run build:public && ts-node corvid-integrations/configure.ts",
+    "build": "npm run build:backend && npm run build:public && npm run build:pages && ts-node corvid-integrations/configure.ts",
     "build:backend": "rm -rf src/backend && tsc --build backend/tsconfig.corvid.json",
     "build:public": "rm -rf src/public && tsc --build frontend/public/tsconfig.corvid.json",
+    "build:pages": "rm -rf src/pages/*.js && tsc --build frontend/pages/tsconfig.corvid.json",
     "lint": "tslint --fix 'backend/**/*.ts' 'frontend/**/*.ts'",
     "test:unit": "mocha -r ts-node/register backend/**/*.spec.ts",
     "test": "npm run test:unit && npm run build",

@@ -6,7 +6,8 @@
 /src/assets
 /src/database
 /src/lightboxes
-/src/pages
+/src/pages/**/pageElements.d.ts
+/src/pages/**/*.json
 
 /dist
 
