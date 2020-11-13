@@ -1,7 +1,0 @@
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "types": ["corvid-types/types/pages"]
-  },
-  "include": ["../externals.d.ts", "**/*.ts"]
-}

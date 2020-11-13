@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": [],
-  "files": [
-    "data-hooks.ts",
-    "backend-api.ts"
-  ]
-}
