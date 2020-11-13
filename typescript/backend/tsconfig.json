@@ -9,5 +9,5 @@
     "preserveConstEnums": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["../common/types", "**/*.ts"]
+  "include": ["**/*.ts"]
 }

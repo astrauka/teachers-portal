@@ -1,5 +1,5 @@
 import wixData from 'wix-data';
-import { WixDataFilter } from '../../common/types/wix-types';
+import { WixDataFilter } from '../../common/wix-types';
 
 type FilterFromValues = [string, (filter: WixDataFilter) => WixDataFilter];
 

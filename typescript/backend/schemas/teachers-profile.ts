@@ -1,5 +1,5 @@
 import { pick } from 'lodash';
-import { TeachersProfile } from '../../common/types/teachers-profile';
+import { TeachersProfile } from '../common/entities/teachers-profile';
 import { buildValidator } from '../utils/validate';
 
 const teachersProfileSchema = {

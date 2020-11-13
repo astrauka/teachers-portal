@@ -1,5 +1,5 @@
-import { Task } from '../../common/types/task';
-import { RegisteredTeachersInfo, TeachersInfo } from '../../common/types/teachers-info';
+import { Task } from '../common/entities/task';
+import { RegisteredTeachersInfo, TeachersInfo } from '../common/entities/teachers-info';
 import { Externals } from '../context/production-context';
 import { fetchRecords, findById, findSingleRecord } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';

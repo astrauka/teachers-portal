@@ -1,4 +1,4 @@
-import { Language } from '../../common/types/language';
+import { Language } from '../common/entities/language';
 import { Externals } from '../context/production-context';
 import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';

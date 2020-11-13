@@ -1,11 +1,11 @@
-import { Task } from '../common/types/task';
-import { TeachersInfo } from '../common/types/teachers-info';
-import { TeachersProfile } from '../common/types/teachers-profile';
+import { Task } from './common/entities/task';
+import { TeachersInfo } from './common/entities/teachers-info';
+import { TeachersProfile } from './common/entities/teachers-profile';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
-import { validateTask } from './entities/task';
-import { validateTeachersInfo } from './entities/teachers-info';
-import { validateTeachersProfile } from './entities/teachers-profile';
+import { validateTask } from './schemas/task';
+import { validateTeachersInfo } from './schemas/teachers-info';
+import { validateTeachersProfile } from './schemas/teachers-profile';
 import { WixHookContext } from './types/wix-types';
 import { withLogger } from './utils/logger';
 

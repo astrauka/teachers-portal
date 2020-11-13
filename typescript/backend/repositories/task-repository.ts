@@ -1,4 +1,4 @@
-import { Task, TaskNumber } from '../../common/types/task';
+import { Task, TaskNumber } from '../common/entities/task';
 import { Externals } from '../context/production-context';
 import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';

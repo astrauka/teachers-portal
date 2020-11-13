@@ -1,6 +1,6 @@
-import { TaskView } from '../common/types/task';
-import { RegisteredTeachersInfo } from '../common/types/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from '../common/types/teachers-profile';
+import { TaskView } from './common/entities/task';
+import { RegisteredTeachersInfo } from './common/entities/teachers-info';
+import { TeachersProfile, TeachersProfileUpdate } from './common/entities/teachers-profile';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
 import { withLogger } from './utils/logger';

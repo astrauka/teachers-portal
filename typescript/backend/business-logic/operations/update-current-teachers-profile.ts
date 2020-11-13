@@ -1,11 +1,11 @@
 import { omit } from 'lodash';
-import { TaskNumber } from '../../../common/types/task';
-import { TeachersInfo } from '../../../common/types/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from '../../../common/types/teachers-profile';
-import { validateTeachersProfileUpdate } from '../../entities/teachers-profile';
+import { TaskNumber } from '../../common/entities/task';
+import { TeachersInfo } from '../../common/entities/teachers-info';
+import { TeachersProfile, TeachersProfileUpdate } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
+import { validateTeachersProfileUpdate } from '../../schemas/teachers-profile';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 

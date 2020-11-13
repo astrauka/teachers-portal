@@ -1,5 +1,5 @@
 import { keyBy } from 'lodash';
-import { TaskView } from '../../../common/types/task';
+import { TaskView } from '../../common/entities/task';
 import { TaskRepository } from '../../repositories/task-repository';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';

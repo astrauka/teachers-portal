@@ -1,9 +1,9 @@
-import urlSlug from 'url-slug';
+import { convert } from 'url-slug';
 import { compact } from 'lodash';
 export const MAX_SLUG_POSTFIX = 20;
 export function updateTeachersProfileSlugFactory(teachersProfileRepository) {
     return async function updateTeachersProfileSlug(teachersProfile) {
-        const slug = urlSlug(teachersProfile.fullName);
+        const slug = convert(teachersProfile.fullName);
         if (teachersProfile.slug === slug) {
             return teachersProfile;
         }

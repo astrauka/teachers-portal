@@ -1,4 +1,4 @@
-import { Task, TaskNumber } from '../../common/types/task';
+import { Task, TaskNumber } from '../../common/entities/task';
 import { builder } from './builder';
 
 export const buildTask = builder<Task>((id) => ({

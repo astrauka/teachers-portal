@@ -1,4 +1,4 @@
-import { RegisteredTeachersInfo, TeachersInfo } from '../../common/types/teachers-info';
+import { RegisteredTeachersInfo, TeachersInfo } from '../../common/entities/teachers-info';
 import { inDaysAsDate } from '../utils/date';
 import { builder } from './builder';
 

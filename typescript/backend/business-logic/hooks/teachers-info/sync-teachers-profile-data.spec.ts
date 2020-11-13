@@ -1,10 +1,10 @@
-import { RegisteredTeachersInfo } from '../../../../common/types/teachers-info';
-import { TeachersProfile } from '../../../../common/types/teachers-profile';
 import { buildHookContext } from '../../../../test/builders/hooks';
 import { buildRegisteredTeachersInfo } from '../../../../test/builders/teachers-info';
 import { buildTeachersProfile } from '../../../../test/builders/teachers-profile';
 import { expect } from '../../../../test/utils/expectations';
 import { createStubInstance } from '../../../../test/utils/stubbing';
+import { RegisteredTeachersInfo } from '../../../common/entities/teachers-info';
+import { TeachersProfile } from '../../../common/entities/teachers-profile';
 import { TEACHERS_INFO_COLLECTION } from '../../../repositories/teachers-info-repository';
 import { TeachersProfileRepository } from '../../../repositories/teachers-profile-repository';
 import { syncTeachersProfileDataFactory } from './sync-teachers-profile-data';

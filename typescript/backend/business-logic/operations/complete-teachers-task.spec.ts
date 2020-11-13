@@ -1,9 +1,9 @@
-import { Task } from '../../../common/types/task';
-import { RegisteredTeachersInfo } from '../../../common/types/teachers-info';
 import { buildTask } from '../../../test/builders/task';
 import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { Task } from '../../common/entities/task';
+import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
 import { TaskRepository } from '../../repositories/task-repository';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
 import { completeTeachersTaskFactory } from './complete-teachers-task';

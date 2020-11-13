@@ -1,4 +1,4 @@
-import { Country } from '../../common/types/country';
+import { Country } from '../common/entities/country';
 import { Externals } from '../context/production-context';
 import { fetchRecords, findSingleRecordOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';

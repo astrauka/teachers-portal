@@ -1,4 +1,4 @@
-import { TeachersProfile, TeachersProfileView } from '../../common/types/teachers-profile';
+import { TeachersProfile, TeachersProfileView } from '../../common/entities/teachers-profile';
 import { builder } from './builder';
 
 export const buildTeachersProfile = builder<TeachersProfile>((id) => ({

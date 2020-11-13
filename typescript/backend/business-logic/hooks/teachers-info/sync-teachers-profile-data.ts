@@ -1,6 +1,6 @@
 import { isEqual, pick } from 'lodash';
-import { TeachersInfo } from '../../../../common/types/teachers-info';
-import { TeachersProfile } from '../../../../common/types/teachers-profile';
+import { TeachersInfo } from '../../../common/entities/teachers-info';
+import { TeachersProfile } from '../../../common/entities/teachers-profile';
 import { TeachersProfileRepository } from '../../../repositories/teachers-profile-repository';
 import { WixHookContext } from '../../../types/wix-types';
 

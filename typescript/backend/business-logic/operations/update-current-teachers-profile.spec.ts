@@ -1,13 +1,13 @@
 import { omit, pick } from 'lodash';
-import { TaskNumber } from '../../../common/types/task';
-import { RegisteredTeachersInfo } from '../../../common/types/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from '../../../common/types/teachers-profile';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
 import { buildTeachersProfile } from '../../../test/builders/teachers-profile';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { TaskNumber } from '../../common/entities/task';
+import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
+import { TeachersProfile, TeachersProfileUpdate } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';

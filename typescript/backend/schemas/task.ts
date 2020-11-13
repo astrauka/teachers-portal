@@ -1,4 +1,4 @@
-import { Task } from '../../common/types/task';
+import { Task } from '../common/entities/task';
 import { buildValidator } from '../utils/validate';
 
 const taskSchema = {

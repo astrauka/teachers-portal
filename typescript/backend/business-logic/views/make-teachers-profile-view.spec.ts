@@ -1,9 +1,9 @@
-import { TeachersProfileView } from '../../../common/types/teachers-profile';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildTeachersProfile } from '../../../test/builders/teachers-profile';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance } from '../../../test/utils/stubbing';
+import { TeachersProfileView } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { makeTeachersProfileViewsFactory } from './make-teachers-profile-view';

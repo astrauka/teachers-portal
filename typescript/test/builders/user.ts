@@ -1,5 +1,5 @@
 import { RegistrationResult } from '../../backend/types/wix-types';
-import { RegistrationResultStatus, User } from '../../common/types/wix-types';
+import { RegistrationResultStatus, User } from '../../common/wix-types';
 import { builder } from './builder';
 
 export const buildUser = builder<User>((id) => ({

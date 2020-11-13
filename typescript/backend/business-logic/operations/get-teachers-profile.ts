@@ -1,4 +1,4 @@
-import { TeachersProfile } from '../../../common/types/teachers-profile';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
 import { UsersService } from '../../services/users-service';
 

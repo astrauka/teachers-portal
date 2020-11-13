@@ -1,7 +1,7 @@
-import urlSlug from 'url-slug';
+import { convert } from 'url-slug';
 
 import { compact } from 'lodash';
-import { TeachersProfile } from '../../../common/types/teachers-profile';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
 
 export const MAX_SLUG_POSTFIX = 20;
@@ -12,7 +12,7 @@ export function updateTeachersProfileSlugFactory(
   return async function updateTeachersProfileSlug(
     teachersProfile: TeachersProfile
   ): Promise<TeachersProfile> {
-    const slug = urlSlug(teachersProfile.fullName);
+    const slug = convert(teachersProfile.fullName);
     if (teachersProfile.slug === slug) {
       return teachersProfile;
     }

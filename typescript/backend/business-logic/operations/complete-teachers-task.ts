@@ -1,4 +1,4 @@
-import { TaskNumber } from '../../../common/types/task';
+import { TaskNumber } from '../../common/entities/task';
 import { TaskRepository } from '../../repositories/task-repository';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';

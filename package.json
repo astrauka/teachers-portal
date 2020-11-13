@@ -8,14 +8,12 @@
     "build:backend": "tsc --build typescript/backend/tsconfig.json",
     "build:frontend": "tsc --build typescript/frontend/tsconfig.json",
     "lint": "tslint --fix 'typescript/**/*.ts'",
-    "test:unit": "mocha typescript/backend/**/*.spec.ts",
-    "test": "npm run test:unit && npm run build",
+    "test:backend": "mocha -r ts-node/register,typescript/backend/types/wix-types.ts 'typescript/backend/**/*.spec.ts'",
+    "test:frontend": "mocha -r ts-node/register,typescript/frontend/wix-types.ts 'typescript/frontend/**/*.spec.ts'",
+    "test": "npm run test:backend && npm run test:frontend && npm run build",
     "wix:pull": "npx corvid pull --override",
     "wix:editor": "npx corvid open-editor",
     "wix": "npm run wix:pull && npm run test && npm run wix:editor"
-  },
-  "mocha": {
-    "require": "ts-node/register/transpile-only"
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",

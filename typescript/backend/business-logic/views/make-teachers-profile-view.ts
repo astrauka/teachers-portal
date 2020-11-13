@@ -1,5 +1,5 @@
 import { compact, get, keyBy } from 'lodash';
-import { TeachersProfile, TeachersProfileView } from '../../../common/types/teachers-profile';
+import { TeachersProfile, TeachersProfileView } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 

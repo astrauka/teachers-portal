@@ -1,4 +1,4 @@
-import { TeachersInfo } from '../../common/types/teachers-info';
+import { TeachersInfo } from '../common/entities/teachers-info';
 import { buildValidator } from '../utils/validate';
 
 const teachersInfoSchema = {

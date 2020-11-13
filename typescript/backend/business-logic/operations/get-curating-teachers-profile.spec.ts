@@ -1,9 +1,9 @@
-import { RegisteredTeachersInfo } from '../../../common/types/teachers-info';
-import { TeachersProfile } from '../../../common/types/teachers-profile';
 import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
 import { buildTeachersProfile } from '../../../test/builders/teachers-profile';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
 import { getCuratingTeachersProfileFactory } from './get-curating-teachers-profile';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';

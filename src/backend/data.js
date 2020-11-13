@@ -1,8 +1,8 @@
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
-import { validateTask } from './entities/task';
-import { validateTeachersInfo } from './entities/teachers-info';
-import { validateTeachersProfile } from './entities/teachers-profile';
+import { validateTask } from './schemas/task';
+import { validateTeachersInfo } from './schemas/teachers-info';
+import { validateTeachersProfile } from './schemas/teachers-profile';
 import { withLogger } from './utils/logger';
 export async function TeachersInfo_afterInsert(teachersInfo) {
     const { hooks: { addTeacherToUsers }, } = await setupContext(EXTERNALS);

@@ -1,3 +1,4 @@
+/// <reference types="corvid-types/types/backend" />
 export import ContactInfo = wix_crm_backend.ContactInfo;
 export import UserPicture = wix_users_backend.Picture;
 export import RegistrationResult = wix_users_backend.RegistrationResult;

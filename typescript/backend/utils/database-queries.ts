@@ -1,4 +1,4 @@
-import { WixDataQueryReferencedResult, WixDataQueryResult } from '../../common/types/wix-types';
+import { WixDataQueryReferencedResult, WixDataQueryResult } from '../../common/wix-types';
 import { Externals } from '../context/production-context';
 import { RecordNotFoundError } from './errors';
 

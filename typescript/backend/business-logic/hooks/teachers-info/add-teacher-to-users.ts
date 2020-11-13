@@ -1,4 +1,4 @@
-import { TeachersInfo } from '../../../../common/types/teachers-info';
+import { TeachersInfo } from '../../../common/entities/teachers-info';
 import { MembersRepository } from '../../../repositories/members-repository';
 import { TeachersInfoRepository } from '../../../repositories/teachers-info-repository';
 import { UsersService } from '../../../services/users-service';

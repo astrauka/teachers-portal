@@ -1,7 +1,7 @@
-import { TeachersProfile } from '../../../common/types/teachers-profile';
 import { buildTeachersProfile } from '../../../test/builders/teachers-profile';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance } from '../../../test/utils/stubbing';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
 import { MAX_SLUG_POSTFIX, updateTeachersProfileSlugFactory } from './update-teachers-profile-slug';
 

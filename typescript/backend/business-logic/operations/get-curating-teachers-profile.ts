@@ -1,4 +1,4 @@
-import { TeachersProfile } from '../../../common/types/teachers-profile';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 import { GetTeachersProfile } from './get-teachers-profile';

@@ -1,5 +1,5 @@
 import { Member, UserPicture } from '../../backend/types/wix-types';
-import { MemberStatus } from '../../common/types/wix-types';
+import { MemberStatus } from '../../common/wix-types';
 import { daysAgo, daysAgoAsDate } from '../utils/date';
 import { builder } from './builder';
 

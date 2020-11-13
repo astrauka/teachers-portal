@@ -1,9 +1,9 @@
-import { RegisteredTeachersInfo } from '../../../../common/types/teachers-info';
 import { buildMember } from '../../../../test/builders/member';
 import { buildTeachersInfo } from '../../../../test/builders/teachers-info';
 import { buildRegistrationResult } from '../../../../test/builders/user';
 import { expect } from '../../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../../test/utils/stubbing';
+import { RegisteredTeachersInfo } from '../../../common/entities/teachers-info';
 import { MembersRepository } from '../../../repositories/members-repository';
 import { TeachersInfoRepository } from '../../../repositories/teachers-info-repository';
 import { UsersService } from '../../../services/users-service';
