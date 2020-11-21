@@ -4,6 +4,7 @@ import { currentTeachersProfile, currentTeachersTasks } from 'backend/backend-ap
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+import { $W } from '../wix-types';
 
 $w.onReady(async function () {
   enableProfileButtonClick($w);
@@ -15,31 +16,34 @@ $w.onReady(async function () {
   makeSureCannotAccessProtectedPages();
 });
 
-function enableProfileButtonClick($w) {
+function enableProfileButtonClick($w: $W) {
+  const $profileDropdown = $w('#profileDropdown' as 'Container');
   const effect = {
     duration: 200,
     delay: 0,
     direction: 'top',
   };
 
-  $w('#profileIcons').onClick(() => {
-    if ($w('#profileDropdown').hidden) {
-      $w('#profileDropdown').show('slide', effect);
+  $w('#profileIcons' as 'Image').onClick(() => {
+    if ($profileDropdown.hidden) {
+      $profileDropdown.show('slide', effect);
     } else {
-      $w('#profileDropdown').hide('slide', effect);
+      $profileDropdown.hide('slide', effect);
     }
   });
-  $w('#profileDropdown').onMouseOut(() => {
-    $w('#profileDropdown').hide('slide', effect);
+
+  $profileDropdown.onMouseOut(() => {
+    $profileDropdown.hide('slide', effect);
   });
 
-  $w('#headerButtonLogout').onClick(() => {
+  $w('#headerButtonLogout' as 'Button').onClick(() => {
     wixUsers.logout();
-    $w('#profileDropdown').hide('slide', effect);
+    $profileDropdown.hide('slide', effect);
   });
-  $w('#headerButtonDashboard').onClick(() => {
+
+  $w('#headerButtonDashboard' as 'Button').onClick(() => {
     wixLocation.to('/dashboard');
-    $w('#profileDropdown').hide('slide', effect);
+    $profileDropdown.hide('slide', effect);
   });
 }
 
@@ -63,21 +67,23 @@ function makeSureCannotAccessProtectedPages() {
   }
 }
 
-async function updateHeaderProfileImage($w) {
-  $w('#headerProfileImage').alt = 'My Profile';
-  $w('#headerProfileImage').tooltip = 'My Profile';
+async function updateHeaderProfileImage($w: $W) {
+  const $headerProfileImage = $w('#headerProfileImage' as 'Image');
+  $headerProfileImage.alt = 'My Profile';
+  $headerProfileImage.tooltip = 'My Profile';
 
   const teachersProfile = await currentTeachersProfile();
   if (teachersProfile) {
-    $w('#headerProfileImage').src = teachersProfile.profileImage;
+    $headerProfileImage.src = teachersProfile.profileImage;
   }
 }
 
-async function updateHeaderNotificationsCount($w) {
+async function updateHeaderNotificationsCount($w: $W) {
+  const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
   const tasks = await currentTeachersTasks();
   const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
   if (incompleteTasksCount) {
-    $w('#headerNotificationsButton').label = String(incompleteTasksCount);
-    $w('#headerNotificationsButton').show();
+    $headerNotificationsButton.label = String(incompleteTasksCount);
+    $headerNotificationsButton.show();
   }
 }

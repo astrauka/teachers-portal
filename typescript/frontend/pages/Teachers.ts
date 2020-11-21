@@ -6,6 +6,7 @@ import {
 import { getFilter } from 'public/wix-filter';
 import wixLocation from 'wix-location';
 import { TeachersProfile } from '../../common/entities/teachers-profile';
+import { $W } from '../wix-types';
 
 const INPUT_FIELDS = {
   '#nameInput': 'fullName',
@@ -34,7 +35,7 @@ export function teachersName_click(event) {
   wixLocation.to(`/teacher/${slug}`);
 }
 
-async function getTeacherLevels($w) {
+async function getTeacherLevels($w: $W) {
   return new Promise((resolve) => {
     $w('#TeacherLevelsDataset').onReady(async () => {
       resolve($w('#TeacherLevelsDataset').loadPage(1));
@@ -42,7 +43,7 @@ async function getTeacherLevels($w) {
   });
 }
 
-async function updateTeachersFilter($w, teachersLevelsPromise) {
+async function updateTeachersFilter($w: $W, teachersLevelsPromise) {
   const values = wixLocation.query;
   const teachersLevels = await teachersLevelsPromise;
   const teachersLevel = teachersLevels.find(({ title }) => title === values.level);
@@ -54,15 +55,21 @@ async function updateTeachersFilter($w, teachersLevelsPromise) {
   ]);
 
   await $w('#TeachersProfileDataset').setFilter(datasetFilter);
-  $w('#TeachersProfileDataset').onReady(() => {
-    if ($w('#TeachersProfileDataset').getCurrentItem()) {
-      $w('#teachersRepeater').expand();
-      $w('#loadMoreButton').expand();
-      $w('#teachersEmptyState').collapse();
+
+  const $teachersRepeater = $w('#teachersRepeater' as 'Repeater');
+  const $loadMoreButton = $w('#loadMoreButton' as 'Button');
+  const $teachersEmptyState = $w('#teachersEmptyState' as 'Container');
+  const $TeachersProfileDataset = $w('#TeachersProfileDataset');
+
+  $TeachersProfileDataset.onReady(() => {
+    if ($TeachersProfileDataset.getCurrentItem()) {
+      $teachersRepeater.expand();
+      $loadMoreButton.expand();
+      $teachersEmptyState.collapse();
     } else {
-      $w('#teachersRepeater').collapse();
-      $w('#loadMoreButton').collapse();
-      $w('#teachersEmptyState').expand();
+      $teachersRepeater.collapse();
+      $loadMoreButton.collapse();
+      $teachersEmptyState.expand();
     }
   });
 }

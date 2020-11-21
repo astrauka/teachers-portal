@@ -42,16 +42,20 @@ async function updateTeachersFilter($w, teachersLevelsPromise) {
         [levelId, (filter) => filter.eq('levelId', levelId)],
     ]);
     await $w('#TeachersProfileDataset').setFilter(datasetFilter);
-    $w('#TeachersProfileDataset').onReady(() => {
-        if ($w('#TeachersProfileDataset').getCurrentItem()) {
-            $w('#teachersRepeater').expand();
-            $w('#loadMoreButton').expand();
-            $w('#teachersEmptyState').collapse();
+    const $teachersRepeater = $w('#teachersRepeater');
+    const $loadMoreButton = $w('#loadMoreButton');
+    const $teachersEmptyState = $w('#teachersEmptyState');
+    const $TeachersProfileDataset = $w('#TeachersProfileDataset');
+    $TeachersProfileDataset.onReady(() => {
+        if ($TeachersProfileDataset.getCurrentItem()) {
+            $teachersRepeater.expand();
+            $loadMoreButton.expand();
+            $teachersEmptyState.collapse();
         }
         else {
-            $w('#teachersRepeater').collapse();
-            $w('#loadMoreButton').collapse();
-            $w('#teachersEmptyState').expand();
+            $teachersRepeater.collapse();
+            $loadMoreButton.collapse();
+            $teachersEmptyState.expand();
         }
     });
 }
