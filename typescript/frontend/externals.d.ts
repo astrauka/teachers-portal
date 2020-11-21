@@ -1,1 +1,3 @@
-declare type PageElementsMap = {};
+declare type PageElementsMap = {
+  '#TeachersProfileDataset': $w.dataset;
+};

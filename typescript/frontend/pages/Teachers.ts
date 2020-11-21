@@ -5,6 +5,7 @@ import {
 } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import wixLocation from 'wix-location';
+import { TeachersProfile } from '../../common/entities/teachers-profile';
 
 const INPUT_FIELDS = {
   '#nameInput': 'fullName',
@@ -16,15 +17,22 @@ $w.onReady(async function () {
   const teachersLevelsPromise = getTeacherLevels($w);
   updateInputValueIfChanged(INPUT_FIELDS, $w);
   setupInputChangeHandlers(INPUT_FIELDS, $w);
-  updateTeachersFilter($w, teachersLevelsPromise);
+  $w('#resetFiltersButton' as 'Button').onClick(async () => {
+    resetInputFieldValues(INPUT_FIELDS);
+  });
+
   wixLocation.onChange(async () => {
     updateInputValueIfChanged(INPUT_FIELDS, $w);
     await updateTeachersFilter($w, teachersLevelsPromise);
   });
-  $w('#resetFiltersButton' as 'Button').onClick(async () => {
-    resetInputFieldValues(INPUT_FIELDS);
-  });
+  await updateTeachersFilter($w, teachersLevelsPromise);
 });
+
+export function teachersName_click(event) {
+  const $teacher = $w.at(event.context);
+  const { slug } = $teacher('#TeachersProfileDataset').getCurrentItem() as TeachersProfile;
+  wixLocation.to(`/teacher/${slug}`);
+}
 
 async function getTeacherLevels($w) {
   return new Promise((resolve) => {

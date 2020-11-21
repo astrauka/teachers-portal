@@ -10,15 +10,20 @@ $w.onReady(async function () {
     const teachersLevelsPromise = getTeacherLevels($w);
     updateInputValueIfChanged(INPUT_FIELDS, $w);
     setupInputChangeHandlers(INPUT_FIELDS, $w);
-    updateTeachersFilter($w, teachersLevelsPromise);
+    $w('#resetFiltersButton').onClick(async () => {
+        resetInputFieldValues(INPUT_FIELDS);
+    });
     wixLocation.onChange(async () => {
         updateInputValueIfChanged(INPUT_FIELDS, $w);
         await updateTeachersFilter($w, teachersLevelsPromise);
     });
-    $w('#resetFiltersButton').onClick(async () => {
-        resetInputFieldValues(INPUT_FIELDS);
-    });
+    await updateTeachersFilter($w, teachersLevelsPromise);
 });
+export function teachersName_click(event) {
+    const $teacher = $w.at(event.context);
+    const { slug } = $teacher('#TeachersProfileDataset').getCurrentItem();
+    wixLocation.to(`/teacher/${slug}`);
+}
 async function getTeacherLevels($w) {
     return new Promise((resolve) => {
         $w('#TeacherLevelsDataset').onReady(async () => {
