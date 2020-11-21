@@ -1,6 +1,10 @@
 import { TaskView } from './common/entities/task';
 import { RegisteredTeachersInfo } from './common/entities/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from './common/entities/teachers-profile';
+import {
+  TeachersProfile,
+  TeachersProfileUpdate,
+  TeachersProfileView,
+} from './common/entities/teachers-profile';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
 import { withLogger } from './utils/logger';
@@ -19,7 +23,7 @@ export async function currentTeachersInfo(): Promise<RegisteredTeachersInfo> {
   return withLogger('currentTeachersInfo', getCurrentTeachersInfo());
 }
 
-export async function currentTeachersProfile(): Promise<TeachersProfile | undefined> {
+export async function currentTeachersProfile(): Promise<TeachersProfileView | undefined> {
   const {
     actions: { getTeachersProfile },
     views: { makeTeachersProfileViews },

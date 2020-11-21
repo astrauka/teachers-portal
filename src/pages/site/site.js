@@ -13,29 +13,30 @@ $w.onReady(async function () {
     makeSureCannotAccessProtectedPages();
 });
 function enableProfileButtonClick($w) {
+    const $profileDropdown = $w('#profileDropdown');
     const effect = {
         duration: 200,
         delay: 0,
         direction: 'top',
     };
     $w('#profileIcons').onClick(() => {
-        if ($w('#profileDropdown').hidden) {
-            $w('#profileDropdown').show('slide', effect);
+        if ($profileDropdown.hidden) {
+            $profileDropdown.show('slide', effect);
         }
         else {
-            $w('#profileDropdown').hide('slide', effect);
+            $profileDropdown.hide('slide', effect);
         }
     });
-    $w('#profileDropdown').onMouseOut(() => {
-        $w('#profileDropdown').hide('slide', effect);
+    $profileDropdown.onMouseOut(() => {
+        $profileDropdown.hide('slide', effect);
     });
     $w('#headerButtonLogout').onClick(() => {
         wixUsers.logout();
-        $w('#profileDropdown').hide('slide', effect);
+        $profileDropdown.hide('slide', effect);
     });
     $w('#headerButtonDashboard').onClick(() => {
         wixLocation.to('/dashboard');
-        $w('#profileDropdown').hide('slide', effect);
+        $profileDropdown.hide('slide', effect);
     });
 }
 async function askToFillInitialTeachersForm() {
@@ -58,18 +59,20 @@ function makeSureCannotAccessProtectedPages() {
     }
 }
 async function updateHeaderProfileImage($w) {
-    $w('#headerProfileImage').alt = 'My Profile';
-    $w('#headerProfileImage').tooltip = 'My Profile';
+    const $headerProfileImage = $w('#headerProfileImage');
+    $headerProfileImage.alt = 'My Profile';
+    $headerProfileImage.tooltip = 'My Profile';
     const teachersProfile = await currentTeachersProfile();
     if (teachersProfile) {
-        $w('#headerProfileImage').src = teachersProfile.profileImage;
+        $headerProfileImage.src = teachersProfile.profileImage;
     }
 }
 async function updateHeaderNotificationsCount($w) {
+    const $headerNotificationsButton = $w('#headerNotificationsButton');
     const tasks = await currentTeachersTasks();
     const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
     if (incompleteTasksCount) {
-        $w('#headerNotificationsButton').label = String(incompleteTasksCount);
-        $w('#headerNotificationsButton').show();
+        $headerNotificationsButton.label = String(incompleteTasksCount);
+        $headerNotificationsButton.show();
     }
 }
