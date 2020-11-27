@@ -10,7 +10,6 @@ export interface TeachersProfile extends Storable {
   city: string;
   streetAddress: string;
   languageId: string;
-  userId: string;
   levelId: string;
   statusId: string;
   teachersInfoId: string;

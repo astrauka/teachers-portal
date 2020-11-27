@@ -26,7 +26,7 @@ describe('updateCurrentTeachersProfile', () => {
   const slug = 'john-doe';
 
   const teachersProfile = buildTeachersProfile({
-    properties: { userId: teachersInfo.userId, email: teachersInfo.email, fullName, slug },
+    properties: { email: teachersInfo.email, fullName, slug },
   });
   const update: TeachersProfileUpdate = {
     ...pick(buildTeachersProfile(), ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
@@ -108,7 +108,7 @@ describe('updateCurrentTeachersProfile', () => {
     const teachersProfile = undefined;
     const createdTeachersProfile: TeachersProfile = {
       ...pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
-      ...pick(teachersInfo, ['email', 'userId', 'levelId', 'statusId']),
+      ...pick(teachersInfo, ['email', 'levelId', 'statusId']),
       countryId: country._id,
       languageId: language._id,
       fullName,
