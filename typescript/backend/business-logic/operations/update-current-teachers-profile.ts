@@ -39,7 +39,7 @@ export function updateCurrentTeachersProfileFactory(
     teachersInfo: TeachersInfo,
     updateWithIds: TeachersProfile
   ): Promise<TeachersProfile> {
-    const { email, userId, firstName, lastName, levelId, statusId } = teachersInfo;
+    const { email, firstName, lastName, levelId, statusId } = teachersInfo;
     const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(email);
     if (teachersProfile) {
       return teachersProfileRepository.updateTeachersProfile({
@@ -51,7 +51,6 @@ export function updateCurrentTeachersProfileFactory(
     return teachersProfileRepository.insertTeachersProfile({
       ...updateWithIds,
       email,
-      userId,
       fullName: `${firstName} ${lastName}`,
       levelId,
       statusId,

@@ -11,7 +11,6 @@ const teachersProfileSchema = {
     city: { type: 'string', min: 3, max: 255 },
     streetAddress: { type: 'string', min: 3 },
     languageId: { type: 'string', min: 3, max: 255 },
-    userId: { type: 'string', min: 3, max: 255 },
     levelId: { type: 'string', min: 3, max: 255 },
     statusId: { type: 'string', min: 3, max: 255 },
     teachersInfoId: { type: 'string', min: 3, max: 255 },
