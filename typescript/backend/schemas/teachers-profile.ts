@@ -24,8 +24,7 @@ const teachersProfileUpdateSchema = {
   language: { type: 'string' },
 };
 
-export let validateTeachersProfile: (input: TeachersProfile) => TeachersProfile;
-validateTeachersProfile = buildValidator<TeachersProfile>(teachersProfileSchema);
+export const validateTeachersProfile = buildValidator<TeachersProfile>(teachersProfileSchema);
 export const validateTeachersProfileUpdate = buildValidator<Partial<TeachersProfile>>(
   teachersProfileUpdateSchema
 );
