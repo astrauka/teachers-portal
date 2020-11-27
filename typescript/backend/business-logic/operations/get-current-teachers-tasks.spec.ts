@@ -6,6 +6,7 @@ import { Task } from '../../common/entities/task';
 import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
 import { TaskRepository } from '../../repositories/task-repository';
 import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { NotLoggedInError } from '../../utils/errors';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 import { getCurrentTeachersTasksFactory } from './get-current-teachers-tasks';
 
@@ -40,7 +41,7 @@ describe('getCurrentTeachersTasks', () => {
     ),
   });
 
-  it('should return current teacher profile', async () => {
+  it('should return current teacher tasks', async () => {
     const {
       taskRepository,
       teachersInfoRepository,
@@ -60,5 +61,23 @@ describe('getCurrentTeachersTasks', () => {
     expect(taskRepository.fetchAllTasks).calledOnceWithExactly();
     expect(getCurrentTeachersInfo).calledOnceWithExactly();
     expect(teachersInfoRepository.fetchCompletedTasks).calledOnceWithExactly(teachersInfo);
+  });
+
+  context('on current teacher not logged in', () => {
+    const error = new NotLoggedInError();
+    const getGetCurrentTeachersInfo = () => stubFn<GetCurrentTeachersInfo>().rejects(error);
+
+    it('should throw', async () => {
+      const {
+        taskRepository,
+        teachersInfoRepository,
+        getCurrentTeachersInfo,
+        getCurrentTeachersTasks,
+      } = buildTestContext({ getCurrentTeachersInfo: getGetCurrentTeachersInfo() });
+      await expect(getCurrentTeachersTasks()).rejectedWith('Not logged in');
+      expect(taskRepository.fetchAllTasks).calledOnceWithExactly();
+      expect(getCurrentTeachersInfo).calledOnceWithExactly();
+      expect(teachersInfoRepository.fetchCompletedTasks).not.called;
+    });
   });
 });

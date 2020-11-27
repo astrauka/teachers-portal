@@ -1,19 +1,22 @@
-const PUBLIC_PAGES = ['site-terms-and-conditions'];
-
 import { currentTeachersProfile, currentTeachersTasks } from 'backend/backend-api';
+import { forLoggedInUser } from 'public/for-logged-in-user';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import { $W } from '../wix-types';
 
-$w.onReady(async function () {
-  enableProfileButtonClick($w);
-  await Promise.all([
-    askToFillInitialTeachersForm(),
-    updateHeaderProfileImage($w),
-    updateHeaderNotificationsCount($w),
-  ]);
-  makeSureCannotAccessProtectedPages();
+const PUBLIC_PAGES = ['site-terms-and-conditions'];
+
+$w.onReady(() => {
+  redirectNonLoggedInUserToPublicPage();
+  return forLoggedInUser(async () => {
+    enableProfileButtonClick($w);
+    await Promise.all([
+      askToFillInitialTeachersForm(),
+      updateHeaderProfileImage($w),
+      updateHeaderNotificationsCount($w),
+    ]);
+  });
 });
 
 function enableProfileButtonClick($w: $W) {
@@ -56,17 +59,6 @@ async function askToFillInitialTeachersForm() {
   }
 }
 
-function makeSureCannotAccessProtectedPages() {
-  const currentUser = wixUsers.currentUser;
-  if (!currentUser.loggedIn) {
-    const path = wixLocation.path[0];
-    if (path && !PUBLIC_PAGES.includes(path)) {
-      console.error(`Not logged in user should not visit ${path}`);
-      wixLocation.to(PUBLIC_PAGES[0]);
-    }
-  }
-}
-
 async function updateHeaderProfileImage($w: $W) {
   const $headerProfileImage = $w('#headerProfileImage' as 'Image');
   $headerProfileImage.alt = 'My Profile';
@@ -85,5 +77,16 @@ async function updateHeaderNotificationsCount($w: $W) {
   if (incompleteTasksCount) {
     $headerNotificationsButton.label = String(incompleteTasksCount);
     $headerNotificationsButton.show();
+  }
+}
+
+function redirectNonLoggedInUserToPublicPage() {
+  const currentUser = wixUsers.currentUser;
+  if (!currentUser.loggedIn) {
+    const path = wixLocation.path[0];
+    if (path && !PUBLIC_PAGES.includes(path)) {
+      console.error(`Not logged in user should not visit ${path}`);
+      wixLocation.to(PUBLIC_PAGES[0]);
+    }
   }
 }

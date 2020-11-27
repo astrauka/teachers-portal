@@ -17,6 +17,12 @@ export class UnauthenticatedError extends CustomError {
   }
 }
 
+export class NotLoggedInError extends CustomError {
+  constructor(message = 'Not logged in') {
+    super(message);
+  }
+}
+
 export class RecordNotFoundError extends CustomError {
   constructor(message = 'RecordNotFound') {
     super(message);

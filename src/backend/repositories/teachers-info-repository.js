@@ -7,10 +7,14 @@ export class TeachersInfoRepository {
         this.externals = externals;
     }
     fetchTeacherById(id) {
-        return withLogger(`fetchTeacherById ${id}`, findById(this.externals, TEACHERS_INFO_COLLECTION, id));
+        if (id) {
+            return withLogger(`fetchTeacherById ${id}`, findById(this.externals, TEACHERS_INFO_COLLECTION, id));
+        }
     }
     fetchTeacherByEmail(email) {
-        return withLogger(`fetchTeacherByEmail ${email}`, findSingleRecord(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()));
+        if (email) {
+            return withLogger(`fetchTeacherByEmail ${email}`, findSingleRecord(this.externals.wixData.query(TEACHERS_INFO_COLLECTION).eq('email', email).find()));
+        }
     }
     async updateTeacher(teachersInfo) {
         return withLogger(`updateTeacher ${teachersInfo.email}`, this.externals.wixData.update(TEACHERS_INFO_COLLECTION, teachersInfo));

@@ -34,17 +34,16 @@ describe('getCurrentTeachersInfo', () => {
   });
 
   context('on info not existing', () => {
-    const error = new Error('not found');
     const getTeachersInfoRepository = () =>
       createStubInstance(TeachersInfoRepository, (stub) => {
-        stub.fetchTeacherByEmail.rejects(error);
+        stub.fetchTeacherByEmail.resolves(undefined);
       });
 
     it('should throw', async () => {
       const { getCurrentTeachersInfo } = buildTestContext({
         teachersInfoRepository: getTeachersInfoRepository(),
       });
-      await expect(getCurrentTeachersInfo()).rejectedWith(error);
+      await expect(getCurrentTeachersInfo()).rejectedWith(/Not logged in/);
     });
   });
 });

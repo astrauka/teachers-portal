@@ -1,10 +1,13 @@
 import { curatingTeachersProfile, currentTeachersTasks } from 'backend/backend-api';
+import { forLoggedInUser } from 'public/for-logged-in-user';
 import wixLocation from 'wix-location';
 import { $W } from '../wix-types';
 
-$w.onReady(async () => {
-  await Promise.all([populateTasksRepeater($w), setupCuratingTeacher($w)]);
-});
+$w.onReady(() =>
+  forLoggedInUser(async () => {
+    await Promise.all([populateTasksRepeater($w), setupCuratingTeacher($w)]);
+  })
+);
 
 async function populateTasksRepeater($w: $W) {
   const tasks = await currentTeachersTasks();

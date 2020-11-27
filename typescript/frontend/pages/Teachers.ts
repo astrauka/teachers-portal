@@ -1,3 +1,4 @@
+import { forLoggedInUser } from 'public/for-logged-in-user';
 import {
   resetInputFieldValues,
   setupInputChangeHandlers,
@@ -14,20 +15,22 @@ const INPUT_FIELDS = {
   '#levelDropdown': 'level',
 };
 
-$w.onReady(async function () {
-  const teachersLevelsPromise = getTeacherLevels($w);
-  updateInputValueIfChanged(INPUT_FIELDS, $w);
-  setupInputChangeHandlers(INPUT_FIELDS, $w);
-  $w('#resetFiltersButton' as 'Button').onClick(async () => {
-    resetInputFieldValues(INPUT_FIELDS);
-  });
-
-  wixLocation.onChange(async () => {
+$w.onReady(() =>
+  forLoggedInUser(async () => {
+    const teachersLevelsPromise = getTeacherLevels($w);
     updateInputValueIfChanged(INPUT_FIELDS, $w);
+    setupInputChangeHandlers(INPUT_FIELDS, $w);
+    $w('#resetFiltersButton' as 'Button').onClick(async () => {
+      resetInputFieldValues(INPUT_FIELDS);
+    });
+
+    wixLocation.onChange(async () => {
+      updateInputValueIfChanged(INPUT_FIELDS, $w);
+      await updateTeachersFilter($w, teachersLevelsPromise);
+    });
     await updateTeachersFilter($w, teachersLevelsPromise);
-  });
-  await updateTeachersFilter($w, teachersLevelsPromise);
-});
+  })
+);
 
 export function teachersName_click(event) {
   const $teacher = $w.at(event.context);

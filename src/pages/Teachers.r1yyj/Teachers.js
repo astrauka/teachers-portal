@@ -1,3 +1,4 @@
+import { forLoggedInUser } from 'public/for-logged-in-user';
 import { resetInputFieldValues, setupInputChangeHandlers, updateInputValueIfChanged, } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import wixLocation from 'wix-location';
@@ -6,7 +7,7 @@ const INPUT_FIELDS = {
     '#cityInput': 'city',
     '#levelDropdown': 'level',
 };
-$w.onReady(async function () {
+$w.onReady(() => forLoggedInUser(async () => {
     const teachersLevelsPromise = getTeacherLevels($w);
     updateInputValueIfChanged(INPUT_FIELDS, $w);
     setupInputChangeHandlers(INPUT_FIELDS, $w);
@@ -18,7 +19,7 @@ $w.onReady(async function () {
         await updateTeachersFilter($w, teachersLevelsPromise);
     });
     await updateTeachersFilter($w, teachersLevelsPromise);
-});
+}));
 export function teachersName_click(event) {
     const $teacher = $w.at(event.context);
     const { slug } = $teacher('#TeachersProfileDataset').getCurrentItem();

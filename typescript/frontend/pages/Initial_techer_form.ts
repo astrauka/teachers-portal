@@ -3,17 +3,20 @@ import {
   currentTeachersProfile,
   updateTeachersProfile,
 } from 'backend/backend-api';
+import { forLoggedInUser } from 'public/for-logged-in-user';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import { $W } from '../wix-types';
 
 let isProfileImageUploadedByUser;
 
-$w.onReady(async function () {
-  await setCurrentTeacherName($w);
-  await assignCurrentTeacherProfileFormFields($w);
-  $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
-});
+$w.onReady(() =>
+  forLoggedInUser(async () => {
+    await setCurrentTeacherName($w);
+    await assignCurrentTeacherProfileFormFields($w);
+    $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
+  })
+);
 
 async function assignCurrentTeacherProfileFormFields($w: $W) {
   const teachersProfile = await currentTeachersProfile();
