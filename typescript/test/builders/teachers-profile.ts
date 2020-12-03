@@ -15,6 +15,10 @@ export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
   levelId: `${id}-level-id`,
   statusId: `${id}-status-id`,
   teachersInfoId: `${id}-teachersInfo-id`,
+  facebook: `${id}-facebook`,
+  instagram: `${id}instagram`,
+  linkedIn: `${id}-linked-in`,
+  about: `${id}-about`,
 }));
 
 export const buildTeachersProfileView = builder<TeachersProfileView>((id) => ({

@@ -55,6 +55,6 @@ export function updateCurrentTeachersProfileFactory(
       levelId,
       statusId,
       teachersInfoId: teachersInfo._id,
-    } as TeachersProfile);
+    });
   }
 }

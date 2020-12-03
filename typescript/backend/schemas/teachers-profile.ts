@@ -1,8 +1,9 @@
-import { pick } from 'lodash';
+import { ValidationSchema } from 'fastest-validator';
+import { pick, transform } from 'lodash';
 import { TeachersProfile } from '../common/entities/teachers-profile';
 import { buildValidator } from '../utils/validate';
 
-const teachersProfileSchema = {
+const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
   email: { type: 'email' },
   fullName: { type: 'string', min: 3 },
@@ -16,10 +17,38 @@ const teachersProfileSchema = {
   levelId: { type: 'string', min: 3, max: 255 },
   statusId: { type: 'string', min: 3, max: 255 },
   teachersInfoId: { type: 'string', min: 3, max: 255 },
+  facebook: {
+    type: 'string',
+    optional: true,
+    min: 3,
+    max: 300,
+    pattern: /^([\w\-]*\/)*[\w\-.]*$/,
+  },
+  instagram: {
+    type: 'string',
+    optional: true,
+    min: 3,
+    max: 300,
+    pattern: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
+  },
+  linkedIn: {
+    type: 'string',
+    optional: true,
+    min: 3,
+    max: 300,
+    pattern: /([^\/?&\s]*)(?:\/|&|\?)?.*$/,
+  },
+  about: { type: 'string', optional: true },
 };
 
 const teachersProfileUpdateSchema = {
-  ...pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+  ...transform(
+    pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+    (acc, validation, field) => {
+      acc[field] = { ...validation, optional: true };
+    },
+    {}
+  ),
   country: { type: 'string' },
   language: { type: 'string' },
 };

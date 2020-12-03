@@ -3,6 +3,7 @@
 		"google-auth-library": "4.2.5",
 		"bcrypt": "3.0.6",
 		"fastest-validator": "1.1.0",
-		"url-slug": "2.3.2"
+		"url-slug": "2.3.2",
+		"lodash": "4.17.20"
 	}
 }
