@@ -19,7 +19,7 @@ npm run wix:editor
 ## Deploy changes to Wix
 
 * Pull changes `npm run wix:pull`
-* Build new backend sources `npm run build:backend`
+* Build new backend sources `npm run build`
 * Open local Wix Editor `wix run wix:editor`
 * All of these 3 steps can be done with `npm run wix`
 * Push changes from the local Editor
