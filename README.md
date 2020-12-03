@@ -16,10 +16,6 @@ Open the editor:
 npm run wix:editor
 ```
 
-## Typescript setup
-
-Import the watchers to IDEA from [docs](./docs/watchers.xml).
-
 ## Deploy changes to Wix
 
 * Pull changes `npm run wix:pull`
