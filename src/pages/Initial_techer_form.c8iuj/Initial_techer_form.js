@@ -1,7 +1,16 @@
 import { currentTeachersInfo, currentTeachersProfile, updateTeachersProfile, } from 'backend/backend-api';
+import { isEmpty, pick, some } from 'lodash';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+const INITIAL_PROFILE_FIELDS = [
+    'profileImage',
+    'phoneNumber',
+    'country',
+    'city',
+    'streetAddress',
+    'language',
+];
 let isProfileImageUploadedByUser;
 $w.onReady(() => forLoggedInUser(async () => {
     await setCurrentTeacherName($w);
@@ -10,6 +19,7 @@ $w.onReady(() => forLoggedInUser(async () => {
 }));
 async function assignCurrentTeacherProfileFormFields($w) {
     const teachersProfile = await currentTeachersProfile();
+    const values = pick(teachersProfile, INITIAL_PROFILE_FIELDS);
     if (teachersProfile) {
         isProfileImageUploadedByUser = true;
         $w('#profileImage').src = teachersProfile.profileImage;
@@ -18,6 +28,19 @@ async function assignCurrentTeacherProfileFormFields($w) {
         $w('#city').value = teachersProfile.city;
         $w('#streetAddress').value = teachersProfile.streetAddress;
         $w('#language').value = teachersProfile.language;
+        INITIAL_PROFILE_FIELDS.forEach((field) => {
+            $w(`#${field}`).onChange((event) => {
+                values[field] = event.target.value;
+                console.warn(values);
+                const $submitButton = $w('#submit');
+                if (some(values, (value) => isEmpty(value))) {
+                    return $submitButton.disable();
+                }
+                else {
+                    return $submitButton.enable();
+                }
+            });
+        });
     }
     else {
         isProfileImageUploadedByUser = false;

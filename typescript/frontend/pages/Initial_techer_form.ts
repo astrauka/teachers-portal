@@ -3,11 +3,19 @@ import {
   currentTeachersProfile,
   updateTeachersProfile,
 } from 'backend/backend-api';
+import { isEmpty, pick, some } from 'lodash';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-import { $W } from '../wix-types';
 
+const INITIAL_PROFILE_FIELDS = [
+  'profileImage',
+  'phoneNumber',
+  'country',
+  'city',
+  'streetAddress',
+  'language',
+];
 let isProfileImageUploadedByUser;
 
 $w.onReady(() =>
@@ -18,8 +26,9 @@ $w.onReady(() =>
   })
 );
 
-async function assignCurrentTeacherProfileFormFields($w: $W) {
+async function assignCurrentTeacherProfileFormFields($w) {
   const teachersProfile = await currentTeachersProfile();
+  const values = pick(teachersProfile, INITIAL_PROFILE_FIELDS);
   if (teachersProfile) {
     isProfileImageUploadedByUser = true;
     $w('#profileImage' as 'Image').src = teachersProfile.profileImage;
@@ -28,13 +37,25 @@ async function assignCurrentTeacherProfileFormFields($w: $W) {
     $w('#city' as 'Dropdown').value = teachersProfile.city;
     $w('#streetAddress' as 'TextInput').value = teachersProfile.streetAddress;
     $w('#language' as 'Dropdown').value = teachersProfile.language;
+    INITIAL_PROFILE_FIELDS.forEach((field) => {
+      $w(`#${field}` as 'TextInput').onChange((event: $w.Event) => {
+        values[field] = event.target.value;
+        console.warn(values);
+        const $submitButton = $w('#submit' as 'Button');
+        if (some(values, (value) => isEmpty(value))) {
+          return $submitButton.disable();
+        } else {
+          return $submitButton.enable();
+        }
+      });
+    });
   } else {
     isProfileImageUploadedByUser = false;
     console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
   }
 }
 
-async function setCurrentTeacherName($w: $W) {
+async function setCurrentTeacherName($w) {
   const teachersInfo = await currentTeachersInfo();
   if (teachersInfo) {
     $w('#teacherFullName' as 'Text').text = `${teachersInfo.firstName} ${teachersInfo.lastName}`;
@@ -71,7 +92,7 @@ export function uploadButton_change(event) {
   }
 }
 
-async function submitProfileInfoForm($w: $W) {
+async function submitProfileInfoForm($w) {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();

@@ -106,14 +106,29 @@ describe('updateCurrentTeachersProfile', () => {
 
   context('on profile not existing', () => {
     const teachersProfile = undefined;
-    const createdTeachersProfile: TeachersProfile = {
+    const teachersProfileInsert: Partial<TeachersProfile> = {
       ...pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+      ...pick(teachersInfo, ['email', 'levelId', 'statusId']),
+      countryId: country._id,
+      languageId: language._id,
+      fullName,
+      teachersInfoId: teachersInfo._id,
+    };
+    const createdTeachersProfile: TeachersProfile = {
+      ...(pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']) as Pick<
+        TeachersProfile,
+        'profileImage' | 'phoneNumber' | 'city' | 'streetAddress'
+      >),
       ...pick(teachersInfo, ['email', 'levelId', 'statusId']),
       countryId: country._id,
       languageId: language._id,
       fullName,
       slug,
       teachersInfoId: teachersInfo._id,
+      facebook: '',
+      instagram: '',
+      linkedIn: '',
+      about: '',
     };
 
     it('should create a new teachers profile and complete task', async () => {
@@ -132,7 +147,7 @@ describe('updateCurrentTeachersProfile', () => {
         teachersInfo.email
       );
       expect(teachersProfileRepository.insertTeachersProfile).calledOnceWithExactly(
-        omit(createdTeachersProfile, 'slug')
+        teachersProfileInsert
       );
       expect(completeTeachersTask).calledOnceWithExactly(TaskNumber.initialProfileForm);
     });

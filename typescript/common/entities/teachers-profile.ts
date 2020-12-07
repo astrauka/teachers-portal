@@ -13,6 +13,10 @@ export interface TeachersProfile extends Storable {
   levelId: string;
   statusId: string;
   teachersInfoId: string;
+  facebook: string;
+  instagram: string;
+  linkedIn: string;
+  about: string;
 }
 
 export interface TeachersProfileView extends TeachersProfile {
@@ -21,10 +25,14 @@ export interface TeachersProfileView extends TeachersProfile {
 }
 
 export interface TeachersProfileUpdate {
-  profileImage: string;
-  phoneNumber: string;
-  country: string;
-  city: string;
-  streetAddress: string;
-  language: string;
+  profileImage?: string;
+  phoneNumber?: string;
+  country?: string;
+  city?: string;
+  streetAddress?: string;
+  language?: string;
+  facebook?: string;
+  instagram?: string;
+  linkedIn?: string;
+  about?: string;
 }

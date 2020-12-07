@@ -1,9 +1,8 @@
-import { $W } from '../wix-types';
 import { addWixLocationQueryParams, getWixLocationQuery } from './wix-utils';
 
 export type InputNamesToDbFields = { [inputName: string]: string };
 
-export function setupInputChangeHandlers(inputFields: InputNamesToDbFields, $w: $W) {
+export function setupInputChangeHandlers(inputFields: InputNamesToDbFields, $w) {
   for (const [input, field] of Object.entries(inputFields)) {
     if ($w(input as 'TextInput').onInput) {
       $w(input as 'TextInput').onInput((event) => {
@@ -17,7 +16,7 @@ export function setupInputChangeHandlers(inputFields: InputNamesToDbFields, $w: 
   }
 }
 
-export function updateInputValueIfChanged(inputFields: InputNamesToDbFields, $w: $W) {
+export function updateInputValueIfChanged(inputFields: InputNamesToDbFields, $w) {
   const values = getWixLocationQuery();
   for (const [input, field] of Object.entries(inputFields)) {
     const inputValue = $w(input as 'TextInput').value;
