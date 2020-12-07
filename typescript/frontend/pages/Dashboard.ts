@@ -1,7 +1,6 @@
 import { curatingTeachersProfile, currentTeachersTasks } from 'backend/backend-api';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import wixLocation from 'wix-location';
-import { $W } from '../wix-types';
 
 $w.onReady(() =>
   forLoggedInUser(async () => {
@@ -9,7 +8,7 @@ $w.onReady(() =>
   })
 );
 
-async function populateTasksRepeater($w: $W) {
+async function populateTasksRepeater($w) {
   const tasks = await currentTeachersTasks();
   const $tasksRepeater = $w('#tasksRepeater' as 'Repeater');
   $tasksRepeater.data = tasks;
@@ -28,7 +27,7 @@ async function populateTasksRepeater($w: $W) {
   });
 }
 
-async function setupCuratingTeacher($w: $W) {
+async function setupCuratingTeacher($w) {
   const teacherProfile = await curatingTeachersProfile();
   if (teacherProfile) {
     $w('#curatingTeacherName' as 'Text').text = teacherProfile.fullName;

@@ -3,7 +3,6 @@ import { forLoggedInUser } from 'public/for-logged-in-user';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-import { $W } from '../wix-types';
 
 const PUBLIC_PAGES = ['site-terms-and-conditions'];
 
@@ -19,7 +18,7 @@ $w.onReady(() => {
   });
 });
 
-function enableProfileButtonClick($w: $W) {
+function enableProfileButtonClick($w) {
   const $profileDropdown = $w('#profileDropdown' as 'Container');
   const effect = {
     duration: 200,
@@ -59,7 +58,7 @@ async function askToFillInitialTeachersForm() {
   }
 }
 
-async function updateHeaderProfileImage($w: $W) {
+async function updateHeaderProfileImage($w) {
   const $headerProfileImage = $w('#headerProfileImage' as 'Image');
   $headerProfileImage.alt = 'My Profile';
   $headerProfileImage.tooltip = 'My Profile';
@@ -70,7 +69,7 @@ async function updateHeaderProfileImage($w: $W) {
   }
 }
 
-async function updateHeaderNotificationsCount($w: $W) {
+async function updateHeaderNotificationsCount($w) {
   const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
   const tasks = await currentTeachersTasks();
   const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;

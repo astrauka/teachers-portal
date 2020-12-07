@@ -8,7 +8,6 @@ $w.onReady(() => forLoggedInUser(async () => {
         linkedIn: $w('#linkedIn'),
         about: $w('#about'),
     };
-    console.info(fields);
     $w('#submitButton').onClick(() => {
         const update = transform(fields, (acc, $input, field) => {
             acc[field] = $input.value;

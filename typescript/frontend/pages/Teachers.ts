@@ -7,7 +7,6 @@ import {
 import { getFilter } from 'public/wix-filter';
 import wixLocation from 'wix-location';
 import { TeachersProfile } from '../../common/entities/teachers-profile';
-import { $W } from '../wix-types';
 
 const INPUT_FIELDS = {
   '#nameInput': 'fullName',
@@ -38,7 +37,7 @@ export function teachersName_click(event) {
   wixLocation.to(`/teacher/${slug}`);
 }
 
-async function getTeacherLevels($w: $W) {
+async function getTeacherLevels($w) {
   return new Promise((resolve) => {
     $w('#TeacherLevelsDataset').onReady(async () => {
       resolve($w('#TeacherLevelsDataset').loadPage(1));
@@ -46,7 +45,7 @@ async function getTeacherLevels($w: $W) {
   });
 }
 
-async function updateTeachersFilter($w: $W, teachersLevelsPromise) {
+async function updateTeachersFilter($w, teachersLevelsPromise) {
   const values = wixLocation.query;
   const teachersLevels = await teachersLevelsPromise;
   const teachersLevel = teachersLevels.find(({ title }) => title === values.level);
