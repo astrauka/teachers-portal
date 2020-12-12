@@ -18,7 +18,7 @@ $w.onReady(() =>
         },
         {}
       );
-      updateTeachersProfile(update);
+      // updateTeachersProfile(update);
     });
   })
 );

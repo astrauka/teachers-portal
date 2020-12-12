@@ -1,4 +1,3 @@
-import { updateTeachersProfile } from 'backend/backend-api';
 import { transform } from 'lodash';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 $w.onReady(() => forLoggedInUser(async () => {
@@ -12,6 +11,6 @@ $w.onReady(() => forLoggedInUser(async () => {
         const update = transform(fields, (acc, $input, field) => {
             acc[field] = $input.value;
         }, {});
-        updateTeachersProfile(update);
+        // updateTeachersProfile(update);
     });
 }));

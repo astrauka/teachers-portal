@@ -4,39 +4,31 @@ import {
   updateTeachersProfile,
 } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { TeachersProfileView } from 'public/common/entities/teachers-profile';
-import { teachersProfileSchema } from 'public/common/schemas/teachers-profile';
+import { InitialTeacherForm, InitialTeacherFormKey } from 'public/common/entities/teachers-profile';
+import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
+import { objectFromArray } from 'public/forms';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
-const TEXT_INPUTS: (keyof TeachersProfileView)[] = ['phoneNumber', 'city', 'streetAddress'];
-const DROPDOWNS: (keyof TeachersProfileView)[] = ['country', 'language'];
-const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
-const FORM_FIELDS: (keyof TeachersProfileView)[] = [...FORM_INPUTS, 'profileImage'];
-const state: {
+const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city', 'streetAddress'];
+const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
+const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
+const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
+let state: {
   isProfileImageUploadedByUser: boolean;
-  fieldValues: Pick<
-    TeachersProfileView,
-    'profileImage' | 'phoneNumber' | 'country' | 'city' | 'streetAddress' | 'language'
-  >;
-  validationMessages: Pick<
-    TeachersProfileView,
-    'profileImage' | 'phoneNumber' | 'country' | 'city' | 'streetAddress' | 'language'
-  >;
-} = {
-  isProfileImageUploadedByUser: false,
-  fieldValues: transform(FORM_FIELDS, (acc, field) => {
-    acc[field] = '';
-  }),
-  validationMessages: transform(FORM_FIELDS, (acc, field) => {
-    acc[field] = '';
-  }),
+  fieldValues: InitialTeacherForm;
+  validationMessages: InitialTeacherForm;
 };
 
 $w.onReady(() =>
   forLoggedInUser(async () => {
+    state = {
+      isProfileImageUploadedByUser: false,
+      fieldValues: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
+      validationMessages: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
+    };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
     $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
@@ -55,11 +47,11 @@ async function assignCurrentTeacherProfileFormFields($w) {
   state.validationMessages = transform(
     pick(state.fieldValues, FORM_INPUTS),
     (acc, value, field) => {
-      acc[field] = validateField(field, value, teachersProfileSchema);
+      acc[field] = validateField(field, value, initialTeachersFormSchema);
     }
   );
 
-  $w('#profileImage' as 'Image').src = teachersProfile.profileImage;
+  $w('#profileImage' as 'Image').src = state.fieldValues.profileImage;
   FORM_INPUTS.forEach((field) => {
     $w(`#${field}` as 'FormElement').value = state.fieldValues[field];
   });
@@ -80,7 +72,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
 function onInputChange(field: string, event: $w.Event, $w) {
   const value = event.target.value;
   state.fieldValues[field] = value;
-  state.validationMessages[field] = validateField(field, value, teachersProfileSchema);
+  state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
   const $submitButton = $w('#submit' as 'Button');
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   if (some(values(state.validationMessages))) {
@@ -141,7 +133,7 @@ async function submitProfileInfoForm($w) {
 
   try {
     await updateTeachersProfile(state.fieldValues);
-    $submissionStatus.text = 'Profile updated.';
+    $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
     $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
     if (updatedProfileImage) {
       $w('#headerProfileImage' as 'Image').src = updatedProfileImage;

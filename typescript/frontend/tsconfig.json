@@ -2,7 +2,6 @@
   "compilerOptions": {
     "outDir": "../../dist/",
     "types" : ["corvid-types/types/pages", "mocha"],
-    "baseUrl": "./",
     "paths": {
       "public/*": ["./public/*"],
       "backend/backend-api": ["../../dist/backend/backend-api"]

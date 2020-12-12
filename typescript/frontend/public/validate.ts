@@ -39,5 +39,5 @@ export function validateField(field: string, value: string, schema: ValidationSc
 }
 
 function humanizeValidationMessage(errors: ValidationError[]) {
-  return errors.map((error) => error.message).join(' ');
+  return errors[0].message;
 }

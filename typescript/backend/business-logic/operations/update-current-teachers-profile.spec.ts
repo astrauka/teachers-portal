@@ -7,7 +7,7 @@ import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
 import { TaskNumber } from '../../common/entities/task';
 import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from '../../common/entities/teachers-profile';
+import { InitialTeacherForm, TeachersProfile } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
@@ -28,7 +28,7 @@ describe('updateCurrentTeachersProfile', () => {
   const teachersProfile = buildTeachersProfile({
     properties: { email: teachersInfo.email, fullName, slug },
   });
-  const update: TeachersProfileUpdate = {
+  const update: InitialTeacherForm = {
     ...pick(buildTeachersProfile(), ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
     country: country.title,
     language: language.title,
@@ -153,7 +153,7 @@ describe('updateCurrentTeachersProfile', () => {
     });
 
     context('on update validation failed', () => {
-      const update = { phoneNumber: '11', city: 'a' } as TeachersProfileUpdate;
+      const update = { phoneNumber: '11', city: 'a' } as InitialTeacherForm;
 
       it('should return human readable error', async () => {
         const { teachersProfileRepository, updateCurrentTeachersProfile } = buildTestContext();
