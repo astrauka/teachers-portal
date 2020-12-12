@@ -1,4 +1,4 @@
-import { pick, transform } from 'lodash';
+import { pick } from 'lodash';
 export const teachersProfileSchema = {
     _id: { type: 'string', min: 3, max: 255, optional: true },
     email: { type: 'email' },
@@ -36,10 +36,8 @@ export const teachersProfileSchema = {
     },
     about: { type: 'string', optional: true },
 };
-export const teachersProfileUpdateSchema = {
-    ...transform(pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']), (acc, validation, field) => {
-        acc[field] = { ...validation, optional: true };
-    }, {}),
-    country: { type: 'string' },
-    language: { type: 'string' },
+export const initialTeachersFormSchema = {
+    ...pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+    country: { type: 'string', empty: false },
+    language: { type: 'string', empty: false },
 };

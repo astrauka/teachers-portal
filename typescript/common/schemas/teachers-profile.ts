@@ -1,6 +1,6 @@
 import { ValidationSchema } from 'fastest-validator';
-import { pick, transform } from 'lodash';
-import { TeachersProfile } from '../entities/teachers-profile';
+import { pick } from 'lodash';
+import { InitialTeacherForm, TeachersProfile } from '../entities/teachers-profile';
 
 export const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
@@ -40,14 +40,8 @@ export const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   about: { type: 'string', optional: true },
 };
 
-export const teachersProfileUpdateSchema = {
-  ...transform(
-    pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
-    (acc, validation, field) => {
-      acc[field] = { ...validation, optional: true };
-    },
-    {}
-  ),
-  country: { type: 'string' },
-  language: { type: 'string' },
+export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
+  ...pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+  country: { type: 'string', empty: false },
+  language: { type: 'string', empty: false },
 };

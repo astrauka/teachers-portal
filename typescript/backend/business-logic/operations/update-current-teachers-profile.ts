@@ -1,7 +1,7 @@
 import { omit } from 'lodash';
 import { TaskNumber } from '../../common/entities/task';
 import { TeachersInfo } from '../../common/entities/teachers-info';
-import { TeachersProfile, TeachersProfileUpdate } from '../../common/entities/teachers-profile';
+import { InitialTeacherForm, TeachersProfile } from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
@@ -17,7 +17,7 @@ export function updateCurrentTeachersProfileFactory(
   completeTeachersTask: CompleteTeachersTask
 ) {
   return async function updateCurrentTeachersProfile(
-    update: TeachersProfileUpdate
+    update: InitialTeacherForm
   ): Promise<TeachersProfile> {
     validateTeachersProfileUpdate(update);
     const [teachersInfo, country, language] = await Promise.all([

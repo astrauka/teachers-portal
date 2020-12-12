@@ -4,15 +4,15 @@ import { TeachersProfile } from '../common/entities/teachers-profile';
 import { taskSchema } from '../common/schemas/task';
 import { teachersInfoSchema } from '../common/schemas/teachers-info';
 import {
+  initialTeachersFormSchema,
   teachersProfileSchema,
-  teachersProfileUpdateSchema,
 } from '../common/schemas/teachers-profile';
 
 import { buildValidator } from '../utils/validate';
 
 export const validateTeachersProfile = buildValidator<TeachersProfile>(teachersProfileSchema);
 export const validateTeachersProfileUpdate = buildValidator<Partial<TeachersProfile>>(
-  teachersProfileUpdateSchema
+  initialTeachersFormSchema
 );
 
 export const validateTask = buildValidator<Task>(taskSchema);

@@ -1,7 +1,8 @@
 import { currentTeachersInfo, currentTeachersProfile, updateTeachersProfile, } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { teachersProfileSchema } from 'public/common/schemas/teachers-profile';
+import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
+import { objectFromArray } from 'public/forms';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
@@ -9,16 +10,13 @@ const TEXT_INPUTS = ['phoneNumber', 'city', 'streetAddress'];
 const DROPDOWNS = ['country', 'language'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
-const state = {
-    isProfileImageUploadedByUser: false,
-    fieldValues: transform(FORM_FIELDS, (acc, field) => {
-        acc[field] = '';
-    }),
-    validationMessages: transform(FORM_FIELDS, (acc, field) => {
-        acc[field] = '';
-    }),
-};
+let state;
 $w.onReady(() => forLoggedInUser(async () => {
+    state = {
+        isProfileImageUploadedByUser: false,
+        fieldValues: objectFromArray(FORM_FIELDS, ''),
+        validationMessages: objectFromArray(FORM_FIELDS, ''),
+    };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
     $w('#submit').onClick(() => submitProfileInfoForm($w));
@@ -34,9 +32,9 @@ async function assignCurrentTeacherProfileFormFields($w) {
         console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
     }
     state.validationMessages = transform(pick(state.fieldValues, FORM_INPUTS), (acc, value, field) => {
-        acc[field] = validateField(field, value, teachersProfileSchema);
+        acc[field] = validateField(field, value, initialTeachersFormSchema);
     });
-    $w('#profileImage').src = teachersProfile.profileImage;
+    $w('#profileImage').src = state.fieldValues.profileImage;
     FORM_INPUTS.forEach((field) => {
         $w(`#${field}`).value = state.fieldValues[field];
     });
@@ -54,7 +52,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
 function onInputChange(field, event, $w) {
     const value = event.target.value;
     state.fieldValues[field] = value;
-    state.validationMessages[field] = validateField(field, value, teachersProfileSchema);
+    state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
     const $submitButton = $w('#submit');
     const $submissionStatus = $w('#submissionStatus');
     if (some(values(state.validationMessages))) {
@@ -113,7 +111,7 @@ async function submitProfileInfoForm($w) {
     const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
     try {
         await updateTeachersProfile(state.fieldValues);
-        $submissionStatus.text = 'Profile updated.';
+        $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
         $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
         if (updatedProfileImage) {
             $w('#headerProfileImage').src = updatedProfileImage;

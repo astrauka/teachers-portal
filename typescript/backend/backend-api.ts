@@ -1,8 +1,8 @@
 import { TaskView } from './common/entities/task';
 import { RegisteredTeachersInfo } from './common/entities/teachers-info';
 import {
+  InitialTeacherForm,
   TeachersProfile,
-  TeachersProfileUpdate,
   TeachersProfileView,
 } from './common/entities/teachers-profile';
 import { EXTERNALS } from './context/production-context';
@@ -35,9 +35,7 @@ export async function currentTeachersProfile(): Promise<TeachersProfileView | un
   });
 }
 
-export async function updateTeachersProfile(
-  update: TeachersProfileUpdate
-): Promise<TeachersProfile> {
+export async function updateTeachersProfile(update: InitialTeacherForm): Promise<TeachersProfile> {
   const {
     actions: { updateCurrentTeachersProfile },
   } = await setupContext(EXTERNALS);
