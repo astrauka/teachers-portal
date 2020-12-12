@@ -1,12 +1,11 @@
 import { pick, transform } from 'lodash';
-import { buildValidator } from '../utils/validate';
-const teachersProfileSchema = {
+export const teachersProfileSchema = {
     _id: { type: 'string', min: 3, max: 255, optional: true },
     email: { type: 'email' },
     fullName: { type: 'string', min: 3 },
     slug: { type: 'string', min: 3, optional: true },
     profileImage: { type: 'string', min: 3 },
-    phoneNumber: { type: 'string', min: 3, max: 255 },
+    phoneNumber: { type: 'string', min: 3, max: 255, pattern: /^\+?[\d\-\s]+$/ },
     countryId: { type: 'string', min: 3, max: 255 },
     city: { type: 'string', min: 3, max: 255 },
     streetAddress: { type: 'string', min: 3 },
@@ -37,12 +36,10 @@ const teachersProfileSchema = {
     },
     about: { type: 'string', optional: true },
 };
-const teachersProfileUpdateSchema = {
+export const teachersProfileUpdateSchema = {
     ...transform(pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']), (acc, validation, field) => {
         acc[field] = { ...validation, optional: true };
     }, {}),
     country: { type: 'string' },
     language: { type: 'string' },
 };
-export const validateTeachersProfile = buildValidator(teachersProfileSchema);
-export const validateTeachersProfileUpdate = buildValidator(teachersProfileUpdateSchema);

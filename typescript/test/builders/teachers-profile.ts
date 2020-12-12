@@ -7,7 +7,7 @@ export const buildTeachersProfile = builder<TeachersProfile>((id) => ({
   profileImage: `${id}-profile-image`,
   fullName: `${id} Full Name`,
   slug: `${id}-full-name`,
-  phoneNumber: `${id}-phone-number`,
+  phoneNumber: '+370-625 5000',
   countryId: `${id}-country-id`,
   city: `${id}-city-id`,
   streetAddress: `${id}-street-address`,

@@ -1,7 +1,7 @@
-import { TeachersInfo } from '../common/entities/teachers-info';
-import { buildValidator } from '../utils/validate';
+import { ValidationSchema } from 'fastest-validator';
+import { TeachersInfo } from '../entities/teachers-info';
 
-const teachersInfoSchema = {
+export const teachersInfoSchema: ValidationSchema<TeachersInfo> = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
   email: { type: 'email' },
   firstName: { type: 'string', min: 3, max: 255 },
@@ -12,5 +12,3 @@ const teachersInfoSchema = {
   certificateExpirationDate: { type: 'date', optional: true },
   userId: { type: 'string', min: 3, optional: true },
 };
-
-export const validateTeachersInfo = buildValidator<TeachersInfo>(teachersInfoSchema);

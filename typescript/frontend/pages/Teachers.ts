@@ -1,3 +1,4 @@
+import { TeachersProfile } from 'public/common/entities/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import {
   resetInputFieldValues,
@@ -6,7 +7,6 @@ import {
 } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import wixLocation from 'wix-location';
-import { TeachersProfile } from '../../common/entities/teachers-profile';
 
 const INPUT_FIELDS = {
   '#nameInput': 'fullName',

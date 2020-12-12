@@ -3,20 +3,37 @@ import {
   currentTeachersProfile,
   updateTeachersProfile,
 } from 'backend/backend-api';
-import { isEmpty, pick, some } from 'lodash';
+import { pick, some, transform, values } from 'lodash';
+import { TeachersProfileView } from 'public/common/entities/teachers-profile';
+import { teachersProfileSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
+import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
-const INITIAL_PROFILE_FIELDS = [
-  'profileImage',
-  'phoneNumber',
-  'country',
-  'city',
-  'streetAddress',
-  'language',
-];
-let isProfileImageUploadedByUser;
+const TEXT_INPUTS: (keyof TeachersProfileView)[] = ['phoneNumber', 'city', 'streetAddress'];
+const DROPDOWNS: (keyof TeachersProfileView)[] = ['country', 'language'];
+const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
+const FORM_FIELDS: (keyof TeachersProfileView)[] = [...FORM_INPUTS, 'profileImage'];
+const state: {
+  isProfileImageUploadedByUser: boolean;
+  fieldValues: Pick<
+    TeachersProfileView,
+    'profileImage' | 'phoneNumber' | 'country' | 'city' | 'streetAddress' | 'language'
+  >;
+  validationMessages: Pick<
+    TeachersProfileView,
+    'profileImage' | 'phoneNumber' | 'country' | 'city' | 'streetAddress' | 'language'
+  >;
+} = {
+  isProfileImageUploadedByUser: false,
+  fieldValues: transform(FORM_FIELDS, (acc, field) => {
+    acc[field] = '';
+  }),
+  validationMessages: transform(FORM_FIELDS, (acc, field) => {
+    acc[field] = '';
+  }),
+};
 
 $w.onReady(() =>
   forLoggedInUser(async () => {
@@ -28,30 +45,52 @@ $w.onReady(() =>
 
 async function assignCurrentTeacherProfileFormFields($w) {
   const teachersProfile = await currentTeachersProfile();
-  const values = pick(teachersProfile, INITIAL_PROFILE_FIELDS);
   if (teachersProfile) {
-    isProfileImageUploadedByUser = true;
-    $w('#profileImage' as 'Image').src = teachersProfile.profileImage;
-    $w('#phoneNumber' as 'TextInput').value = teachersProfile.phoneNumber;
-    $w('#country' as 'TextInput').value = teachersProfile.country;
-    $w('#city' as 'Dropdown').value = teachersProfile.city;
-    $w('#streetAddress' as 'TextInput').value = teachersProfile.streetAddress;
-    $w('#language' as 'Dropdown').value = teachersProfile.language;
-    INITIAL_PROFILE_FIELDS.forEach((field) => {
-      $w(`#${field}` as 'TextInput').onChange((event: $w.Event) => {
-        values[field] = event.target.value;
-        console.warn(values);
-        const $submitButton = $w('#submit' as 'Button');
-        if (some(values, (value) => isEmpty(value))) {
-          return $submitButton.disable();
-        } else {
-          return $submitButton.enable();
-        }
-      });
-    });
+    state.fieldValues = pick(teachersProfile, FORM_FIELDS);
+    state.isProfileImageUploadedByUser = true;
   } else {
-    isProfileImageUploadedByUser = false;
+    state.isProfileImageUploadedByUser = false;
     console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
+  }
+  state.validationMessages = transform(
+    pick(state.fieldValues, FORM_INPUTS),
+    (acc, value, field) => {
+      acc[field] = validateField(field, value, teachersProfileSchema);
+    }
+  );
+
+  $w('#profileImage' as 'Image').src = teachersProfile.profileImage;
+  FORM_INPUTS.forEach((field) => {
+    $w(`#${field}` as 'FormElement').value = state.fieldValues[field];
+  });
+
+  TEXT_INPUTS.forEach((field) => {
+    $w(`#${field}` as 'TextInput').onInput((event: $w.Event) => {
+      return onInputChange(field, event, $w);
+    });
+  });
+
+  DROPDOWNS.forEach((field) => {
+    $w(`#${field}` as 'Dropdown').onChange((event: $w.Event) => {
+      return onInputChange(field, event, $w);
+    });
+  });
+}
+
+function onInputChange(field: string, event: $w.Event, $w) {
+  const value = event.target.value;
+  state.fieldValues[field] = value;
+  state.validationMessages[field] = validateField(field, value, teachersProfileSchema);
+  const $submitButton = $w('#submit' as 'Button');
+  const $submissionStatus = $w('#submissionStatus' as 'Text');
+  if (some(values(state.validationMessages))) {
+    $submissionStatus.text = 'Please fill in all the fields';
+    $submissionStatus.show();
+    return $submitButton.disable();
+  } else {
+    $submissionStatus.text = '';
+    $submissionStatus.hide();
+    return $submitButton.enable();
   }
 }
 
@@ -77,7 +116,9 @@ export function uploadButton_change(event) {
       .then((uploadedFile) => {
         $uploadStatus.text = 'Upload successful';
         $w('#profileImage' as 'Image').src = uploadedFile.url;
-        isProfileImageUploadedByUser = true;
+        state.fieldValues.profileImage = uploadedFile.url;
+        state.validationMessages.profileImage = '';
+        state.isProfileImageUploadedByUser = true;
       })
       .catch((uploadError) => {
         $uploadStatus.text = 'File upload error';
@@ -96,22 +137,14 @@ async function submitProfileInfoForm($w) {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();
-  const profileImage = isProfileImageUploadedByUser ? $w('#profileImage' as 'Image').src : '';
+  const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
 
   try {
-    const update = {
-      profileImage,
-      phoneNumber: $w('#phoneNumber' as 'TextInput').value,
-      country: $w('#country' as 'Dropdown').value,
-      city: $w('#city' as 'TextInput').value,
-      streetAddress: $w('#streetAddress' as 'TextInput').value,
-      language: $w('#language' as 'Dropdown').value,
-    };
-    await updateTeachersProfile(update);
+    await updateTeachersProfile(state.fieldValues);
     $submissionStatus.text = 'Profile updated.';
     $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
-    if (profileImage) {
-      $w('#headerProfileImage' as 'Image').src = profileImage;
+    if (updatedProfileImage) {
+      $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
     }
     wixLocation.to('/dashboard');
   } catch (error) {
