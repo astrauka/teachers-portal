@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 import { TaskNumber } from '../../common/entities/task';
-import { validateTeachersProfileUpdate } from '../../schemas/teachers-profile';
+import { validateTeachersProfileUpdate } from '../validators';
 export function updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask) {
     return async function updateCurrentTeachersProfile(update) {
         validateTeachersProfileUpdate(update);

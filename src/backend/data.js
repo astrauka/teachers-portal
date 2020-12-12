@@ -1,8 +1,6 @@
+import { validateTask, validateTeachersInfo, validateTeachersProfile, } from './business-logic/validators';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
-import { validateTask } from './schemas/task';
-import { validateTeachersInfo } from './schemas/teachers-info';
-import { validateTeachersProfile } from './schemas/teachers-profile';
 import { withLogger } from './utils/logger';
 export async function TeachersInfo_afterInsert(teachersInfo) {
     const { hooks: { addTeacherToUsers }, } = await setupContext(EXTERNALS);

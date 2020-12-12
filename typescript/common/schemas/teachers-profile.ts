@@ -1,15 +1,14 @@
 import { ValidationSchema } from 'fastest-validator';
 import { pick, transform } from 'lodash';
-import { TeachersProfile } from '../common/entities/teachers-profile';
-import { buildValidator } from '../utils/validate';
+import { TeachersProfile } from '../entities/teachers-profile';
 
-const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
+export const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
   email: { type: 'email' },
   fullName: { type: 'string', min: 3 },
   slug: { type: 'string', min: 3, optional: true },
   profileImage: { type: 'string', min: 3 },
-  phoneNumber: { type: 'string', min: 3, max: 255 },
+  phoneNumber: { type: 'string', min: 3, max: 255, pattern: /^\+?[\d\-\s]+$/ },
   countryId: { type: 'string', min: 3, max: 255 },
   city: { type: 'string', min: 3, max: 255 },
   streetAddress: { type: 'string', min: 3 },
@@ -41,7 +40,7 @@ const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   about: { type: 'string', optional: true },
 };
 
-const teachersProfileUpdateSchema = {
+export const teachersProfileUpdateSchema = {
   ...transform(
     pick(teachersProfileSchema, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
     (acc, validation, field) => {
@@ -52,8 +51,3 @@ const teachersProfileUpdateSchema = {
   country: { type: 'string' },
   language: { type: 'string' },
 };
-
-export const validateTeachersProfile = buildValidator<TeachersProfile>(teachersProfileSchema);
-export const validateTeachersProfileUpdate = buildValidator<Partial<TeachersProfile>>(
-  teachersProfileUpdateSchema
-);

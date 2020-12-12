@@ -5,7 +5,7 @@ import { TeachersProfile, TeachersProfileUpdate } from '../../common/entities/te
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
-import { validateTeachersProfileUpdate } from '../../schemas/teachers-profile';
+import { validateTeachersProfileUpdate } from '../validators';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 

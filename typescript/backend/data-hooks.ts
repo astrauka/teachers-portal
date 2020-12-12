@@ -1,11 +1,13 @@
+import {
+  validateTask,
+  validateTeachersInfo,
+  validateTeachersProfile,
+} from './business-logic/validators';
 import { Task } from './common/entities/task';
 import { TeachersInfo } from './common/entities/teachers-info';
 import { TeachersProfile } from './common/entities/teachers-profile';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
-import { validateTask } from './schemas/task';
-import { validateTeachersInfo } from './schemas/teachers-info';
-import { validateTeachersProfile } from './schemas/teachers-profile';
 import { WixHookContext } from './types/wix-types';
 import { withLogger } from './utils/logger';
 

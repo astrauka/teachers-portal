@@ -1,5 +1,4 @@
-import { buildValidator } from '../utils/validate';
-const teachersInfoSchema = {
+export const teachersInfoSchema = {
     _id: { type: 'string', min: 3, max: 255, optional: true },
     email: { type: 'email' },
     firstName: { type: 'string', min: 3, max: 255 },
@@ -10,4 +9,3 @@ const teachersInfoSchema = {
     certificateExpirationDate: { type: 'date', optional: true },
     userId: { type: 'string', min: 3, optional: true },
 };
-export const validateTeachersInfo = buildValidator(teachersInfoSchema);
