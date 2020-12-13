@@ -1,4 +1,4 @@
-import { ImageItem, VideoItem } from '../common-wix-types';
+import { ImageItem } from '../common-wix-types';
 import { Storable } from './storable';
 
 export interface InitialTeacherForm {
@@ -17,7 +17,7 @@ export interface SecondStepTeachersForm {
   linkedIn?: string;
   website?: string;
   about?: string;
-  photos?: ImageItem[] | VideoItem[];
+  photos?: ImageItem[];
 }
 export type SecondStepTeachersFormKey = keyof SecondStepTeachersForm;
 
@@ -38,4 +38,5 @@ export interface TeachersProfile
 export interface TeachersProfileView extends TeachersProfile {
   country: string;
   language: string;
+  photos: ImageItem[];
 }

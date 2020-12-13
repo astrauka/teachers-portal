@@ -1,7 +1,7 @@
 import {
   currentTeachersInfo,
   currentTeachersProfile,
-  updateTeachersProfile,
+  updateInitialTeachersProfile,
 } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { InitialTeacherForm, InitialTeacherFormKey } from 'public/common/entities/teachers-profile';
@@ -32,6 +32,7 @@ $w.onReady(() =>
     };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
+    $w('#uploadButton' as 'UploadButton').onChange(() => uploadProfileImage($w));
     $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
   })
 );
@@ -96,7 +97,7 @@ async function setCurrentTeacherName($w) {
   }
 }
 
-export function uploadButton_change(event) {
+function uploadProfileImage($w) {
   const $uploadButton = $w('#uploadButton' as 'UploadButton');
   const $uploadStatus = $w('#uploadStatus' as 'Text');
   if ($uploadButton.value.length > 0) {
@@ -133,7 +134,7 @@ async function submitProfileInfoForm($w) {
   const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
 
   try {
-    await updateTeachersProfile(state.fieldValues);
+    await updateInitialTeachersProfile(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
     if (updatedProfileImage) {
       $w('#headerProfileImage' as 'Image').src = updatedProfileImage;

@@ -14,6 +14,12 @@ export function makeTeachersProfileViewsFactory(countryRepository, languageRepos
         const languagesByIds = keyBy(languages, '_id');
         return teachersProfiles.map((teachersProfile) => ({
             ...teachersProfile,
+            facebook: teachersProfile.facebook || '',
+            instagram: teachersProfile.instagram || '',
+            linkedIn: teachersProfile.linkedIn || '',
+            website: teachersProfile.website || '',
+            about: teachersProfile.about || '',
+            photos: teachersProfile.photos || [],
             country: get(countriesByIds[teachersProfile.countryId], 'title'),
             language: get(languagesByIds[teachersProfile.languageId], 'title'),
         }));

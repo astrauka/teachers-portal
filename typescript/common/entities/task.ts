@@ -14,4 +14,5 @@ export interface TaskView extends Task {
 
 export enum TaskNumber {
   initialProfileForm = 1,
+  secondStepProfileForm = 2,
 }

@@ -1,3 +1,8 @@
+export var MediaItemTypes;
+(function (MediaItemTypes) {
+    MediaItemTypes["IMAGE"] = "image";
+    MediaItemTypes["VIDEO"] = "video";
+})(MediaItemTypes || (MediaItemTypes = {}));
 export var RegistrationResultStatus;
 (function (RegistrationResultStatus) {
     RegistrationResultStatus["Pending"] = "Pending";

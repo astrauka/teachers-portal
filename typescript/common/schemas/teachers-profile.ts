@@ -18,28 +18,25 @@ export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
 export const secondStepTeachersFormSchema: ValidationSchema<SecondStepTeachersForm> = {
   facebook: {
     type: 'string',
-    optional: true,
-    min: 3,
+    empty: true,
     max: 300,
     pattern: /^([\w\-]*\/)*[\w\-.]*$/,
   },
   instagram: {
     type: 'string',
-    optional: true,
-    min: 3,
+    empty: true,
     max: 300,
     pattern: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
   },
   linkedIn: {
     type: 'string',
-    optional: true,
-    min: 3,
+    empty: true,
     max: 300,
     pattern: /([^\/?&\s]*)(?:\/|&|\?)?.*$/,
   },
   website: {
     type: 'url',
-    optional: true,
+    empty: true,
   },
   about: { type: 'string', optional: true },
   photos: {

@@ -1,8 +1,8 @@
 import { omit } from 'lodash';
 import { TaskNumber } from '../../common/entities/task';
 import { validateInitialTeachersForm } from '../validators';
-export function updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask) {
-    return async function updateCurrentTeachersProfile(update) {
+export function updateInitialTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask) {
+    return async function updateInitialTeachersProfile(update) {
         validateInitialTeachersForm(update);
         const [teachersInfo, country, language] = await Promise.all([
             getCurrentTeachersInfo(),

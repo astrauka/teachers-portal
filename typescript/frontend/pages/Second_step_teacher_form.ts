@@ -1,6 +1,6 @@
-import { currentTeachersProfile, updateTeachersProfile } from 'backend/backend-api';
+import { currentTeachersProfile, updateSecondStepTeachersProfile } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { ImageItem } from 'public/common/common-wix-types';
+import { ImageItem, MediaItemTypes } from 'public/common/common-wix-types';
 import {
   SecondStepTeachersForm,
   SecondStepTeachersFormKey,
@@ -11,7 +11,6 @@ import { objectFromArray } from 'public/forms';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-import { MediaItemTypes } from '../../common/common-wix-types';
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };
@@ -44,7 +43,7 @@ $w.onReady(() =>
       validationMessages: objectFromArray<ValidationMessages>(FIELDS_WITH_VALIDATION, ''),
     };
     await assignCurrentTeacherProfileFormFields($w);
-    $w('#uploadPhotos' as 'Button').onClick(() => uploadPhotos($w));
+    $w('#uploadPhotos' as 'UploadButton').onChange(() => uploadPhotos($w));
     $w('#submitButton' as 'Button').onClick(() => submitForm($w));
   })
 );
@@ -63,7 +62,9 @@ async function assignCurrentTeacherProfileFormFields($w) {
     }
   );
 
-  $w('#photos' as 'Gallery').items = state.fieldValues.photos;
+  if (state.fieldValues.photos.length) {
+    $w('#photos' as 'Gallery').items = state.fieldValues.photos;
+  }
 
   TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'TextInput');
@@ -77,7 +78,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
 function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event, $w) {
   const value = event.target.value;
   state.fieldValues[field] = value;
-  if (field in FIELDS_WITH_VALIDATION) {
+  if (FIELDS_WITH_VALIDATION.includes(field)) {
     state.validationMessages[field] = validateField(field, value, secondStepTeachersFormSchema);
   }
   const $submitButton = $w('#submitButton' as 'Button');
@@ -132,7 +133,7 @@ async function submitForm($w) {
   $submissionStatus.show();
 
   try {
-    await updateTeachersProfile(state.fieldValues);
+    await updateSecondStepTeachersProfile(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
     wixLocation.to('/dashboard');
   } catch (error) {

@@ -9,14 +9,14 @@ import { validateInitialTeachersForm } from '../validators';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
-export function updateCurrentTeachersProfileFactory(
+export function updateInitialTeachersProfileFactory(
   teachersProfileRepository: TeachersProfileRepository,
   countryRepository: CountryRepository,
   languageRepository: LanguageRepository,
   getCurrentTeachersInfo: GetCurrentTeachersInfo,
   completeTeachersTask: CompleteTeachersTask
 ) {
-  return async function updateCurrentTeachersProfile(
+  return async function updateInitialTeachersProfile(
     update: InitialTeacherForm
   ): Promise<TeachersProfile> {
     validateInitialTeachersForm(update);

@@ -9,7 +9,8 @@ import { getCuratingTeachersProfileFactory } from '../business-logic/operations/
 import { getCurrentTeachersInfoFactory } from '../business-logic/operations/get-current-teachers-info';
 import { getCurrentTeachersTasksFactory } from '../business-logic/operations/get-current-teachers-tasks';
 import { getTeachersProfileFactory } from '../business-logic/operations/get-teachers-profile';
-import { updateCurrentTeachersProfileFactory } from '../business-logic/operations/update-current-teachers-profile';
+import { updateInitialTeachersProfileFactory } from '../business-logic/operations/update-initial-teachers-profile';
+import { updateSecondStepTeachersProfileFactory } from '../business-logic/operations/update-second-step-teachers-profile';
 import { updateTeachersProfileSlugFactory } from '../business-logic/operations/update-teachers-profile-slug';
 import { makeTeachersProfileViewsFactory } from '../business-logic/views/make-teachers-profile-view';
 import { CountryRepository } from '../repositories/country-repository';
@@ -44,7 +45,8 @@ export const setupContext = memoize(async (externals) => {
     const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
     const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(getCurrentTeachersInfo, getTeachersProfile, teachersInfoRepository);
     const completeTeachersTask = completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository);
-    const updateCurrentTeachersProfile = updateCurrentTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
+    const updateInitialTeachersProfile = updateInitialTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
+    const updateSecondStepTeachersProfile = updateSecondStepTeachersProfileFactory(usersService, teachersProfileRepository, getTeachersProfile, completeTeachersTask);
     const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
     const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(taskRepository, teachersInfoRepository, getCurrentTeachersInfo);
     // views
@@ -69,7 +71,8 @@ export const setupContext = memoize(async (externals) => {
             getCurrentTeachersInfo,
             getTeachersProfile,
             getCuratingTeachersProfile,
-            updateCurrentTeachersProfile,
+            updateInitialTeachersProfile,
+            updateSecondStepTeachersProfile,
             updateTeachersProfileSlug,
             getCurrentTeachersTasks,
         },
