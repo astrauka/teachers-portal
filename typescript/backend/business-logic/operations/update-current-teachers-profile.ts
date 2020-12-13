@@ -5,7 +5,7 @@ import { InitialTeacherForm, TeachersProfile } from '../../common/entities/teach
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
-import { validateTeachersProfileUpdate } from '../validators';
+import { validateInitialTeachersForm } from '../validators';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
 
@@ -19,17 +19,17 @@ export function updateCurrentTeachersProfileFactory(
   return async function updateCurrentTeachersProfile(
     update: InitialTeacherForm
   ): Promise<TeachersProfile> {
-    validateTeachersProfileUpdate(update);
+    validateInitialTeachersForm(update);
     const [teachersInfo, country, language] = await Promise.all([
       getCurrentTeachersInfo(),
       countryRepository.fetchCountryByTitleOrThrow(update.country),
       languageRepository.fetchLanguageByTitleOrThrow(update.language),
     ]);
-    const updateWithIds = {
+    const updateWithIds: Partial<TeachersProfile> = {
       ...omit(update, ['country', 'language']),
       countryId: country._id,
       languageId: language._id,
-    } as TeachersProfile;
+    };
     const teachersProfile = await persistProfile(teachersInfo, updateWithIds);
     await completeTeachersTask(TaskNumber.initialProfileForm);
     return teachersProfile;
@@ -37,7 +37,7 @@ export function updateCurrentTeachersProfileFactory(
 
   async function persistProfile(
     teachersInfo: TeachersInfo,
-    updateWithIds: TeachersProfile
+    updateWithIds: Partial<TeachersProfile>
   ): Promise<TeachersProfile> {
     const { email, firstName, lastName, levelId, statusId } = teachersInfo;
     const teachersProfile = await teachersProfileRepository.fetchTeachersProfileByEmail(email);

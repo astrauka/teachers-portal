@@ -1,4 +1,4 @@
-import { omit, pick } from 'lodash';
+import { pick } from 'lodash';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';

@@ -3,7 +3,6 @@ export import WixDataQueryReferencedResult = wix_data.WixDataQueryReferencedResu
 export import WixDataQueryResult = wix_data.WixDataQueryResult;
 export import WixDataFilter = wix_data.WixDataFilter;
 export import wixData = wix_data;
-
 export import User = wix_users.User;
 
 export enum RegistrationResultStatus {
