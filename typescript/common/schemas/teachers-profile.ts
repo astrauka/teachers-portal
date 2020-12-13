@@ -1,4 +1,5 @@
 import { ValidationSchema } from 'fastest-validator';
+import { omit } from 'lodash';
 import {
   InitialTeacherForm,
   SecondStepTeachersForm,
@@ -43,6 +44,7 @@ export const secondStepTeachersFormSchema: ValidationSchema<SecondStepTeachersFo
   about: { type: 'string', optional: true },
   photos: {
     type: 'array',
+    optional: true,
     items: {
       type: 'object',
       props: {
@@ -68,6 +70,6 @@ export const teachersProfileSchema: ValidationSchema<TeachersProfile> = {
   levelId: { type: 'string', min: 3, max: 255 },
   statusId: { type: 'string', min: 3, max: 255 },
   teachersInfoId: { type: 'string', min: 3, max: 255 },
-  ...initialTeachersFormSchema,
+  ...omit(initialTeachersFormSchema, ['country', 'language']),
   ...secondStepTeachersFormSchema,
 };

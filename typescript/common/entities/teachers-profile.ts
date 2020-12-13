@@ -1,4 +1,4 @@
-import { ImageItem, VideoItem } from '../manual-wix-types';
+import { ImageItem, VideoItem } from '../common-wix-types';
 import { Storable } from './storable';
 
 export interface InitialTeacherForm {

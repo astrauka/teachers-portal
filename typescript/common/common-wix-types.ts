@@ -19,3 +19,14 @@ export interface VideoItem {
   link?: string;
   thumbnail?: string;
 }
+
+export enum RegistrationResultStatus {
+  Pending = 'Pending',
+  Active = 'Active',
+}
+
+export enum MemberStatus {
+  Applicant = 'Applicant',
+  Active = 'Active',
+  Blocked = 'Blocked',
+}

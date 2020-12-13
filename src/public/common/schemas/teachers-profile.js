@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 export const initialTeachersFormSchema = {
     profileImage: { type: 'string', min: 3 },
     phoneNumber: { type: 'string', min: 3, max: 255, pattern: /^\+?[\d\-\s]+$/ },
@@ -35,6 +36,7 @@ export const secondStepTeachersFormSchema = {
     about: { type: 'string', optional: true },
     photos: {
         type: 'array',
+        optional: true,
         items: {
             type: 'object',
             props: {
@@ -59,6 +61,6 @@ export const teachersProfileSchema = {
     levelId: { type: 'string', min: 3, max: 255 },
     statusId: { type: 'string', min: 3, max: 255 },
     teachersInfoId: { type: 'string', min: 3, max: 255 },
-    ...initialTeachersFormSchema,
+    ...omit(initialTeachersFormSchema, ['country', 'language']),
     ...secondStepTeachersFormSchema,
 };
