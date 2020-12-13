@@ -23,7 +23,11 @@ export function addFieldValidation(field: string, schema: ValidationSchema): voi
   );
 }
 
-export function validateField(field: string, value: string, schema: ValidationSchema): string {
+export function validateField(
+  field: string,
+  value: string | object[],
+  schema: ValidationSchema
+): string {
   const $validationMessage = $w(`#${field}ValidationMessage` as 'Text');
   const validationResult = validator.validate({ [field]: value }, pick(schema, field));
   if (validationResult !== true) {

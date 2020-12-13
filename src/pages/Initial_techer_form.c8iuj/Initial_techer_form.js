@@ -1,4 +1,4 @@
-import { currentTeachersInfo, currentTeachersProfile, updateTeachersProfile, } from 'backend/backend-api';
+import { currentTeachersInfo, currentTeachersProfile, updateInitialTeachersProfile, } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
@@ -19,6 +19,7 @@ $w.onReady(() => forLoggedInUser(async () => {
     };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
+    $w('#uploadButton').onChange(() => uploadProfileImage($w));
     $w('#submit').onClick(() => submitProfileInfoForm($w));
 }));
 async function assignCurrentTeacherProfileFormFields($w) {
@@ -75,7 +76,7 @@ async function setCurrentTeacherName($w) {
         console.error(`Could not load current teacher for ${await wixUsers.currentUser.getEmail()}`);
     }
 }
-export function uploadButton_change(event) {
+function uploadProfileImage($w) {
     const $uploadButton = $w('#uploadButton');
     const $uploadStatus = $w('#uploadStatus');
     if ($uploadButton.value.length > 0) {
@@ -110,9 +111,8 @@ async function submitProfileInfoForm($w) {
     $submissionStatus.show();
     const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
     try {
-        await updateTeachersProfile(state.fieldValues);
+        await updateInitialTeachersProfile(state.fieldValues);
         $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-        $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
         if (updatedProfileImage) {
             $w('#headerProfileImage').src = updatedProfileImage;
         }

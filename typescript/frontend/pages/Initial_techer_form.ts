@@ -1,7 +1,7 @@
 import {
   currentTeachersInfo,
   currentTeachersProfile,
-  updateTeachersProfile,
+  updateInitialTeachersProfile,
 } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { InitialTeacherForm, InitialTeacherFormKey } from 'public/common/entities/teachers-profile';
@@ -12,6 +12,7 @@ import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
+type ValidationMessages = { [key in InitialTeacherFormKey]: string };
 const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city', 'streetAddress'];
 const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
@@ -19,7 +20,7 @@ const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
 let state: {
   isProfileImageUploadedByUser: boolean;
   fieldValues: InitialTeacherForm;
-  validationMessages: InitialTeacherForm;
+  validationMessages: ValidationMessages;
 };
 
 $w.onReady(() =>
@@ -27,10 +28,11 @@ $w.onReady(() =>
     state = {
       isProfileImageUploadedByUser: false,
       fieldValues: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
-      validationMessages: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
+      validationMessages: objectFromArray<ValidationMessages>(FORM_FIELDS, ''),
     };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
+    $w('#uploadButton' as 'UploadButton').onChange(() => uploadProfileImage($w));
     $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
   })
 );
@@ -95,7 +97,7 @@ async function setCurrentTeacherName($w) {
   }
 }
 
-export function uploadButton_change(event) {
+function uploadProfileImage($w) {
   const $uploadButton = $w('#uploadButton' as 'UploadButton');
   const $uploadStatus = $w('#uploadStatus' as 'Text');
   if ($uploadButton.value.length > 0) {
@@ -132,9 +134,8 @@ async function submitProfileInfoForm($w) {
   const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
 
   try {
-    await updateTeachersProfile(state.fieldValues);
+    await updateInitialTeachersProfile(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-    $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
     if (updatedProfileImage) {
       $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
     }

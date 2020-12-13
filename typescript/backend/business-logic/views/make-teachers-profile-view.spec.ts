@@ -28,11 +28,13 @@ describe('makeTeachersProfileViews', () => {
     ...teachersProfile1,
     country: country1.title,
     language: language1.title,
+    photos: teachersProfile1.photos,
   };
   const teachersProfileView2: TeachersProfileView = {
     ...teachersProfile2,
     country: country2.title,
     language: language2.title,
+    photos: teachersProfile1.photos,
   };
   const teachersProfileViews = [teachersProfileView1, teachersProfileView2];
 

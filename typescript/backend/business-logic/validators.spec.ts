@@ -1,8 +1,23 @@
+import { keys, pick } from 'lodash';
 import { buildTask } from '../../test/builders/task';
 import { buildTeachersInfo } from '../../test/builders/teachers-info';
-import { buildTeachersProfile } from '../../test/builders/teachers-profile';
+import {
+  buildTeachersProfile,
+  buildTeachersProfileView,
+} from '../../test/builders/teachers-profile';
 import { expect, getErrorOf } from '../../test/utils/expectations';
-import { validateTask, validateTeachersInfo, validateTeachersProfile } from './validators';
+import { InitialTeacherForm, SecondStepTeachersForm } from '../common/entities/teachers-profile';
+import {
+  initialTeachersFormSchema,
+  secondStepTeachersFormSchema,
+} from '../common/schemas/teachers-profile';
+import {
+  validateInitialTeachersForm,
+  validateSecondStepTeachersForm,
+  validateTask,
+  validateTeachersInfo,
+  validateTeachersProfile,
+} from './validators';
 
 describe('validateTask', () => {
   const task = buildTask();
@@ -71,6 +86,67 @@ describe('validateTeachersProfile', () => {
       const errorMessage = getErrorOf(() => validateTeachersProfile(teachersProfile)).message;
       expect(errorMessage).to.include('field must be a valid e-mail');
       expect(errorMessage).to.include("The 'profileImage' field is required");
+    });
+  });
+});
+
+describe('validateInitialTeachersForm', () => {
+  const update = pick(
+    buildTeachersProfileView(),
+    keys(initialTeachersFormSchema)
+  ) as InitialTeacherForm;
+
+  it('should return the update', () => {
+    expect(validateInitialTeachersForm(update)).to.eql(update);
+  });
+
+  context('on invalid input', () => {
+    const update = {
+      ...(pick(buildTeachersProfileView(), keys(initialTeachersFormSchema)) as InitialTeacherForm),
+      streetAddress: 'a',
+    };
+
+    it('should throw', () => {
+      const errorMessage = getErrorOf(() => validateInitialTeachersForm(update)).message;
+      expect(errorMessage).to.include('field length must be greater than or equal');
+    });
+  });
+});
+
+describe('validateSecondStepTeachersForm', () => {
+  const update: SecondStepTeachersForm = pick(
+    buildTeachersProfileView(),
+    keys(secondStepTeachersFormSchema)
+  );
+
+  it('should return the update', () => {
+    expect(validateSecondStepTeachersForm(update)).to.eql(update);
+  });
+
+  context('on blank values provided', () => {
+    const update: SecondStepTeachersForm = {
+      facebook: '',
+      instagram: '',
+      linkedIn: '',
+      about: '',
+      website: '',
+      photos: [],
+    };
+
+    it('should return the update', () => {
+      expect(validateSecondStepTeachersForm(update)).to.eql(update);
+    });
+  });
+
+  context('on invalid input', () => {
+    const update: SecondStepTeachersForm = {
+      ...pick(buildTeachersProfileView(), keys(secondStepTeachersFormSchema)),
+      facebook: '~!@#@#  ///',
+    };
+
+    it('should throw', () => {
+      const errorMessage = getErrorOf(() => validateSecondStepTeachersForm(update)).message;
+      expect(errorMessage).to.include('field fails to match the required pattern');
     });
   });
 });

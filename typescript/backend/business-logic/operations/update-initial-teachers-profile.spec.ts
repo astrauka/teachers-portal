@@ -14,9 +14,9 @@ import { TeachersProfileRepository } from '../../repositories/teachers-profile-r
 import { InvalidRequestError } from '../../utils/errors';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
-import { updateCurrentTeachersProfileFactory } from './update-current-teachers-profile';
+import { updateInitialTeachersProfileFactory } from './update-initial-teachers-profile';
 
-describe('updateCurrentTeachersProfile', () => {
+describe('updateInitialTeachersProfile', () => {
   const country = buildCountry();
   const language = buildLanguage();
   const teachersInfo = buildRegisteredTeachersInfo({
@@ -74,7 +74,7 @@ describe('updateCurrentTeachersProfile', () => {
     languageRepository,
     getCurrentTeachersInfo,
     completeTeachersTask,
-    updateCurrentTeachersProfile: updateCurrentTeachersProfileFactory(
+    updateInitialTeachersProfile: updateInitialTeachersProfileFactory(
       teachersProfileRepository,
       countryRepository,
       languageRepository,
@@ -89,10 +89,10 @@ describe('updateCurrentTeachersProfile', () => {
       languageRepository,
       getCurrentTeachersInfo,
       completeTeachersTask,
-      updateCurrentTeachersProfile,
+      updateInitialTeachersProfile,
     } = buildTestContext();
 
-    expect(await updateCurrentTeachersProfile(update)).to.eql(updatedTeachersProfile);
+    expect(await updateInitialTeachersProfile(update)).to.eql(updatedTeachersProfile);
     expect(getCurrentTeachersInfo).calledOnceWithExactly();
     expect(languageRepository.fetchLanguageByTitleOrThrow).calledOnceWithExactly(language.title);
     expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(
@@ -134,7 +134,7 @@ describe('updateCurrentTeachersProfile', () => {
     it('should create a new teachers profile and complete task', async () => {
       const {
         teachersProfileRepository,
-        updateCurrentTeachersProfile,
+        updateInitialTeachersProfile,
         completeTeachersTask,
       } = buildTestContext({
         teachersProfileRepository: getTeachersProfileRepository(
@@ -142,7 +142,7 @@ describe('updateCurrentTeachersProfile', () => {
           createdTeachersProfile
         ),
       });
-      expect(await updateCurrentTeachersProfile(update)).to.eql(createdTeachersProfile);
+      expect(await updateInitialTeachersProfile(update)).to.eql(createdTeachersProfile);
       expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(
         teachersInfo.email
       );
@@ -156,8 +156,8 @@ describe('updateCurrentTeachersProfile', () => {
       const update = { phoneNumber: '11', city: 'a' } as InitialTeacherForm;
 
       it('should return human readable error', async () => {
-        const { teachersProfileRepository, updateCurrentTeachersProfile } = buildTestContext();
-        await expect(updateCurrentTeachersProfile(update)).rejectedWith(/field is required/);
+        const { teachersProfileRepository, updateInitialTeachersProfile } = buildTestContext();
+        await expect(updateInitialTeachersProfile(update)).rejectedWith(/field is required/);
         expect(teachersProfileRepository.fetchTeachersProfileByEmail).not.called;
       });
     });
@@ -171,10 +171,10 @@ describe('updateCurrentTeachersProfile', () => {
         });
 
       it('should throw', async () => {
-        const { teachersProfileRepository, updateCurrentTeachersProfile } = buildTestContext({
+        const { teachersProfileRepository, updateInitialTeachersProfile } = buildTestContext({
           teachersProfileRepository: getTeachersProfileRepository(teachersProfile),
         });
-        await expect(updateCurrentTeachersProfile(update)).rejectedWith(error);
+        await expect(updateInitialTeachersProfile(update)).rejectedWith(error);
         expect(teachersProfileRepository.fetchTeachersProfileByEmail).calledOnceWithExactly(
           teachersInfo.email
         );
