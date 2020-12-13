@@ -20,6 +20,11 @@ export interface VideoItem {
   thumbnail?: string;
 }
 
+export enum MediaItemTypes {
+  IMAGE = 'image',
+  VIDEO = 'video',
+}
+
 export enum RegistrationResultStatus {
   Pending = 'Pending',
   Active = 'Active',

@@ -19,7 +19,7 @@ export interface SecondStepTeachersForm {
   about?: string;
   photos?: ImageItem[] | VideoItem[];
 }
-export type SecondStepTeacherFormKey = keyof SecondStepTeachersForm;
+export type SecondStepTeachersFormKey = keyof SecondStepTeachersForm;
 
 export interface TeachersProfile
   extends Storable,

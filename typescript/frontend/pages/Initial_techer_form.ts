@@ -12,6 +12,7 @@ import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
+type ValidationMessages = { [key in InitialTeacherFormKey]: string };
 const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city', 'streetAddress'];
 const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
@@ -19,7 +20,7 @@ const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
 let state: {
   isProfileImageUploadedByUser: boolean;
   fieldValues: InitialTeacherForm;
-  validationMessages: InitialTeacherForm;
+  validationMessages: ValidationMessages;
 };
 
 $w.onReady(() =>
@@ -27,7 +28,7 @@ $w.onReady(() =>
     state = {
       isProfileImageUploadedByUser: false,
       fieldValues: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
-      validationMessages: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
+      validationMessages: objectFromArray<ValidationMessages>(FORM_FIELDS, ''),
     };
     await setCurrentTeacherName($w);
     await assignCurrentTeacherProfileFormFields($w);
@@ -134,7 +135,6 @@ async function submitProfileInfoForm($w) {
   try {
     await updateTeachersProfile(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-    $submissionStatus.hide('fade', { duration: 2000, delay: 1000 });
     if (updatedProfileImage) {
       $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
     }
