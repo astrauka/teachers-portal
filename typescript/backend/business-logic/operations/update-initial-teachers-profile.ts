@@ -1,13 +1,26 @@
 import { omit } from 'lodash';
 import { TaskNumber } from '../../common/entities/task';
 import { TeachersInfo } from '../../common/entities/teachers-info';
-import { InitialTeacherForm, TeachersProfile } from '../../common/entities/teachers-profile';
+import {
+  InitialTeacherForm,
+  SecondStepTeachersForm,
+  TeachersProfile,
+} from '../../common/entities/teachers-profile';
 import { CountryRepository } from '../../repositories/country-repository';
 import { LanguageRepository } from '../../repositories/language-repository';
 import { TeachersProfileRepository } from '../../repositories/teachers-profile-repository';
 import { validateInitialTeachersForm } from '../validators';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
+
+export const TEACHERS_PROFILE_DEFAULTS: SecondStepTeachersForm = {
+  facebook: '',
+  instagram: '',
+  linkedIn: '',
+  about: '',
+  website: '',
+  photos: [],
+};
 
 export function updateInitialTeachersProfileFactory(
   teachersProfileRepository: TeachersProfileRepository,
@@ -55,6 +68,7 @@ export function updateInitialTeachersProfileFactory(
       levelId,
       statusId,
       teachersInfoId: teachersInfo._id,
+      ...TEACHERS_PROFILE_DEFAULTS,
     });
   }
 }

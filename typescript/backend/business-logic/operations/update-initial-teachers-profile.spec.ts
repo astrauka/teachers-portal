@@ -14,7 +14,10 @@ import { TeachersProfileRepository } from '../../repositories/teachers-profile-r
 import { InvalidRequestError } from '../../utils/errors';
 import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetCurrentTeachersInfo } from './get-current-teachers-info';
-import { updateInitialTeachersProfileFactory } from './update-initial-teachers-profile';
+import {
+  TEACHERS_PROFILE_DEFAULTS,
+  updateInitialTeachersProfileFactory,
+} from './update-initial-teachers-profile';
 
 describe('updateInitialTeachersProfile', () => {
   const country = buildCountry();
@@ -113,6 +116,7 @@ describe('updateInitialTeachersProfile', () => {
       languageId: language._id,
       fullName,
       teachersInfoId: teachersInfo._id,
+      ...TEACHERS_PROFILE_DEFAULTS,
     };
     const createdTeachersProfile: TeachersProfile = {
       ...(pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']) as Pick<
@@ -125,10 +129,7 @@ describe('updateInitialTeachersProfile', () => {
       fullName,
       slug,
       teachersInfoId: teachersInfo._id,
-      facebook: '',
-      instagram: '',
-      linkedIn: '',
-      about: '',
+      ...TEACHERS_PROFILE_DEFAULTS,
     };
 
     it('should create a new teachers profile and complete task', async () => {
