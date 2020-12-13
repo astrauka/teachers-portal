@@ -15,3 +15,11 @@ export function addWixLocationQueryParams(queryPrams: WixLocationQueryParams): v
 export function getWixLocationQuery(): WixLocationQueryParams {
   return wixLocation.query;
 }
+
+export async function loadFirstDatasetPage<T>($dataset): Promise<T[]> {
+  return new Promise((resolve) => {
+    $dataset.onReady(async () => {
+      resolve($dataset.loadPage(1));
+    });
+  });
+}

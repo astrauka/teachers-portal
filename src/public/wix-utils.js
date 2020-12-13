@@ -9,3 +9,10 @@ export function addWixLocationQueryParams(queryPrams) {
 export function getWixLocationQuery() {
     return wixLocation.query;
 }
+export async function loadFirstDatasetPage($dataset) {
+    return new Promise((resolve) => {
+        $dataset.onReady(async () => {
+            resolve($dataset.loadPage(1));
+        });
+    });
+}
