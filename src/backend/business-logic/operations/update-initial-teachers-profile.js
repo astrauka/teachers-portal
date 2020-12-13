@@ -1,6 +1,14 @@
 import { omit } from 'lodash';
 import { TaskNumber } from '../../common/entities/task';
 import { validateInitialTeachersForm } from '../validators';
+export const TEACHERS_PROFILE_DEFAULTS = {
+    facebook: '',
+    instagram: '',
+    linkedIn: '',
+    about: '',
+    website: '',
+    photos: [],
+};
 export function updateInitialTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask) {
     return async function updateInitialTeachersProfile(update) {
         validateInitialTeachersForm(update);
@@ -34,6 +42,7 @@ export function updateInitialTeachersProfileFactory(teachersProfileRepository, c
             levelId,
             statusId,
             teachersInfoId: teachersInfo._id,
+            ...TEACHERS_PROFILE_DEFAULTS,
         });
     }
 }
