@@ -1,8 +1,8 @@
-import { User } from '../../common/wix-types';
 import { TeachersInfo } from '../common/entities/teachers-info';
 import { Externals } from '../context/production-context';
 import { ContactInfo, RegistrationResult } from '../types/wix-types';
 import { withLogger } from '../utils/logger';
+import User = wix_users.User;
 
 export class UsersService {
   constructor(private readonly externals: Externals) {}

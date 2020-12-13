@@ -1,28 +1,5 @@
+import { ImageItem, VideoItem } from '../common-wix-types';
 import { Storable } from './storable';
-
-export interface TeachersProfile extends Storable {
-  email: string;
-  profileImage: string;
-  fullName: string;
-  slug: string;
-  phoneNumber: string;
-  countryId: string;
-  city: string;
-  streetAddress: string;
-  languageId: string;
-  levelId: string;
-  statusId: string;
-  teachersInfoId: string;
-  facebook: string;
-  instagram: string;
-  linkedIn: string;
-  about: string;
-}
-
-export interface TeachersProfileView extends TeachersProfile {
-  country: string;
-  language: string;
-}
 
 export interface InitialTeacherForm {
   profileImage: string;
@@ -34,10 +11,31 @@ export interface InitialTeacherForm {
 }
 export type InitialTeacherFormKey = keyof InitialTeacherForm;
 
-export interface SecondStepTeacherForm {
+export interface SecondStepTeachersForm {
   facebook?: string;
   instagram?: string;
   linkedIn?: string;
+  website?: string;
   about?: string;
+  photos?: ImageItem[] | VideoItem[];
 }
-export type SecondStepTeacherFormKey = keyof SecondStepTeacherForm;
+export type SecondStepTeacherFormKey = keyof SecondStepTeachersForm;
+
+export interface TeachersProfile
+  extends Storable,
+    Omit<InitialTeacherForm, 'country' | 'language'>,
+    SecondStepTeachersForm {
+  email: string;
+  fullName: string;
+  slug: string;
+  countryId: string;
+  languageId: string;
+  levelId: string;
+  statusId: string;
+  teachersInfoId: string;
+}
+
+export interface TeachersProfileView extends TeachersProfile {
+  country: string;
+  language: string;
+}

@@ -1,6 +1,7 @@
-import { WixDataQueryReferencedResult, WixDataQueryResult } from '../../common/wix-types';
 import { Externals } from '../context/production-context';
 import { RecordNotFoundError } from './errors';
+import WixDataQueryResult = wix_data.WixDataQueryResult;
+import WixDataQueryReferencedResult = wix_data.WixDataQueryReferencedResult;
 
 export async function findSingleRecord<T>(
   queryResultPromise: Promise<WixDataQueryResult>

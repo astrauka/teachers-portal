@@ -1,7 +1,6 @@
-import { RegisteredTeachersInfo } from '../common/entities/teachers-info';
 import { TeachersProfile } from '../common/entities/teachers-profile';
 import { Externals } from '../context/production-context';
-import { findById, findSingleRecord } from '../utils/database-queries';
+import { findSingleRecord } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
 const TEACHERS_PROFILE_COLLECTION = 'TeachersProfile';
@@ -59,7 +58,9 @@ export class TeachersProfileRepository {
     );
   }
 
-  public async insertTeachersProfile(teachersProfile: TeachersProfile): Promise<TeachersProfile> {
+  public async insertTeachersProfile(
+    teachersProfile: Partial<TeachersProfile>
+  ): Promise<TeachersProfile> {
     return withLogger(
       `insertTeachersProfile ${teachersProfile.email}`,
       this.externals.wixData.insert(TEACHERS_PROFILE_COLLECTION, teachersProfile, {
