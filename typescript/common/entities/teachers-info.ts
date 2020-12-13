@@ -15,15 +15,27 @@ export interface RegisteredTeachersInfo extends TeachersInfo {
   userId: string;
 }
 
-export enum TeacherLevel {
-  NotATeacher = 'Not a teacher',
+export interface TeacherLevel {
+  _id: string;
+  title: TeacherLevels;
+  order: number;
+}
+
+export enum TeacherLevels {
   UtaraAhikari = 'Utara Adhikari',
   Adhikari = 'Adhikari',
   Basic2 = 'Basic II',
   Basic = 'Basic',
 }
 
-export enum TeacherStatus {
+export interface AccountStatus {
+  _id: string;
+  title: AccountStatuses;
+  order: number;
+}
+
+export enum AccountStatuses {
   Active = 'Active',
   Suspended = 'Suspended',
+  NotATeacher = 'Not a teacher',
 }

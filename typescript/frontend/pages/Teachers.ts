@@ -1,3 +1,4 @@
+import { AccountStatus, AccountStatuses, TeacherLevel } from 'public/common/entities/teachers-info';
 import { TeachersProfile } from 'public/common/entities/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import {
@@ -6,6 +7,7 @@ import {
   updateInputValueIfChanged,
 } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
+import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 
 const INPUT_FIELDS = {
@@ -14,9 +16,17 @@ const INPUT_FIELDS = {
   '#levelDropdown': 'level',
 };
 
+let state: {
+  teachersLevelsPromise: Promise<TeacherLevel[]>;
+  accountStatusPromise: Promise<AccountStatus[]>;
+};
+
 $w.onReady(() =>
   forLoggedInUser(async () => {
-    const teachersLevelsPromise = getTeacherLevels($w);
+    state = {
+      teachersLevelsPromise: loadFirstDatasetPage<TeacherLevel>($w('#TeacherLevelsDataset')),
+      accountStatusPromise: loadFirstDatasetPage<AccountStatus>($w('#AccountStatusesDataset')),
+    };
     updateInputValueIfChanged(INPUT_FIELDS, $w);
     setupInputChangeHandlers(INPUT_FIELDS, $w);
     $w('#resetFiltersButton' as 'Button').onClick(async () => {
@@ -25,9 +35,9 @@ $w.onReady(() =>
 
     wixLocation.onChange(async () => {
       updateInputValueIfChanged(INPUT_FIELDS, $w);
-      await updateTeachersFilter($w, teachersLevelsPromise);
+      await updateTeachersFilter($w);
     });
-    await updateTeachersFilter($w, teachersLevelsPromise);
+    await updateTeachersFilter($w);
   })
 );
 
@@ -37,23 +47,20 @@ export function teachersName_click(event) {
   wixLocation.to(`/teacher/${slug}`);
 }
 
-async function getTeacherLevels($w) {
-  return new Promise((resolve) => {
-    $w('#TeacherLevelsDataset').onReady(async () => {
-      resolve($w('#TeacherLevelsDataset').loadPage(1));
-    });
-  });
-}
-
-async function updateTeachersFilter($w, teachersLevelsPromise) {
+async function updateTeachersFilter($w) {
   const values = wixLocation.query;
-  const teachersLevels = await teachersLevelsPromise;
-  const teachersLevel = teachersLevels.find(({ title }) => title === values.level);
-  const levelId = teachersLevel && teachersLevel._id;
+  const levelId =
+    values.level &&
+    (await state.teachersLevelsPromise).find(({ title }) => title === values.level)?._id;
+  const statusId = (await state.accountStatusPromise).find(
+    ({ title }) => title === AccountStatuses.NotATeacher
+  )?._id;
+
   const datasetFilter = getFilter([
     [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
     [values.city, (filter) => filter.contains('city', values.city)],
     [levelId, (filter) => filter.eq('levelId', levelId)],
+    [statusId, (filter) => filter.ne('statusId', statusId)],
   ]);
 
   await $w('#TeachersProfileDataset').setFilter(datasetFilter);
