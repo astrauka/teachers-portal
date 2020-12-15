@@ -26,22 +26,25 @@ export function addFieldValidation(field: string, schema: ValidationSchema): voi
 export function validateField(
   field: string,
   value: string | object[],
-  schema: ValidationSchema
+  schema: ValidationSchema,
+  { updateValidationMessage = true }: { updateValidationMessage?: boolean } = {}
 ): string {
   const $validationMessage = $w(`#${field}ValidationMessage` as 'Text');
   const validationResult = validator.validate({ [field]: value }, pick(schema, field));
-  if (validationResult !== true) {
-    const message = humanizeValidationMessage(validationResult);
+  const message = humanizeValidationMessage(validationResult);
+  if (!updateValidationMessage) {
+    return message;
+  }
+  if (message) {
     $validationMessage.text = message;
     $validationMessage.show();
-    return message;
   } else {
     $validationMessage.hide();
     $validationMessage.text = '';
-    return '';
   }
+  return message;
 }
 
-function humanizeValidationMessage(errors: ValidationError[]) {
-  return errors[0].message;
+function humanizeValidationMessage(validationResult: boolean | ValidationError[]) {
+  return validationResult === true ? '' : validationResult[0].message;
 }

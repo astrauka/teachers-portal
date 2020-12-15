@@ -18,7 +18,6 @@ const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
 let state: {
-  isProfileImageUploadedByUser: boolean;
   fieldValues: InitialTeacherForm;
   validationMessages: ValidationMessages;
 };
@@ -26,7 +25,6 @@ let state: {
 $w.onReady(() =>
   forLoggedInUser(async () => {
     state = {
-      isProfileImageUploadedByUser: false,
       fieldValues: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
       validationMessages: objectFromArray<ValidationMessages>(FORM_FIELDS, ''),
     };
@@ -41,19 +39,22 @@ async function assignCurrentTeacherProfileFormFields($w) {
   const teachersProfile = await currentTeachersProfile();
   if (teachersProfile) {
     state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-    state.isProfileImageUploadedByUser = true;
   } else {
-    state.isProfileImageUploadedByUser = false;
     console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
   }
-  state.validationMessages = transform(
-    pick(state.fieldValues, FORM_INPUTS),
-    (acc, value, field) => {
-      acc[field] = validateField(field, value, initialTeachersFormSchema);
-    }
-  );
+  FORM_FIELDS.forEach((field) => {
+    state.validationMessages[field] = validateField(
+      field,
+      state.fieldValues[field],
+      initialTeachersFormSchema,
+      { updateValidationMessage: FORM_INPUTS.includes(field) }
+    );
+  });
+  await enableSubmissionButton($w);
 
-  $w('#profileImage' as 'Image').src = state.fieldValues.profileImage;
+  if (state.fieldValues.profileImage) {
+    $w('#profileImage' as 'Image').src = state.fieldValues.profileImage;
+  }
   FORM_INPUTS.forEach((field) => {
     $w(`#${field}` as 'FormElement').value = state.fieldValues[field];
   });
@@ -71,10 +72,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
   });
 }
 
-function onInputChange(field: string, event: $w.Event, $w) {
-  const value = event.target.value;
-  state.fieldValues[field] = value;
-  state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
+function enableSubmissionButton($w): Promise<void> {
   const $submitButton = $w('#submit' as 'Button');
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   if (some(values(state.validationMessages))) {
@@ -86,6 +84,13 @@ function onInputChange(field: string, event: $w.Event, $w) {
     $submissionStatus.hide();
     return $submitButton.enable();
   }
+}
+
+function onInputChange(field: string, event: $w.Event, $w): Promise<void> {
+  const value = event.target.value;
+  state.fieldValues[field] = value;
+  state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
+  return enableSubmissionButton($w);
 }
 
 async function setCurrentTeacherName($w) {
@@ -112,7 +117,6 @@ function uploadProfileImage($w) {
         $w('#profileImage' as 'Image').src = uploadedFile.url;
         state.fieldValues.profileImage = uploadedFile.url;
         state.validationMessages.profileImage = '';
-        state.isProfileImageUploadedByUser = true;
       })
       .catch((uploadError) => {
         $uploadStatus.text = 'File upload error';
@@ -121,6 +125,7 @@ function uploadProfileImage($w) {
       })
       .finally(() => {
         $uploadButton.buttonLabel = previousButtonLabel;
+        return enableSubmissionButton($w);
       });
   } else {
     $uploadStatus.text = 'Please choose a file to upload.';
@@ -131,7 +136,7 @@ async function submitProfileInfoForm($w) {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();
-  const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
+  const updatedProfileImage = state.fieldValues.profileImage;
 
   try {
     await updateInitialTeachersProfile(state.fieldValues);

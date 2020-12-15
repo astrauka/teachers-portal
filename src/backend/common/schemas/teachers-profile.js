@@ -59,5 +59,4 @@ export const teachersProfileSchema = {
     statusId: { type: 'string', min: 3, max: 255 },
     teachersInfoId: { type: 'string', min: 3, max: 255 },
     ...omit(initialTeachersFormSchema, ['country', 'language']),
-    ...secondStepTeachersFormSchema,
 };
