@@ -20,21 +20,23 @@ export function addFieldValidation(field, schema) {
         }
     });
 }
-export function validateField(field, value, schema) {
+export function validateField(field, value, schema, { updateValidationMessage = true } = {}) {
     const $validationMessage = $w(`#${field}ValidationMessage`);
     const validationResult = validator.validate({ [field]: value }, pick(schema, field));
-    if (validationResult !== true) {
-        const message = humanizeValidationMessage(validationResult);
+    const message = humanizeValidationMessage(validationResult);
+    if (!updateValidationMessage) {
+        return message;
+    }
+    if (message) {
         $validationMessage.text = message;
         $validationMessage.show();
-        return message;
     }
     else {
         $validationMessage.hide();
         $validationMessage.text = '';
-        return '';
     }
+    return message;
 }
-function humanizeValidationMessage(errors) {
-    return errors[0].message;
+function humanizeValidationMessage(validationResult) {
+    return validationResult === true ? '' : validationResult[0].message;
 }

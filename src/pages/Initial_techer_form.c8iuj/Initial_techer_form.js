@@ -1,5 +1,5 @@
 import { currentTeachersInfo, currentTeachersProfile, updateInitialTeachersProfile, } from 'backend/backend-api';
-import { pick, some, transform, values } from 'lodash';
+import { pick, some, values } from 'lodash';
 import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
 import { objectFromArray } from 'public/forms';
@@ -13,7 +13,6 @@ const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
 $w.onReady(() => forLoggedInUser(async () => {
     state = {
-        isProfileImageUploadedByUser: false,
         fieldValues: objectFromArray(FORM_FIELDS, ''),
         validationMessages: objectFromArray(FORM_FIELDS, ''),
     };
@@ -26,16 +25,17 @@ async function assignCurrentTeacherProfileFormFields($w) {
     const teachersProfile = await currentTeachersProfile();
     if (teachersProfile) {
         state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-        state.isProfileImageUploadedByUser = true;
     }
     else {
-        state.isProfileImageUploadedByUser = false;
         console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
     }
-    state.validationMessages = transform(pick(state.fieldValues, FORM_INPUTS), (acc, value, field) => {
-        acc[field] = validateField(field, value, initialTeachersFormSchema);
+    FORM_FIELDS.forEach((field) => {
+        state.validationMessages[field] = validateField(field, state.fieldValues[field], initialTeachersFormSchema, { updateValidationMessage: FORM_INPUTS.includes(field) });
     });
-    $w('#profileImage').src = state.fieldValues.profileImage;
+    await enableSubmissionButton($w);
+    if (state.fieldValues.profileImage) {
+        $w('#profileImage').src = state.fieldValues.profileImage;
+    }
     FORM_INPUTS.forEach((field) => {
         $w(`#${field}`).value = state.fieldValues[field];
     });
@@ -50,10 +50,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
         });
     });
 }
-function onInputChange(field, event, $w) {
-    const value = event.target.value;
-    state.fieldValues[field] = value;
-    state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
+function enableSubmissionButton($w) {
     const $submitButton = $w('#submit');
     const $submissionStatus = $w('#submissionStatus');
     if (some(values(state.validationMessages))) {
@@ -66,6 +63,12 @@ function onInputChange(field, event, $w) {
         $submissionStatus.hide();
         return $submitButton.enable();
     }
+}
+function onInputChange(field, event, $w) {
+    const value = event.target.value;
+    state.fieldValues[field] = value;
+    state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
+    return enableSubmissionButton($w);
 }
 async function setCurrentTeacherName($w) {
     const teachersInfo = await currentTeachersInfo();
@@ -90,7 +93,6 @@ function uploadProfileImage($w) {
             $w('#profileImage').src = uploadedFile.url;
             state.fieldValues.profileImage = uploadedFile.url;
             state.validationMessages.profileImage = '';
-            state.isProfileImageUploadedByUser = true;
         })
             .catch((uploadError) => {
             $uploadStatus.text = 'File upload error';
@@ -99,6 +101,7 @@ function uploadProfileImage($w) {
         })
             .finally(() => {
             $uploadButton.buttonLabel = previousButtonLabel;
+            return enableSubmissionButton($w);
         });
     }
     else {
@@ -109,7 +112,7 @@ async function submitProfileInfoForm($w) {
     const $submissionStatus = $w('#submissionStatus');
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
-    const updatedProfileImage = state.isProfileImageUploadedByUser && state.fieldValues.profileImage;
+    const updatedProfileImage = state.fieldValues.profileImage;
     try {
         await updateInitialTeachersProfile(state.fieldValues);
         $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
