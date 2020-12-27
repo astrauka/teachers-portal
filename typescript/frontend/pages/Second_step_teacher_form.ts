@@ -68,9 +68,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
     }
   );
 
-  if (state.fieldValues.photos.length) {
-    setPhotosRepeaterData($w);
-  }
+  setPhotosRepeaterData($w);
 
   RICH_TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'RichTextBox');
@@ -111,12 +109,14 @@ function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event, $w) {
 function deletePhotoOnClick($w) {
   const $photos = $w('#photos' as 'Repeater');
 
-  $photos.onItemReady(($item, data: PhotoRepeaterData, itemIndex: number) => {
+  $photos.onItemReady(($item, data: PhotoRepeaterData) => {
     $item('#photosImage').src = data.image;
     const $deleteBox = $item('#photoDeleteBox' as 'Box');
 
     $deleteBox.onClick(() => {
-      state.fieldValues.photos = state.fieldValues.photos.filter((_, index) => index !== itemIndex);
+      state.fieldValues.photos = state.fieldValues.photos.filter(
+        (photo: ImageItem) => photo.src !== data.image
+      );
       setPhotosRepeaterData($w);
     });
   });

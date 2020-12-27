@@ -42,9 +42,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
     state.validationMessages = transform(pick(state.fieldValues, FIELDS_WITH_VALIDATION), (acc, value, field) => {
         acc[field] = validateField(field, value, secondStepTeachersFormSchema);
     });
-    if (state.fieldValues.photos.length) {
-        setPhotosRepeaterData($w);
-    }
+    setPhotosRepeaterData($w);
     RICH_TEXT_INPUTS.forEach((field) => {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
@@ -81,11 +79,11 @@ function onInputChange(field, event, $w) {
 }
 function deletePhotoOnClick($w) {
     const $photos = $w('#photos');
-    $photos.onItemReady(($item, data, itemIndex) => {
+    $photos.onItemReady(($item, data) => {
         $item('#photosImage').src = data.image;
         const $deleteBox = $item('#photoDeleteBox');
         $deleteBox.onClick(() => {
-            state.fieldValues.photos = state.fieldValues.photos.filter((_, index) => index !== itemIndex);
+            state.fieldValues.photos = state.fieldValues.photos.filter((photo) => photo.src !== data.image);
             setPhotosRepeaterData($w);
         });
     });
