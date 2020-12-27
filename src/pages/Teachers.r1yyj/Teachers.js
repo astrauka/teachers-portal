@@ -32,10 +32,10 @@ export function teachersName_click(event) {
     wixLocation.to(`/teacher/${slug}`);
 }
 async function updateTeachersFilter($w) {
+    var _a, _b;
     const values = wixLocation.query;
-    const levelId = values.level &&
-        (await state.teachersLevelsPromise).find(({ title }) => title === values.level)?._id;
-    const statusId = (await state.accountStatusPromise).find(({ title }) => title === AccountStatuses.NotATeacher)?._id;
+    const levelId = values.level && ((_a = (await state.teachersLevelsPromise).find(({ title }) => title === values.level)) === null || _a === void 0 ? void 0 : _a._id);
+    const statusId = (_b = (await state.accountStatusPromise).find(({ title }) => title === AccountStatuses.NotATeacher)) === null || _b === void 0 ? void 0 : _b._id;
     const datasetFilter = getFilter([
         [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
         [values.city, (filter) => filter.contains('city', values.city)],
