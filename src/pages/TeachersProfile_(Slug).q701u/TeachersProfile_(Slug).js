@@ -46,10 +46,11 @@ function addSendEmailButton(teachersProfile, $w) {
     });
 }
 function hideNotFilledInformation(teachersProfile, $w) {
+    var _a;
     if (!teachersProfile.about) {
         $w('#aboutGroup').collapse();
     }
-    if (!teachersProfile.photos?.length) {
+    if (!((_a = teachersProfile.photos) === null || _a === void 0 ? void 0 : _a.length)) {
         $w('#photosGroup').collapse();
     }
 }
