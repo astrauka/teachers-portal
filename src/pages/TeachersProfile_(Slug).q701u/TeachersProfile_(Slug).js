@@ -12,6 +12,7 @@ $w.onReady(() => forLoggedInUser(async () => {
         addSocialIconLinks(teachersProfile, $w);
         addWebsiteLink(teachersProfile, $w);
         addSendEmailButton(teachersProfile, $w);
+        addAboutHtml(teachersProfile, $w);
         hideNotFilledInformation(teachersProfile, $w);
     });
 }));
@@ -32,7 +33,7 @@ function addWebsiteLink(teachersProfile, $w) {
     const $website = $w('#website');
     const { website } = teachersProfile;
     if (website) {
-        $website.html = `<a href="${website}" target="_blank">${website}</a>'`;
+        $website.html = `<a href="${website}" target="_blank">${website}</a>`;
     }
     else {
         $website.collapse();
@@ -44,6 +45,9 @@ function addSendEmailButton(teachersProfile, $w) {
     $button.onClick(() => {
         wixLocation.to(`mailto:${email}?subject=MRY%3A%20Question`);
     });
+}
+function addAboutHtml(teachersProfile, $w) {
+    $w('#about').html = teachersProfile.about;
 }
 function hideNotFilledInformation(teachersProfile, $w) {
     var _a;

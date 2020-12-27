@@ -4,24 +4,25 @@ import { ImageItem, MediaItemTypes } from 'public/common/common-wix-types';
 import {
   SecondStepTeachersForm,
   SecondStepTeachersFormKey,
+  TeachersProfileView,
 } from 'public/common/entities/teachers-profile';
 import { secondStepTeachersFormSchema } from 'public/common/schemas/teachers-profile';
 import { forLoggedInUser } from 'public/for-logged-in-user';
-import { objectFromArray } from 'public/forms';
+import { idFromString, objectFromArray } from 'public/forms';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };
-const TEXT_INPUTS: SecondStepTeachersFormKey[] = [
-  'facebook',
-  'instagram',
-  'linkedIn',
-  'website',
-  'about',
-];
-const FORM_FIELDS: SecondStepTeachersFormKey[] = [...TEXT_INPUTS, 'photos'];
+interface PhotoRepeaterData {
+  _id: string;
+  image: string;
+}
+
+const TEXT_INPUTS: SecondStepTeachersFormKey[] = ['facebook', 'instagram', 'linkedIn', 'website'];
+const RICH_TEXT_INPUTS: SecondStepTeachersFormKey[] = ['about'];
+const FORM_FIELDS: SecondStepTeachersFormKey[] = [...TEXT_INPUTS, ...RICH_TEXT_INPUTS, 'photos'];
 const FIELDS_WITH_VALIDATION: SecondStepTeachersFormKey[] = [
   'facebook',
   'instagram',
@@ -29,6 +30,7 @@ const FIELDS_WITH_VALIDATION: SecondStepTeachersFormKey[] = [
   'website',
 ];
 let state: {
+  teachersProfile: TeachersProfileView | undefined;
   fieldValues: SecondStepTeachersForm;
   validationMessages: ValidationMessages;
 };
@@ -36,6 +38,7 @@ let state: {
 $w.onReady(() =>
   forLoggedInUser(async () => {
     state = {
+      teachersProfile: undefined,
       fieldValues: {
         ...objectFromArray<SecondStepTeachersForm>(TEXT_INPUTS, ''),
         photos: [],
@@ -43,6 +46,7 @@ $w.onReady(() =>
       validationMessages: objectFromArray<ValidationMessages>(FIELDS_WITH_VALIDATION, ''),
     };
     await assignCurrentTeacherProfileFormFields($w);
+    deletePhotoOnClick($w);
     $w('#uploadPhotos' as 'UploadButton').onChange(() => uploadPhotos($w));
     $w('#submitButton' as 'Button').onClick(() => submitForm($w));
   })
@@ -50,11 +54,13 @@ $w.onReady(() =>
 
 async function assignCurrentTeacherProfileFormFields($w) {
   const teachersProfile = await currentTeachersProfile();
-  if (teachersProfile) {
-    state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-  } else {
+  if (!teachersProfile) {
     console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
+    return wixLocation.to('initial-form');
   }
+
+  state.teachersProfile = teachersProfile;
+  state.fieldValues = pick(teachersProfile, FORM_FIELDS);
   state.validationMessages = transform(
     pick(state.fieldValues, FIELDS_WITH_VALIDATION),
     (acc, value, field) => {
@@ -63,8 +69,16 @@ async function assignCurrentTeacherProfileFormFields($w) {
   );
 
   if (state.fieldValues.photos.length) {
-    $w('#photos' as 'Gallery').items = state.fieldValues.photos;
+    setPhotosRepeaterData($w);
   }
+
+  RICH_TEXT_INPUTS.forEach((field) => {
+    const $input = $w(`#${field}` as 'RichTextBox');
+    $input.value = state.fieldValues[field];
+    $input.onChange((event: $w.Event) => {
+      return onInputChange(field, event, $w);
+    });
+  });
 
   TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'TextInput');
@@ -94,6 +108,36 @@ function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event, $w) {
   }
 }
 
+function deletePhotoOnClick($w) {
+  const $photos = $w('#photos' as 'Repeater');
+
+  $photos.onItemReady(($item, data: PhotoRepeaterData, itemIndex: number) => {
+    $item('#photosImage').src = data.image;
+    const $deleteBox = $item('#photoDeleteBox' as 'Box');
+
+    $deleteBox.onClick(() => {
+      state.fieldValues.photos = state.fieldValues.photos.filter((_, index) => index !== itemIndex);
+      setPhotosRepeaterData($w);
+    });
+  });
+}
+
+function setPhotosRepeaterData($w) {
+  const data: PhotoRepeaterData[] = state.fieldValues.photos.map((photo: ImageItem) => ({
+    _id: idFromString(photo.src),
+    image: photo.src,
+  }));
+  const $photos = $w('#photos' as 'Repeater');
+  $photos.data = data;
+  if (data.length) {
+    $w('#noPhotosText').collapse();
+    $photos.expand();
+  } else {
+    $photos.collapse();
+    $w('#noPhotosText').expand();
+  }
+}
+
 function uploadPhotos($w) {
   const $uploadButton = $w('#uploadPhotos' as 'UploadButton');
   const $uploadStatus = $w('#uploadStatus' as 'Text');
@@ -112,7 +156,7 @@ function uploadPhotos($w) {
           title: uploadedFile.title,
         };
         state.fieldValues.photos = [...state.fieldValues.photos, photo];
-        $w('#photos' as 'Gallery').items = state.fieldValues.photos;
+        setPhotosRepeaterData($w);
       })
       .catch((uploadError) => {
         $uploadStatus.text = 'File upload error';
@@ -134,8 +178,8 @@ async function submitForm($w) {
 
   try {
     await updateSecondStepTeachersProfile(state.fieldValues);
-    $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-    wixLocation.to('/dashboard');
+    $submissionStatus.text = 'Profile updated, redirecting to your profile...';
+    wixLocation.to(`/teacher/${state.teachersProfile.slug}`);
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;
   }
