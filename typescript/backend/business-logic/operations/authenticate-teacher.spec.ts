@@ -1,8 +1,8 @@
 import { buildGoogleUser } from '../../../test/builders/google-user';
-import { buildTeachersInfo } from '../../../test/builders/teachers-info';
+import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
-import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { TeachersRepository } from '../../repositories/teachers-repository';
 import { GoogleAuthService } from '../../services/google-auth-service';
 import { UsersService } from '../../services/users-service';
 import { authenticateTeacherFactory } from './authenticate-teacher';
@@ -12,7 +12,7 @@ describe('authenticateTeacher', () => {
   const idToken = 'google-auth-token';
   const googleUser = buildGoogleUser();
   const signInToken = 'sign-in-token';
-  const teachersInfo = buildTeachersInfo({ id: 'teacher-id' });
+  const teacher = buildTeacher({ id: 'teacher-id' });
   const password = 'teacher-password';
 
   const getGoogleAuthService = () =>
@@ -23,24 +23,24 @@ describe('authenticateTeacher', () => {
     createStubInstance(UsersService, (stub) => {
       stub.signInTeacher.resolves(signInToken);
     });
-  const getTeachersService = (teachersInfo) =>
-    createStubInstance(TeachersInfoRepository, (stub) => {
-      stub.fetchTeacherByEmail.resolves(teachersInfo);
+  const getTeachersRepository = (teacher) =>
+    createStubInstance(TeachersRepository, (stub) => {
+      stub.fetchTeacherByEmail.resolves(teacher);
     });
   const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
   const buildTestContext = ({
     googleAuthService = getGoogleAuthService(),
     usersService = getUsersService(),
-    teachersInfoRepository = getTeachersService(teachersInfo),
+    teachersRepository = getTeachersRepository(teacher),
     generatePassword = getGeneratePassword(password),
   } = {}) => ({
     googleAuthService,
     usersService,
-    teachersInfoRepository,
+    teachersRepository,
     generatePassword,
     authenticateTeacher: authenticateTeacherFactory(
       googleAuthService,
-      teachersInfoRepository,
+      teachersRepository,
       usersService,
       generatePassword
     ),
@@ -50,23 +50,23 @@ describe('authenticateTeacher', () => {
     const {
       googleAuthService,
       usersService,
-      teachersInfoRepository,
+      teachersRepository,
       generatePassword,
       authenticateTeacher,
     } = buildTestContext();
     expect(await authenticateTeacher(idToken)).to.eql(signInToken);
     expect(googleAuthService.verifyGoogleToken).calledOnceWithExactly(idToken);
-    expect(teachersInfoRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
-    expect(generatePassword).calledOnceWithExactly(teachersInfo._id);
-    expect(usersService.signInTeacher).calledOnceWithExactly(teachersInfo, password);
+    expect(teachersRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
+    expect(generatePassword).calledOnceWithExactly(teacher._id);
+    expect(usersService.signInTeacher).calledOnceWithExactly(teacher, password);
   });
 
   context('on not a teacher', () => {
-    const teachersInfo = undefined;
+    const teacher = undefined;
 
     it('should throw', async () => {
       const { usersService, authenticateTeacher } = buildTestContext({
-        teachersInfoRepository: getTeachersService(teachersInfo),
+        teachersRepository: getTeachersRepository(teacher),
       });
       await expect(authenticateTeacher(idToken)).rejectedWith(/Invalid email/);
       expect(usersService.signInTeacher).not.called;

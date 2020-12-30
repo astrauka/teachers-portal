@@ -1,21 +1,21 @@
 import { TaskNumber } from '../../common/entities/task';
-import { TaskRepository } from '../../repositories/task-repository';
-import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
-import { GetCurrentTeachersInfo } from './get-current-teachers-info';
+import { TasksRepository } from '../../repositories/tasks-repository';
+import { TeachersRepository } from '../../repositories/teachers-repository';
+import { GetTeacher } from './get-teacher';
 
 export function completeTeachersTaskFactory(
-  getCurrentTeachersInfo: GetCurrentTeachersInfo,
-  teachersInfoRepository: TeachersInfoRepository,
-  taskRepository: TaskRepository
+  getTeacher: GetTeacher,
+  teachersRepository: TeachersRepository,
+  tasksRepository: TasksRepository
 ) {
   return async function completeTeachersTask(taskNumber: TaskNumber): Promise<void> {
-    const teachersInfo = await getCurrentTeachersInfo();
-    const task = await taskRepository.fetchTaskByNumberOrThrow(taskNumber);
-    const completedTasks = await teachersInfoRepository.fetchCompletedTasks(teachersInfo);
+    const teacher = await getTeacher();
+    const task = await tasksRepository.fetchTaskByNumberOrThrow(taskNumber);
+    const completedTasks = await teachersRepository.fetchCompletedTasks(teacher);
     if (completedTasks.find((completedTask) => completedTask.number === taskNumber)) {
       return;
     } else {
-      return teachersInfoRepository.completeTask(teachersInfo, task);
+      return teachersRepository.completeTask(teacher, task);
     }
   };
 }

@@ -1,60 +1,82 @@
-import { AccountStatus, AccountStatuses, TeacherLevel } from 'public/common/entities/teachers-info';
-import { TeachersProfile } from 'public/common/entities/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
 import {
-  resetInputFieldValues,
-  setupInputChangeHandlers,
-  updateInputValueIfChanged,
-} from 'public/inputs-location';
+  AccountStatus,
+  AccountStatuses,
+  Teacher,
+  TeacherLevel,
+} from 'public/common/entities/teacher';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { resetInputFieldValues, updateInputValueIfChanged } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 
-const INPUT_FIELDS = {
-  '#nameInput': 'fullName',
-  '#cityInput': 'city',
-  '#levelDropdown': 'level',
+type TeachersFilter = {
+  fullName: string;
+  city: string;
+  level: string;
 };
+type TeachersFilterKey = keyof TeachersFilter;
+
+const TEXT_INPUTS: TeachersFilterKey[] = ['fullName', 'city'];
+const DROPDOWNS: TeachersFilterKey[] = ['level'];
 
 let state: {
-  teachersLevelsPromise: Promise<TeacherLevel[]>;
-  accountStatusPromise: Promise<AccountStatus[]>;
+  fieldValues: TeachersFilter;
+  teacherLevels: TeacherLevel[];
+  accountStatuses: AccountStatus[];
 };
 
-$w.onReady(() =>
-  forLoggedInUser(async () => {
-    state = {
-      teachersLevelsPromise: loadFirstDatasetPage<TeacherLevel>($w('#TeacherLevelsDataset')),
-      accountStatusPromise: loadFirstDatasetPage<AccountStatus>($w('#AccountStatusesDataset')),
-    };
-    updateInputValueIfChanged(INPUT_FIELDS, $w);
-    setupInputChangeHandlers(INPUT_FIELDS, $w);
-    $w('#resetFiltersButton' as 'Button').onClick(async () => {
-      resetInputFieldValues(INPUT_FIELDS);
-    });
+forCurrentTeacher(async () => {
+  const [teacherLevels, accountStatuses] = await Promise.all([
+    loadFirstDatasetPage<TeacherLevel>($w('#TeacherLevelsDataset')),
+    loadFirstDatasetPage<AccountStatus>($w('#AccountStatusesDataset')),
+  ]);
+  state = {
+    teacherLevels,
+    accountStatuses,
+    fieldValues: wixLocation.query,
+  };
+  await updateTeachersFilter();
+  setupInputOnChange();
 
-    wixLocation.onChange(async () => {
-      updateInputValueIfChanged(INPUT_FIELDS, $w);
-      await updateTeachersFilter($w);
-    });
-    await updateTeachersFilter($w);
-  })
-);
+  $w('#resetFiltersButton' as 'Button').onClick(async () => {
+    resetInputFieldValues(state.fieldValues);
+    updateInputValueIfChanged(state.fieldValues);
+    updateTeachersFilter();
+  });
 
-export function teachersName_click(event) {
-  const $teacher = $w.at(event.context);
-  const { slug } = $teacher('#TeachersProfileDataset').getCurrentItem() as TeachersProfile;
-  wixLocation.to(`/teacher/${slug}`);
+  $w('#teachersRepeater' as 'Repeater').onItemReady(($item, teacher: Teacher) => {
+    $item('#teachersProfileImage' as 'Image').onClick(() => redirectToTeacher(teacher));
+    $item('#teachersName' as 'Text').onClick(() => redirectToTeacher(teacher));
+  });
+});
+
+function setupInputOnChange() {
+  TEXT_INPUTS.forEach((field) => {
+    const $input = $w(`#${field}` as 'TextInput');
+    $input.value = state.fieldValues[field];
+    $input.onInput((event: $w.Event) => onInputChange(field, event));
+  });
+
+  DROPDOWNS.forEach((field) => {
+    const $dropdown = $w(`#${field}` as 'Dropdown');
+    $dropdown.value = state.fieldValues[field];
+    $dropdown.onChange((event: $w.Event) => onInputChange(field, event));
+  });
 }
 
-async function updateTeachersFilter($w) {
-  const values = wixLocation.query;
+async function onInputChange(field: string, event: $w.Event): Promise<void> {
+  const value = event.target.value;
+  state.fieldValues[field] = value;
+  updateTeachersFilter();
+}
+
+async function updateTeachersFilter() {
+  const values = state.fieldValues;
   const levelId =
-    values.level &&
-    (await state.teachersLevelsPromise).find(({ title }) => title === values.level)?._id;
-  const statusId = (await state.accountStatusPromise).find(
-    ({ title }) => title === AccountStatuses.NotATeacher
-  )?._id;
+    values.level && state.teacherLevels.find(({ title }) => title === values.level)?._id;
+  const statusId = state.accountStatuses.find(({ title }) => title === AccountStatuses.NotATeacher)
+    ?._id;
 
   const datasetFilter = getFilter([
     [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
@@ -63,15 +85,15 @@ async function updateTeachersFilter($w) {
     [statusId, (filter) => filter.ne('statusId', statusId)],
   ]);
 
-  await $w('#TeachersProfileDataset').setFilter(datasetFilter);
+  await $w('#TeachersDataset').setFilter(datasetFilter);
 
   const $teachersRepeater = $w('#teachersRepeater' as 'Repeater');
   const $loadMoreButton = $w('#loadMoreButton' as 'Button');
   const $teachersEmptyState = $w('#teachersEmptyState' as 'Container');
-  const $TeachersProfileDataset = $w('#TeachersProfileDataset');
+  const $TeachersDataset = $w('#TeachersDataset');
 
-  $TeachersProfileDataset.onReady(() => {
-    if ($TeachersProfileDataset.getCurrentItem()) {
+  $TeachersDataset.onReady(() => {
+    if ($TeachersDataset.getCurrentItem()) {
       $teachersRepeater.expand();
       $loadMoreButton.expand();
       $teachersEmptyState.collapse();
@@ -81,4 +103,9 @@ async function updateTeachersFilter($w) {
       $teachersEmptyState.expand();
     }
   });
+}
+
+function redirectToTeacher(teacher: Teacher) {
+  const { slug } = teacher;
+  wixLocation.to(`/teacher/${slug}`);
 }

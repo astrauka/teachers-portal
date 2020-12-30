@@ -1,17 +1,17 @@
-import { currentTeachersProfile, updateSecondStepTeachersProfile } from 'backend/backend-api';
+import { submitSecondStepTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { ImageItem, MediaItemTypes } from 'public/common/common-wix-types';
 import {
   SecondStepTeachersForm,
   SecondStepTeachersFormKey,
-  TeachersProfileView,
-} from 'public/common/entities/teachers-profile';
-import { secondStepTeachersFormSchema } from 'public/common/schemas/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
-import { idFromString, objectFromArray } from 'public/forms';
+  TeacherView,
+} from 'public/common/entities/teacher';
+import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { idFromString } from 'public/forms';
+import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-import wixUsers from 'wix-users';
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };
@@ -30,45 +30,30 @@ const FIELDS_WITH_VALIDATION: SecondStepTeachersFormKey[] = [
   'website',
 ];
 let state: {
-  teachersProfile: TeachersProfileView | undefined;
+  teacher: TeacherView;
   fieldValues: SecondStepTeachersForm;
   validationMessages: ValidationMessages;
 };
 
-$w.onReady(() =>
-  forLoggedInUser(async () => {
-    state = {
-      teachersProfile: undefined,
-      fieldValues: {
-        ...objectFromArray<SecondStepTeachersForm>(TEXT_INPUTS, ''),
-        photos: [],
-      },
-      validationMessages: objectFromArray<ValidationMessages>(FIELDS_WITH_VALIDATION, ''),
-    };
-    await assignCurrentTeacherProfileFormFields($w);
-    deletePhotoOnClick($w);
-    $w('#uploadPhotos' as 'UploadButton').onChange(() => uploadPhotos($w));
-    $w('#submitButton' as 'Button').onClick(() => submitForm($w));
-  })
-);
+forCurrentTeacher(async (teacher: TeacherView) => {
+  const fieldValues = pick(teacher, FORM_FIELDS);
+  state = {
+    teacher,
+    fieldValues,
+    validationMessages: transform(fieldValues, (acc, value, field: SecondStepTeachersFormKey) => {
+      acc[field] = validateField(field, value, secondStepTeachersFormSchema, {
+        updateValidationMessage: TEXT_INPUTS.includes(field),
+      });
+    }),
+  };
+  await assignCurrentTeacherProfileFormFields();
+  deletePhotoOnClick();
+  $w('#uploadPhotos' as 'UploadButton').onChange(() => uploadPhotos());
+  $w('#submitButton' as 'Button').onClick(() => submitForm());
+});
 
-async function assignCurrentTeacherProfileFormFields($w) {
-  const teachersProfile = await currentTeachersProfile();
-  if (!teachersProfile) {
-    console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
-    return wixLocation.to('initial-form');
-  }
-
-  state.teachersProfile = teachersProfile;
-  state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-  state.validationMessages = transform(
-    pick(state.fieldValues, FIELDS_WITH_VALIDATION),
-    (acc, value, field) => {
-      acc[field] = validateField(field, value, secondStepTeachersFormSchema);
-    }
-  );
-
-  setPhotosRepeaterData($w);
+async function assignCurrentTeacherProfileFormFields() {
+  setPhotosRepeaterData();
 
   RICH_TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'RichTextBox');
@@ -80,7 +65,7 @@ async function assignCurrentTeacherProfileFormFields($w) {
 
   TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'TextInput');
-    $input.value = state.fieldValues[field];
+    $input.value = state.fieldValues[field] as string;
     $input.onInput((event: $w.Event) => {
       return onInputChange(field, event, $w);
     });
@@ -106,39 +91,40 @@ function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event, $w) {
   }
 }
 
-function deletePhotoOnClick($w) {
+function deletePhotoOnClick() {
   const $photos = $w('#photos' as 'Repeater');
 
   $photos.onItemReady(($item, data: PhotoRepeaterData) => {
-    $item('#photosImage').src = data.image;
+    $item('#photosImage' as 'Image').src = data.image;
     const $deleteBox = $item('#photoDeleteBox' as 'Box');
 
     $deleteBox.onClick(() => {
       state.fieldValues.photos = state.fieldValues.photos.filter(
         (photo: ImageItem) => photo.src !== data.image
       );
-      setPhotosRepeaterData($w);
+      setPhotosRepeaterData();
     });
   });
 }
 
-function setPhotosRepeaterData($w) {
+function setPhotosRepeaterData() {
   const data: PhotoRepeaterData[] = state.fieldValues.photos.map((photo: ImageItem) => ({
-    _id: idFromString(photo.src),
+    _id: idFromString(photo.src, btoa),
     image: photo.src,
   }));
   const $photos = $w('#photos' as 'Repeater');
+  const $noPhotosText = $w('#noPhotosText' as 'Text');
   $photos.data = data;
   if (data.length) {
-    $w('#noPhotosText').collapse();
+    $noPhotosText.collapse();
     $photos.expand();
   } else {
     $photos.collapse();
-    $w('#noPhotosText').expand();
+    $noPhotosText.expand();
   }
 }
 
-function uploadPhotos($w) {
+function uploadPhotos() {
   const $uploadButton = $w('#uploadPhotos' as 'UploadButton');
   const $uploadStatus = $w('#uploadStatus' as 'Text');
   if ($uploadButton.value.length > 0) {
@@ -156,7 +142,7 @@ function uploadPhotos($w) {
           title: uploadedFile.title,
         };
         state.fieldValues.photos = [...state.fieldValues.photos, photo];
-        setPhotosRepeaterData($w);
+        setPhotosRepeaterData();
       })
       .catch((uploadError) => {
         $uploadStatus.text = 'File upload error';
@@ -171,15 +157,15 @@ function uploadPhotos($w) {
   }
 }
 
-async function submitForm($w) {
+async function submitForm() {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();
 
   try {
-    await updateSecondStepTeachersProfile(state.fieldValues);
+    await onTeacherUpdated(await submitSecondStepTeachersForm(state.fieldValues));
     $submissionStatus.text = 'Profile updated, redirecting to your profile...';
-    wixLocation.to(`/teacher/${state.teachersProfile.slug}`);
+    wixLocation.to(`/teacher/${state.teacher.slug}`);
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;
   }

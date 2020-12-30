@@ -23,7 +23,7 @@ export async function withLogger<T>(
 // tslint:disable:no-console
 export function getLogger(namespace: string): Logger {
   return {
-    info: (...args) => console.log(namespace, ...args),
+    info: (...args) => console.info(namespace, ...args),
     warn: (...args) => console.warn(namespace, ...args),
     error: (...args) => console.error(namespace, ...args),
   };

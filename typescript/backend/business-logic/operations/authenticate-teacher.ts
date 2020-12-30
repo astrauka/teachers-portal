@@ -1,4 +1,4 @@
-import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { TeachersRepository } from '../../repositories/teachers-repository';
 import { GoogleAuthService } from '../../services/google-auth-service';
 import { UsersService } from '../../services/users-service';
 import { UnauthorizedError } from '../../utils/errors';
@@ -7,7 +7,7 @@ import { GeneratePassword } from './generate-password';
 
 export function authenticateTeacherFactory(
   googleAuthService: GoogleAuthService,
-  teachersInfoRepository: TeachersInfoRepository,
+  teachersRepository: TeachersRepository,
   usersService: UsersService,
   generatePassword: GeneratePassword
 ) {
@@ -15,12 +15,12 @@ export function authenticateTeacherFactory(
     const googleUser = await googleAuthService.verifyGoogleToken(idToken);
 
     return withLogger(`authenticateTeacher ${googleUser.email}`, async () => {
-      const teachersInfo = await teachersInfoRepository.fetchTeacherByEmail(googleUser.email);
-      if (!teachersInfo) {
+      const teacher = await teachersRepository.fetchTeacherByEmail(googleUser.email);
+      if (!teacher) {
         throw new UnauthorizedError('Invalid email - not a teacher');
       }
-      const password = await generatePassword(teachersInfo._id);
-      return usersService.signInTeacher(teachersInfo, password);
+      const password = await generatePassword(teacher._id);
+      return usersService.signInTeacher(teacher, password);
     });
   };
 }

@@ -13,7 +13,7 @@ export function setupInputChangeHandlers(inputFields, $w) {
         }
     }
 }
-export function updateInputValueIfChanged(inputFields, $w) {
+export function updateInputValueIfChanged(inputFields) {
     const values = getWixLocationQuery();
     for (const [input, field] of Object.entries(inputFields)) {
         const inputValue = $w(input).value;

@@ -1,85 +1,67 @@
-import { currentTeachersInfo, currentTeachersProfile, updateInitialTeachersProfile, } from 'backend/backend-api';
-import { pick, some, values } from 'lodash';
-import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
-import { objectFromArray } from 'public/forms';
+import { submitInitialTeachersForm } from 'backend/backend-api';
+import { pick, some, transform, values } from 'lodash';
+import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-import wixUsers from 'wix-users';
 const TEXT_INPUTS = ['phoneNumber', 'city', 'streetAddress'];
 const DROPDOWNS = ['country', 'language'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
-$w.onReady(() => forLoggedInUser(async () => {
+forCurrentTeacher(async (teacher) => {
+    const fieldValues = pick(teacher, FORM_FIELDS);
     state = {
-        fieldValues: objectFromArray(FORM_FIELDS, ''),
-        validationMessages: objectFromArray(FORM_FIELDS, ''),
+        teacher,
+        fieldValues,
+        validationMessages: transform(fieldValues, (acc, value, field) => {
+            acc[field] = validateField(field, value, initialTeachersFormSchema, {
+                updateValidationMessage: FORM_INPUTS.includes(field),
+            });
+        }),
     };
-    await setCurrentTeacherName($w);
-    await assignCurrentTeacherProfileFormFields($w);
-    $w('#uploadButton').onChange(() => uploadProfileImage($w));
-    $w('#submit').onClick(() => submitProfileInfoForm($w));
-}));
-async function assignCurrentTeacherProfileFormFields($w) {
-    const teachersProfile = await currentTeachersProfile();
-    if (teachersProfile) {
-        state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-    }
-    else {
-        console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
-    }
-    FORM_FIELDS.forEach((field) => {
-        state.validationMessages[field] = validateField(field, state.fieldValues[field], initialTeachersFormSchema, { updateValidationMessage: FORM_INPUTS.includes(field) });
-    });
-    await enableSubmissionButton($w);
+    assignCurrentTeacherFormFields();
+    $w('#uploadButton').onChange(() => uploadProfileImage());
+    $w('#submit').onClick(() => submitProfileInfoForm());
+});
+function assignCurrentTeacherFormFields() {
+    enableSubmissionButton();
     if (state.fieldValues.profileImage) {
         $w('#profileImage').src = state.fieldValues.profileImage;
     }
-    FORM_INPUTS.forEach((field) => {
-        $w(`#${field}`).value = state.fieldValues[field];
-    });
     TEXT_INPUTS.forEach((field) => {
-        $w(`#${field}`).onInput((event) => {
-            return onInputChange(field, event, $w);
-        });
+        const $input = $w(`#${field}`);
+        $input.value = state.fieldValues[field];
+        $input.onInput((event) => onInputChange(field, event));
     });
     DROPDOWNS.forEach((field) => {
-        $w(`#${field}`).onChange((event) => {
-            return onInputChange(field, event, $w);
-        });
+        const $dropdown = $w(`#${field}`);
+        $dropdown.value = state.fieldValues[field];
+        $dropdown.onChange((event) => onInputChange(field, event));
     });
 }
-function enableSubmissionButton($w) {
+function enableSubmissionButton() {
     const $submitButton = $w('#submit');
     const $submissionStatus = $w('#submissionStatus');
     if (some(values(state.validationMessages))) {
         $submissionStatus.text = 'Please fill in all the fields';
         $submissionStatus.show();
-        return $submitButton.disable();
+        $submitButton.disable();
     }
     else {
         $submissionStatus.text = '';
         $submissionStatus.hide();
-        return $submitButton.enable();
+        $submitButton.enable();
     }
 }
-function onInputChange(field, event, $w) {
+async function onInputChange(field, event) {
     const value = event.target.value;
     state.fieldValues[field] = value;
     state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
-    return enableSubmissionButton($w);
+    enableSubmissionButton();
 }
-async function setCurrentTeacherName($w) {
-    const teachersInfo = await currentTeachersInfo();
-    if (teachersInfo) {
-        $w('#teacherFullName').text = `${teachersInfo.firstName} ${teachersInfo.lastName}`;
-    }
-    else {
-        console.error(`Could not load current teacher for ${await wixUsers.currentUser.getEmail()}`);
-    }
-}
-function uploadProfileImage($w) {
+function uploadProfileImage() {
     const $uploadButton = $w('#uploadButton');
     const $uploadStatus = $w('#uploadStatus');
     if ($uploadButton.value.length > 0) {
@@ -101,24 +83,24 @@ function uploadProfileImage($w) {
         })
             .finally(() => {
             $uploadButton.buttonLabel = previousButtonLabel;
-            return enableSubmissionButton($w);
+            enableSubmissionButton();
         });
     }
     else {
         $uploadStatus.text = 'Please choose a file to upload.';
     }
 }
-async function submitProfileInfoForm($w) {
+async function submitProfileInfoForm() {
     const $submissionStatus = $w('#submissionStatus');
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
-    const updatedProfileImage = state.fieldValues.profileImage;
+    // const updatedProfileImage = state.fieldValues.profileImage;
     try {
-        await updateInitialTeachersProfile(state.fieldValues);
+        await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
         $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-        if (updatedProfileImage) {
-            $w('#headerProfileImage').src = updatedProfileImage;
-        }
+        // if (updatedProfileImage) {
+        //   $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
+        // }
         wixLocation.to('/dashboard');
     }
     catch (error) {

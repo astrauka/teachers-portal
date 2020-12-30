@@ -1,12 +1,12 @@
-import { currentTeachersProfile, updateSecondStepTeachersProfile } from 'backend/backend-api';
+import { submitSecondStepTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { MediaItemTypes } from 'public/common/common-wix-types';
-import { secondStepTeachersFormSchema } from 'public/common/schemas/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
-import { idFromString, objectFromArray } from 'public/forms';
+import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { idFromString } from 'public/forms';
+import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-import wixUsers from 'wix-users';
 const TEXT_INPUTS = ['facebook', 'instagram', 'linkedIn', 'website'];
 const RICH_TEXT_INPUTS = ['about'];
 const FORM_FIELDS = [...TEXT_INPUTS, ...RICH_TEXT_INPUTS, 'photos'];
@@ -17,32 +17,24 @@ const FIELDS_WITH_VALIDATION = [
     'website',
 ];
 let state;
-$w.onReady(() => forLoggedInUser(async () => {
+forCurrentTeacher(async (teacher) => {
+    const fieldValues = pick(teacher, FORM_FIELDS);
     state = {
-        teachersProfile: undefined,
-        fieldValues: {
-            ...objectFromArray(TEXT_INPUTS, ''),
-            photos: [],
-        },
-        validationMessages: objectFromArray(FIELDS_WITH_VALIDATION, ''),
+        teacher,
+        fieldValues,
+        validationMessages: transform(fieldValues, (acc, value, field) => {
+            acc[field] = validateField(field, value, secondStepTeachersFormSchema, {
+                updateValidationMessage: TEXT_INPUTS.includes(field),
+            });
+        }),
     };
-    await assignCurrentTeacherProfileFormFields($w);
-    deletePhotoOnClick($w);
-    $w('#uploadPhotos').onChange(() => uploadPhotos($w));
-    $w('#submitButton').onClick(() => submitForm($w));
-}));
-async function assignCurrentTeacherProfileFormFields($w) {
-    const teachersProfile = await currentTeachersProfile();
-    if (!teachersProfile) {
-        console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
-        return wixLocation.to('initial-form');
-    }
-    state.teachersProfile = teachersProfile;
-    state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-    state.validationMessages = transform(pick(state.fieldValues, FIELDS_WITH_VALIDATION), (acc, value, field) => {
-        acc[field] = validateField(field, value, secondStepTeachersFormSchema);
-    });
-    setPhotosRepeaterData($w);
+    await assignCurrentTeacherProfileFormFields();
+    deletePhotoOnClick();
+    $w('#uploadPhotos').onChange(() => uploadPhotos());
+    $w('#submitButton').onClick(() => submitForm());
+});
+async function assignCurrentTeacherProfileFormFields() {
+    setPhotosRepeaterData();
     RICH_TEXT_INPUTS.forEach((field) => {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
@@ -77,34 +69,35 @@ function onInputChange(field, event, $w) {
         return $submitButton.enable();
     }
 }
-function deletePhotoOnClick($w) {
+function deletePhotoOnClick() {
     const $photos = $w('#photos');
     $photos.onItemReady(($item, data) => {
         $item('#photosImage').src = data.image;
         const $deleteBox = $item('#photoDeleteBox');
         $deleteBox.onClick(() => {
             state.fieldValues.photos = state.fieldValues.photos.filter((photo) => photo.src !== data.image);
-            setPhotosRepeaterData($w);
+            setPhotosRepeaterData();
         });
     });
 }
-function setPhotosRepeaterData($w) {
+function setPhotosRepeaterData() {
     const data = state.fieldValues.photos.map((photo) => ({
-        _id: idFromString(photo.src),
+        _id: idFromString(photo.src, btoa),
         image: photo.src,
     }));
     const $photos = $w('#photos');
+    const $noPhotosText = $w('#noPhotosText');
     $photos.data = data;
     if (data.length) {
-        $w('#noPhotosText').collapse();
+        $noPhotosText.collapse();
         $photos.expand();
     }
     else {
         $photos.collapse();
-        $w('#noPhotosText').expand();
+        $noPhotosText.expand();
     }
 }
-function uploadPhotos($w) {
+function uploadPhotos() {
     const $uploadButton = $w('#uploadPhotos');
     const $uploadStatus = $w('#uploadStatus');
     if ($uploadButton.value.length > 0) {
@@ -121,7 +114,7 @@ function uploadPhotos($w) {
                 title: uploadedFile.title,
             };
             state.fieldValues.photos = [...state.fieldValues.photos, photo];
-            setPhotosRepeaterData($w);
+            setPhotosRepeaterData();
         })
             .catch((uploadError) => {
             $uploadStatus.text = 'File upload error';
@@ -136,14 +129,14 @@ function uploadPhotos($w) {
         $uploadStatus.text = 'Please choose files to upload';
     }
 }
-async function submitForm($w) {
+async function submitForm() {
     const $submissionStatus = $w('#submissionStatus');
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
     try {
-        await updateSecondStepTeachersProfile(state.fieldValues);
+        await onTeacherUpdated(await submitSecondStepTeachersForm(state.fieldValues));
         $submissionStatus.text = 'Profile updated, redirecting to your profile...';
-        wixLocation.to(`/teacher/${state.teachersProfile.slug}`);
+        wixLocation.to(`/teacher/${state.teacher.slug}`);
     }
     catch (error) {
         $submissionStatus.text = `Update failed: ${error.message}`;

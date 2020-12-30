@@ -1,6 +1,7 @@
 declare type PageElementsMap = {
-  '#TeachersProfileDataset': $w.dataset;
+  '#TeachersDataset': $w.dataset;
   '#TeacherLevelsDataset': $w.dataset;
-  '#SelectedTeachersProfile': $w.dataset;
+  '#SelectedTeacher': $w.dataset;
   '#AccountStatusesDataset': $w.dataset;
+  '#CurrentTeacherDataset': $w.dataset;
 };

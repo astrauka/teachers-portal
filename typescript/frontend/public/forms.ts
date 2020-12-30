@@ -1,15 +1,5 @@
-import { replace, transform } from 'lodash';
+import { replace } from 'lodash';
 
-export function objectFromArray<T>(keys: string[], value: string = ''): T {
-  return transform(
-    keys,
-    (acc, field) => {
-      acc[field] = value;
-    },
-    {}
-  ) as T;
-}
-
-export function idFromString(value: string): string {
-  return replace(btoa(value), /[^A-Za-z0-9]/g, '0');
+export function idFromString(value: string, convert: (value: string) => string): string {
+  return replace(convert(value), /[^A-Za-z0-9]/g, '0');
 }

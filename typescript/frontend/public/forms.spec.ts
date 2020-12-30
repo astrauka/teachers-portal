@@ -1,13 +1,13 @@
 import { expect } from '../../test/utils/expectations';
-import { objectFromArray } from './forms';
+import { idFromString } from './forms';
 
 describe('forms', () => {
-  describe('objectFromArray', () => {
-    const keys = ['a', 'b'];
-    const value = 'a';
+  describe('idFromString', () => {
+    const value = 'some-id';
+    const convert = (value) => `${value}+/=`;
 
-    it('should return object from array keys', () => {
-      expect(objectFromArray(keys, value)).to.eql({ a: value, b: value });
+    it('should return base64 string representation without invalid characters', () => {
+      expect(idFromString(value, convert)).to.eq('some0id000');
     });
   });
 });

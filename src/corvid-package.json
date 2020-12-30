@@ -4,6 +4,7 @@
 		"bcrypt": "5.0.0",
 		"url-slug": "2.3.2",
 		"lodash": "4.17.20",
-		"fastest-validator": "1.9.0"
+		"fastest-validator": "1.9.0",
+		"uuid": "8.3.0"
 	}
 }

@@ -1,91 +1,36 @@
-import { currentTeachersProfile, currentTeachersTasks } from 'backend/backend-api';
-import { forLoggedInUser } from 'public/for-logged-in-user';
+import { TaskView } from 'public/common/entities/task';
+import { TeacherView } from 'public/common/entities/teacher';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { getTasks } from 'public/global-state';
+import { updateHeaderNotificationsCount } from 'public/on-teacher-updated';
+import { getFilter } from 'public/wix-filter';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
-const PUBLIC_PAGES = ['site-terms-and-conditions'];
+let state: {
+  teacher: TeacherView;
+  tasks: TaskView[];
+};
 
-$w.onReady(() => {
-  redirectNonLoggedInUserToPublicPage();
-  return forLoggedInUser(async () => {
-    enableProfileButtonClick($w);
-    await Promise.all([
-      askToFillInitialTeachersForm(),
-      updateHeaderProfileImage($w),
-      updateHeaderNotificationsCount($w),
-    ]);
+forCurrentTeacher(async (teacher: TeacherView) => {
+  state = { teacher, tasks: await getTasks() };
+  await $w('#CurrentTeacherDataset').setFilter(
+    getFilter([[teacher.email, (filter) => filter.eq('email', teacher.email)]])
+  );
+  $w('#logoutButton' as 'Button').onClick(() => {
+    wixUsers.logout();
+    wixLocation.to('/welcome');
   });
+  askToFillInitialTeachersForm();
+  await updateHeaderNotificationsCount();
 });
 
-function enableProfileButtonClick($w) {
-  const $profileDropdown = $w('#profileDropdown' as 'Container');
-  const effect = {
-    duration: 200,
-    delay: 0,
-    direction: 'top',
-  };
-
-  $w('#profileIcons' as 'Image').onClick(() => {
-    if ($profileDropdown.hidden) {
-      $profileDropdown.show('slide', effect);
-    } else {
-      $profileDropdown.hide('slide', effect);
-    }
-  });
-
-  $profileDropdown.onMouseOut(() => {
-    $profileDropdown.hide('slide', effect);
-  });
-
-  $w('#headerButtonLogout' as 'Button').onClick(() => {
-    wixUsers.logout();
-    $profileDropdown.hide('slide', effect);
-  });
-
-  $w('#headerButtonDashboard' as 'Button').onClick(() => {
-    wixLocation.to('/dashboard');
-    $profileDropdown.hide('slide', effect);
-  });
-}
-
-async function askToFillInitialTeachersForm() {
+function askToFillInitialTeachersForm() {
   if (!isLiveSite()) return;
-  const tasks = await currentTeachersTasks();
-  const fillInitialTeachersFormTask = tasks[0];
+  const fillInitialTeachersFormTask = state.tasks[0];
   if (fillInitialTeachersFormTask && !fillInitialTeachersFormTask.isCompleted) {
+    console.info('Redirecting to initial profile form');
     wixLocation.to(fillInitialTeachersFormTask.link);
-  }
-}
-
-async function updateHeaderProfileImage($w) {
-  const $headerProfileImage = $w('#headerProfileImage' as 'Image');
-  $headerProfileImage.alt = 'My Profile';
-  $headerProfileImage.tooltip = 'My Profile';
-
-  const teachersProfile = await currentTeachersProfile();
-  if (teachersProfile) {
-    $headerProfileImage.src = teachersProfile.profileImage;
-  }
-}
-
-async function updateHeaderNotificationsCount($w) {
-  const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
-  const tasks = await currentTeachersTasks();
-  const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
-  if (incompleteTasksCount) {
-    $headerNotificationsButton.label = String(incompleteTasksCount);
-    $headerNotificationsButton.show();
-  }
-}
-
-function redirectNonLoggedInUserToPublicPage() {
-  const currentUser = wixUsers.currentUser;
-  if (!currentUser.loggedIn) {
-    const path = wixLocation.path[0];
-    if (path && !PUBLIC_PAGES.includes(path)) {
-      console.error(`Not logged in user should not visit ${path}`);
-      wixLocation.to(PUBLIC_PAGES[0]);
-    }
   }
 }

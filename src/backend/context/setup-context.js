@@ -1,24 +1,21 @@
 import { OAuth2Client } from 'google-auth-library';
 import { memoize } from 'lodash';
-import { addTeacherToUsersFactory } from '../business-logic/hooks/teachers-info/add-teacher-to-users';
-import { syncTeachersProfileDataFactory } from '../business-logic/hooks/teachers-info/sync-teachers-profile-data';
+import { registerTeacherFactory } from '../business-logic/hooks/teacher/register-teacher';
 import { authenticateTeacherFactory } from '../business-logic/operations/authenticate-teacher';
 import { completeTeachersTaskFactory } from '../business-logic/operations/complete-teachers-task';
 import { generatePasswordFactory } from '../business-logic/operations/generate-password';
-import { getCuratingTeachersProfileFactory } from '../business-logic/operations/get-curating-teachers-profile';
-import { getCurrentTeachersInfoFactory } from '../business-logic/operations/get-current-teachers-info';
-import { getCurrentTeachersTasksFactory } from '../business-logic/operations/get-current-teachers-tasks';
-import { getTeachersProfileFactory } from '../business-logic/operations/get-teachers-profile';
-import { updateInitialTeachersProfileFactory } from '../business-logic/operations/update-initial-teachers-profile';
-import { updateSecondStepTeachersProfileFactory } from '../business-logic/operations/update-second-step-teachers-profile';
-import { updateTeachersProfileSlugFactory } from '../business-logic/operations/update-teachers-profile-slug';
-import { makeTeachersProfileViewsFactory } from '../business-logic/views/make-teachers-profile-view';
-import { CountryRepository } from '../repositories/country-repository';
-import { LanguageRepository } from '../repositories/language-repository';
-import { MembersRepository } from '../repositories/members-repository';
-import { TaskRepository } from '../repositories/task-repository';
-import { TeachersInfoRepository } from '../repositories/teachers-info-repository';
-import { TeachersProfileRepository } from '../repositories/teachers-profile-repository';
+import { getCuratingTeacherFactory } from '../business-logic/operations/get-curating-teacher';
+import { getTeachersTasksFactory } from '../business-logic/operations/get-current-teachers-tasks';
+import { getTeacherFactory } from '../business-logic/operations/get-teacher';
+import { normalizeTeacherFactory } from '../business-logic/operations/normalize-teacher';
+import { submitInitialTeachersFormFactory } from '../business-logic/operations/submit-initial-teachers-form';
+import { submitSecondStepTeachersFormFactory } from '../business-logic/operations/submit-second-step-teachers-form';
+import { makeTeacherViewsFactory } from '../business-logic/views/make-teacher-views';
+import { CountriesRepository } from '../repositories/countries-repository';
+import { LanguagesRepository } from '../repositories/languages-repository';
+import { SiteMembersRepository } from '../repositories/site-members-repository';
+import { TasksRepository } from '../repositories/tasks-repository';
+import { TeachersRepository } from '../repositories/teachers-repository';
 import { GoogleAuthService } from '../services/google-auth-service';
 import { UsersService } from '../services/users-service';
 export const setupContext = memoize(async (externals) => {
@@ -32,35 +29,31 @@ export const setupContext = memoize(async (externals) => {
     const googleAuthService = new GoogleAuthService(oauthClient, GOOGLE_CLIENT_ID);
     const usersService = new UsersService(externals);
     // repositories
-    const countryRepository = new CountryRepository(externals);
-    const languageRepository = new LanguageRepository(externals);
-    const membersRepository = new MembersRepository(externals);
-    const taskRepository = new TaskRepository(externals);
-    const teachersInfoRepository = new TeachersInfoRepository(externals);
-    const teachersProfileRepository = new TeachersProfileRepository(externals);
+    const countriesRepository = new CountriesRepository(externals);
+    const languagesRepository = new LanguagesRepository(externals);
+    const siteMembersRepository = new SiteMembersRepository(externals);
+    const tasksRepository = new TasksRepository(externals);
+    const teachersRepository = new TeachersRepository(externals);
     // actions
     const generatePassword = generatePasswordFactory(PASSWORD_SECRET, PASSWORD_SALT);
-    const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersInfoRepository, usersService, generatePassword);
-    const getCurrentTeachersInfo = getCurrentTeachersInfoFactory(teachersInfoRepository, usersService);
-    const getTeachersProfile = getTeachersProfileFactory(teachersProfileRepository, usersService);
-    const getCuratingTeachersProfile = getCuratingTeachersProfileFactory(getCurrentTeachersInfo, getTeachersProfile, teachersInfoRepository);
-    const completeTeachersTask = completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository);
-    const updateInitialTeachersProfile = updateInitialTeachersProfileFactory(teachersProfileRepository, countryRepository, languageRepository, getCurrentTeachersInfo, completeTeachersTask);
-    const updateSecondStepTeachersProfile = updateSecondStepTeachersProfileFactory(usersService, teachersProfileRepository, getTeachersProfile, completeTeachersTask);
-    const updateTeachersProfileSlug = updateTeachersProfileSlugFactory(teachersProfileRepository);
-    const getCurrentTeachersTasks = getCurrentTeachersTasksFactory(taskRepository, teachersInfoRepository, getCurrentTeachersInfo);
+    const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersRepository, usersService, generatePassword);
+    const getTeacher = getTeacherFactory(teachersRepository, usersService);
+    const getCuratingTeacher = getCuratingTeacherFactory(getTeacher, teachersRepository);
+    const completeTeachersTask = completeTeachersTaskFactory(getTeacher, teachersRepository, tasksRepository);
+    const submitInitialTeachersForm = submitInitialTeachersFormFactory(teachersRepository, countriesRepository, languagesRepository, getTeacher, completeTeachersTask);
+    const submitSecondStepTeachersForm = submitSecondStepTeachersFormFactory(teachersRepository, getTeacher, completeTeachersTask);
+    const normalizeTeacher = normalizeTeacherFactory(teachersRepository);
+    const getTeachersTasks = getTeachersTasksFactory(tasksRepository, teachersRepository, getTeacher);
     // views
-    const makeTeachersProfileViews = makeTeachersProfileViewsFactory(countryRepository, languageRepository);
+    const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
     // hooks
-    const addTeacherToUsers = addTeacherToUsersFactory(membersRepository, usersService, teachersInfoRepository, generatePassword);
-    const syncTeachersProfileData = syncTeachersProfileDataFactory(teachersProfileRepository);
+    const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService, teachersRepository, generatePassword);
     return {
         repositories: {
-            countryRepository,
-            languageRepository,
-            membersRepository,
-            teachersInfoRepository,
-            teachersProfileRepository,
+            countriesRepository,
+            languagesRepository,
+            siteMembersRepository,
+            teachersRepository,
         },
         services: {
             googleAuthService,
@@ -68,20 +61,18 @@ export const setupContext = memoize(async (externals) => {
         },
         actions: {
             authenticateTeacher,
-            getCurrentTeachersInfo,
-            getTeachersProfile,
-            getCuratingTeachersProfile,
-            updateInitialTeachersProfile,
-            updateSecondStepTeachersProfile,
-            updateTeachersProfileSlug,
-            getCurrentTeachersTasks,
+            getTeacher,
+            getCuratingTeacher,
+            submitInitialTeachersForm,
+            submitSecondStepTeachersForm,
+            normalizeTeacher,
+            getTeachersTasks,
         },
         views: {
-            makeTeachersProfileViews,
+            makeTeacherViews,
         },
         hooks: {
-            addTeacherToUsers,
-            syncTeachersProfileData,
+            registerTeacher,
         },
     };
 });
