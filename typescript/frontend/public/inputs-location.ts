@@ -16,7 +16,7 @@ export function setupInputChangeHandlers(inputFields: InputNamesToDbFields, $w) 
   }
 }
 
-export function updateInputValueIfChanged(inputFields: InputNamesToDbFields, $w) {
+export function updateInputValueIfChanged(inputFields: InputNamesToDbFields) {
   const values = getWixLocationQuery();
   for (const [input, field] of Object.entries(inputFields)) {
     const inputValue = $w(input as 'TextInput').value;

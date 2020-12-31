@@ -1,11 +1,11 @@
+import { MakeTeacherViews } from './business-logic/views/make-teacher-views';
 import { TaskView } from './common/entities/task';
-import { RegisteredTeachersInfo } from './common/entities/teachers-info';
 import {
   InitialTeacherForm,
   SecondStepTeachersForm,
-  TeachersProfile,
-  TeachersProfileView,
-} from './common/entities/teachers-profile';
+  Teacher,
+  TeacherView,
+} from './common/entities/teacher';
 import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
 import { withLogger } from './utils/logger';
@@ -15,43 +15,49 @@ export async function loginWithGoogle(idToken: string): Promise<string> {
   return withLogger('loginWithGoogle', actions.authenticateTeacher(idToken));
 }
 
-export async function currentTeachersInfo(): Promise<RegisteredTeachersInfo> {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger('currentTeachersInfo', actions.getCurrentTeachersInfo());
-}
-
-export async function currentTeachersProfile(): Promise<TeachersProfileView | undefined> {
+export async function getCurrentTeacherView(): Promise<TeacherView | undefined> {
   const { actions, views } = await setupContext(EXTERNALS);
-  return withLogger('getTeachersProfile', async () => {
-    const teachersProfile = await actions.getTeachersProfile();
-    const [teachersProfileView] = await views.makeTeachersProfileViews([teachersProfile]);
-    return teachersProfileView;
-  });
-}
-
-export async function updateInitialTeachersProfile(
-  update: InitialTeacherForm
-): Promise<TeachersProfile> {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger('updateInitialTeachersProfile', actions.updateInitialTeachersProfile(update));
-}
-
-export async function updateSecondStepTeachersProfile(
-  update: SecondStepTeachersForm
-): Promise<TeachersProfile> {
-  const { actions } = await setupContext(EXTERNALS);
   return withLogger(
-    'updateSecondStepTeachersProfile',
-    actions.updateSecondStepTeachersProfile(update)
+    'getCurrentTeacherView',
+    getTeacherView(actions.getTeacher({ throwOnNotFound: true }), views.makeTeacherViews)
   );
 }
 
-export async function currentTeachersTasks(): Promise<TaskView[]> {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger('currentTeachersTasks', actions.getCurrentTeachersTasks());
+export async function submitInitialTeachersForm(update: InitialTeacherForm): Promise<TeacherView> {
+  const { actions, views } = await setupContext(EXTERNALS);
+  return withLogger(
+    'submitInitialTeachersForm',
+    getTeacherView(actions.submitInitialTeachersForm(update), views.makeTeacherViews)
+  );
 }
 
-export async function curatingTeachersProfile(): Promise<TeachersProfile | undefined> {
+export async function submitSecondStepTeachersForm(
+  update: SecondStepTeachersForm
+): Promise<TeacherView> {
+  const { actions, views } = await setupContext(EXTERNALS);
+  return withLogger(
+    'submitSecondStepTeachersForm',
+    getTeacherView(actions.submitSecondStepTeachersForm(update), views.makeTeacherViews)
+  );
+}
+
+export async function getCurrentTeachersTasks(): Promise<TaskView[]> {
   const { actions } = await setupContext(EXTERNALS);
-  return withLogger('curatingTeachersProfile', actions.getCuratingTeachersProfile());
+  return withLogger('getCurrentTeachersTasks', actions.getTeachersTasks());
+}
+
+export async function getCuratingTeacherView(): Promise<TeacherView | undefined> {
+  const { actions, views } = await setupContext(EXTERNALS);
+  return withLogger(
+    'getCuratingTeacherView',
+    getTeacherView(actions.getCuratingTeacher(), views.makeTeacherViews)
+  );
+}
+
+async function getTeacherView(
+  teacherPromise: Promise<Teacher>,
+  makeTeacherViews: MakeTeacherViews
+): Promise<TeacherView> {
+  const [teacherView] = await makeTeacherViews([await teacherPromise]);
+  return teacherView;
 }

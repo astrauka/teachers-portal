@@ -1,13 +1,13 @@
-export function completeTeachersTaskFactory(getCurrentTeachersInfo, teachersInfoRepository, taskRepository) {
+export function completeTeachersTaskFactory(getTeacher, teachersRepository, tasksRepository) {
     return async function completeTeachersTask(taskNumber) {
-        const teachersInfo = await getCurrentTeachersInfo();
-        const task = await taskRepository.fetchTaskByNumberOrThrow(taskNumber);
-        const completedTasks = await teachersInfoRepository.fetchCompletedTasks(teachersInfo);
+        const teacher = await getTeacher();
+        const task = await tasksRepository.fetchTaskByNumberOrThrow(taskNumber);
+        const completedTasks = await teachersRepository.fetchCompletedTasks(teacher);
         if (completedTasks.find((completedTask) => completedTask.number === taskNumber)) {
             return;
         }
         else {
-            return teachersInfoRepository.completeTask(teachersInfo, task);
+            return teachersRepository.completeTask(teacher, task);
         }
     };
 }

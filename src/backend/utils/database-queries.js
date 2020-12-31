@@ -10,7 +10,10 @@ export async function findSingleRecordOrThrow(queryResultPromise) {
     throw new RecordNotFoundError('Item not found in database');
 }
 export async function findById(externals, collection, id) {
-    return externals.wixData.get(collection, id, { suppressAuth: true });
+    if (id) {
+        return externals.wixData.get(collection, id, { suppressAuth: true });
+    }
+    return undefined;
 }
 export async function fetchRecords(queryResultPromise) {
     return (await queryResultPromise).items;

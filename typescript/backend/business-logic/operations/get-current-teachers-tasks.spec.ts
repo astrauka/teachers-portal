@@ -1,54 +1,49 @@
 import { buildTask } from '../../../test/builders/task';
-import { buildRegisteredTeachersInfo } from '../../../test/builders/teachers-info';
+import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
 import { Task } from '../../common/entities/task';
-import { RegisteredTeachersInfo } from '../../common/entities/teachers-info';
-import { TaskRepository } from '../../repositories/task-repository';
-import { TeachersInfoRepository } from '../../repositories/teachers-info-repository';
+import { Teacher } from '../../common/entities/teacher';
+import { TasksRepository } from '../../repositories/tasks-repository';
+import { TeachersRepository } from '../../repositories/teachers-repository';
 import { NotLoggedInError } from '../../utils/errors';
-import { GetCurrentTeachersInfo } from './get-current-teachers-info';
-import { getCurrentTeachersTasksFactory } from './get-current-teachers-tasks';
+import { getTeachersTasksFactory } from './get-current-teachers-tasks';
+import { GetTeacher } from './get-teacher';
 
-describe('getCurrentTeachersTasks', () => {
-  const teachersInfo = buildRegisteredTeachersInfo({ id: 'teacher' });
+describe('getTeachersTasks', () => {
+  const teacher = buildTeacher({ id: 'teacher' });
   const completedTask = buildTask({ id: 'completed', properties: { number: 1 } });
   const notCompletedTask = buildTask({ id: 'not-completed', properties: { number: 2 } });
   const tasks = [completedTask, notCompletedTask];
 
-  const getTaskRepository = (tasks: Task[]) =>
-    createStubInstance(TaskRepository, (stub) => {
+  const getTasksRepository = (tasks: Task[]) =>
+    createStubInstance(TasksRepository, (stub) => {
       stub.fetchAllTasks.resolves(tasks);
     });
-  const getTeachersInfoRepository = (completedTasks: Task[]) =>
-    createStubInstance(TeachersInfoRepository, (stub) => {
+  const getTeachersRepository = (completedTasks: Task[]) =>
+    createStubInstance(TeachersRepository, (stub) => {
       stub.fetchCompletedTasks.resolves(completedTasks);
     });
-  const getGetCurrentTeachersInfo = (teachersInfo: RegisteredTeachersInfo) =>
-    stubFn<GetCurrentTeachersInfo>().resolves(teachersInfo);
+  const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
   const buildTestContext = ({
-    taskRepository = getTaskRepository(tasks),
-    teachersInfoRepository = getTeachersInfoRepository([completedTask]),
-    getCurrentTeachersInfo = getGetCurrentTeachersInfo(teachersInfo),
+    tasksRepository = getTasksRepository(tasks),
+    teachersRepository = getTeachersRepository([completedTask]),
+    getTeacher = getGetTeacher(teacher),
   } = {}) => ({
-    taskRepository,
-    teachersInfoRepository,
-    getCurrentTeachersInfo,
-    getCurrentTeachersTasks: getCurrentTeachersTasksFactory(
-      taskRepository,
-      teachersInfoRepository,
-      getCurrentTeachersInfo
-    ),
+    tasksRepository,
+    teachersRepository,
+    getTeacher,
+    getTeachersTasks: getTeachersTasksFactory(tasksRepository, teachersRepository, getTeacher),
   });
 
   it('should return current teacher tasks', async () => {
     const {
-      taskRepository,
-      teachersInfoRepository,
-      getCurrentTeachersInfo,
-      getCurrentTeachersTasks,
+      tasksRepository,
+      teachersRepository,
+      getTeacher,
+      getTeachersTasks,
     } = buildTestContext();
-    expect(await getCurrentTeachersTasks()).to.eql([
+    expect(await getTeachersTasks()).to.eql([
       {
         ...completedTask,
         isCompleted: true,
@@ -58,26 +53,26 @@ describe('getCurrentTeachersTasks', () => {
         isCompleted: false,
       },
     ]);
-    expect(taskRepository.fetchAllTasks).calledOnceWithExactly();
-    expect(getCurrentTeachersInfo).calledOnceWithExactly();
-    expect(teachersInfoRepository.fetchCompletedTasks).calledOnceWithExactly(teachersInfo);
+    expect(tasksRepository.fetchAllTasks).calledOnceWithExactly();
+    expect(getTeacher).calledOnceWithExactly();
+    expect(teachersRepository.fetchCompletedTasks).calledOnceWithExactly(teacher);
   });
 
   context('on current teacher not logged in', () => {
     const error = new NotLoggedInError();
-    const getGetCurrentTeachersInfo = () => stubFn<GetCurrentTeachersInfo>().rejects(error);
+    const getGetTeacher = () => stubFn<GetTeacher>().rejects(error);
 
     it('should throw', async () => {
       const {
-        taskRepository,
-        teachersInfoRepository,
-        getCurrentTeachersInfo,
-        getCurrentTeachersTasks,
-      } = buildTestContext({ getCurrentTeachersInfo: getGetCurrentTeachersInfo() });
-      await expect(getCurrentTeachersTasks()).rejectedWith('Not logged in');
-      expect(taskRepository.fetchAllTasks).calledOnceWithExactly();
-      expect(getCurrentTeachersInfo).calledOnceWithExactly();
-      expect(teachersInfoRepository.fetchCompletedTasks).not.called;
+        tasksRepository,
+        teachersRepository,
+        getTeacher,
+        getTeachersTasks,
+      } = buildTestContext({ getTeacher: getGetTeacher() });
+      await expect(getTeachersTasks()).rejectedWith('Not logged in');
+      expect(tasksRepository.fetchAllTasks).calledOnceWithExactly();
+      expect(getTeacher).calledOnceWithExactly();
+      expect(teachersRepository.fetchCompletedTasks).not.called;
     });
   });
 });

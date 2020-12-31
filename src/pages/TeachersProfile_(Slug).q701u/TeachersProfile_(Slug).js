@@ -1,24 +1,24 @@
 import { forEach } from 'lodash';
-import { forLoggedInUser } from 'public/for-logged-in-user';
+import { forCurrentTeacher } from 'public/for-current-teacher';
 import wixLocation from 'wix-location';
 const SOCIAL_ICONS = {
     facebook: 'https://www.facebook.com/',
     instagram: 'https://www.instagram.com/',
     linkedIn: 'https://www.linkedin.com/in/',
 };
-$w.onReady(() => forLoggedInUser(async () => {
-    $w('#SelectedTeachersProfile').onReady(() => {
-        const teachersProfile = $w('#SelectedTeachersProfile').getCurrentItem();
-        addSocialIconLinks(teachersProfile, $w);
-        addWebsiteLink(teachersProfile, $w);
-        addSendEmailButton(teachersProfile, $w);
-        addAboutHtml(teachersProfile, $w);
-        hideNotFilledInformation(teachersProfile, $w);
+forCurrentTeacher(async () => {
+    $w('#SelectedTeacher').onReady(() => {
+        const teacher = $w('#SelectedTeacher').getCurrentItem();
+        addSocialIconLinks(teacher, $w);
+        addWebsiteLink(teacher, $w);
+        addSendEmailButton(teacher, $w);
+        addAboutHtml(teacher, $w);
+        hideNotFilledInformation(teacher, $w);
     });
-}));
-function addSocialIconLinks(teachersProfile, $w) {
+});
+function addSocialIconLinks(teacher, $w) {
     forEach(SOCIAL_ICONS, (url, provider) => {
-        const link = teachersProfile[provider];
+        const link = teacher[provider];
         const $icon = $w(`#${provider}`);
         if (link) {
             $icon.target = '_blank';
@@ -29,9 +29,9 @@ function addSocialIconLinks(teachersProfile, $w) {
         }
     });
 }
-function addWebsiteLink(teachersProfile, $w) {
+function addWebsiteLink(teacher, $w) {
     const $website = $w('#website');
-    const { website } = teachersProfile;
+    const { website } = teacher;
     if (website) {
         $website.html = `<a href="${website}" target="_blank">${website}</a>`;
     }
@@ -39,22 +39,24 @@ function addWebsiteLink(teachersProfile, $w) {
         $website.collapse();
     }
 }
-function addSendEmailButton(teachersProfile, $w) {
+function addSendEmailButton(teacher, $w) {
     const $button = $w('#sendEmailButton');
-    const { email } = teachersProfile;
+    const { email } = teacher;
     $button.onClick(() => {
         wixLocation.to(`mailto:${email}?subject=MRY%3A%20Question`);
     });
 }
-function addAboutHtml(teachersProfile, $w) {
-    $w('#about').html = teachersProfile.about;
+function addAboutHtml(teacher, $w) {
+    if (teacher.about) {
+        $w('#about').html = teacher.about;
+    }
 }
-function hideNotFilledInformation(teachersProfile, $w) {
+function hideNotFilledInformation(teacher, $w) {
     var _a;
-    if (!teachersProfile.about) {
+    if (!teacher.about) {
         $w('#aboutGroup').collapse();
     }
-    if (!((_a = teachersProfile.photos) === null || _a === void 0 ? void 0 : _a.length)) {
+    if (!((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length)) {
         $w('#photosGroup').collapse();
     }
 }

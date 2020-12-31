@@ -1,4 +1,4 @@
-import { TeachersInfo } from '../common/entities/teachers-info';
+import { Teacher } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
 import { ContactInfo, RegistrationResult } from '../types/wix-types';
 import { withLogger } from '../utils/logger';
@@ -7,24 +7,21 @@ import User = wix_users.User;
 export class UsersService {
   constructor(private readonly externals: Externals) {}
 
-  public async signInTeacher(teachersInfo: TeachersInfo, password: string): Promise<string> {
+  public async signInTeacher(teacher: Teacher, password: string): Promise<string> {
     return withLogger(
-      `signInTeacher ${teachersInfo.email}`,
-      this.externals.wixUsers.login(teachersInfo.email, password)
+      `signInTeacher ${teacher.email}`,
+      this.externals.wixUsers.login(teacher.email, password)
     );
   }
 
-  public async registerUser(
-    teachersInfo: TeachersInfo,
-    password: string
-  ): Promise<RegistrationResult> {
+  public async registerUser(teacher: Teacher, password: string): Promise<RegistrationResult> {
     const contactInfo = {
-      firstName: teachersInfo.firstName,
-      lastName: teachersInfo.lastName,
+      firstName: teacher.firstName,
+      lastName: teacher.lastName,
     } as ContactInfo;
     return withLogger(
-      `registerUser ${teachersInfo.email}`,
-      this.externals.wixUsers.register(teachersInfo.email, password, { contactInfo })
+      `registerUser ${teacher.email}`,
+      this.externals.wixUsers.register(teacher.email, password, { contactInfo })
     );
   }
 

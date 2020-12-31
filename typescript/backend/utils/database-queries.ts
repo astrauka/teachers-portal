@@ -1,7 +1,6 @@
 import { Externals } from '../context/production-context';
+import { WixDataQueryReferencedResult, WixDataQueryResult } from '../types/wix-types';
 import { RecordNotFoundError } from './errors';
-import WixDataQueryResult = wix_data.WixDataQueryResult;
-import WixDataQueryReferencedResult = wix_data.WixDataQueryReferencedResult;
 
 export async function findSingleRecord<T>(
   queryResultPromise: Promise<WixDataQueryResult>
@@ -19,8 +18,11 @@ export async function findSingleRecordOrThrow<T>(
   throw new RecordNotFoundError('Item not found in database');
 }
 
-export async function findById<T>(externals: Externals, collection, id): Promise<T> {
-  return externals.wixData.get(collection, id, { suppressAuth: true });
+export async function findById<T>(externals: Externals, collection, id): Promise<T | undefined> {
+  if (id) {
+    return externals.wixData.get(collection, id, { suppressAuth: true });
+  }
+  return undefined;
 }
 
 export async function fetchRecords<T>(

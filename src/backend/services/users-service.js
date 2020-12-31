@@ -3,15 +3,15 @@ export class UsersService {
     constructor(externals) {
         this.externals = externals;
     }
-    async signInTeacher(teachersInfo, password) {
-        return withLogger(`signInTeacher ${teachersInfo.email}`, this.externals.wixUsers.login(teachersInfo.email, password));
+    async signInTeacher(teacher, password) {
+        return withLogger(`signInTeacher ${teacher.email}`, this.externals.wixUsers.login(teacher.email, password));
     }
-    async registerUser(teachersInfo, password) {
+    async registerUser(teacher, password) {
         const contactInfo = {
-            firstName: teachersInfo.firstName,
-            lastName: teachersInfo.lastName,
+            firstName: teacher.firstName,
+            lastName: teacher.lastName,
         };
-        return withLogger(`registerUser ${teachersInfo.email}`, this.externals.wixUsers.register(teachersInfo.email, password, { contactInfo }));
+        return withLogger(`registerUser ${teacher.email}`, this.externals.wixUsers.register(teacher.email, password, { contactInfo }));
     }
     getCurrentUserEmail() {
         return this.getCurrentUser().getEmail();

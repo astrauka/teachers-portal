@@ -16,3 +16,9 @@ export enum TaskNumber {
   initialProfileForm = 1,
   secondStepProfileForm = 2,
 }
+
+export enum TaskStatus {
+  completed = 'completed',
+  current = 'current',
+  upcoming = 'upcoming',
+}

@@ -11,7 +11,7 @@ export async function withLogger(namespaceOrLogger, promiseOrFn) {
 // tslint:disable:no-console
 export function getLogger(namespace) {
     return {
-        info: (...args) => console.log(namespace, ...args),
+        info: (...args) => console.info(namespace, ...args),
         warn: (...args) => console.warn(namespace, ...args),
         error: (...args) => console.error(namespace, ...args),
     };

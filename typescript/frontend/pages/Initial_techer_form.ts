@@ -1,16 +1,15 @@
-import {
-  currentTeachersInfo,
-  currentTeachersProfile,
-  updateInitialTeachersProfile,
-} from 'backend/backend-api';
+import { submitInitialTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { InitialTeacherForm, InitialTeacherFormKey } from 'public/common/entities/teachers-profile';
-import { initialTeachersFormSchema } from 'public/common/schemas/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
-import { objectFromArray } from 'public/forms';
+import {
+  InitialTeacherForm,
+  InitialTeacherFormKey,
+  TeacherView,
+} from 'public/common/entities/teacher';
+import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
+import { forCurrentTeacher } from 'public/for-current-teacher';
+import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-import wixUsers from 'wix-users';
 
 type ValidationMessages = { [key in InitialTeacherFormKey]: string };
 const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city', 'streetAddress'];
@@ -18,91 +17,68 @@ const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
 let state: {
+  teacher: TeacherView;
   fieldValues: InitialTeacherForm;
   validationMessages: ValidationMessages;
 };
 
-$w.onReady(() =>
-  forLoggedInUser(async () => {
-    state = {
-      fieldValues: objectFromArray<InitialTeacherForm>(FORM_FIELDS, ''),
-      validationMessages: objectFromArray<ValidationMessages>(FORM_FIELDS, ''),
-    };
-    await setCurrentTeacherName($w);
-    await assignCurrentTeacherProfileFormFields($w);
-    $w('#uploadButton' as 'UploadButton').onChange(() => uploadProfileImage($w));
-    $w('#submit' as 'Button').onClick(() => submitProfileInfoForm($w));
-  })
-);
+forCurrentTeacher(async (teacher: TeacherView) => {
+  const fieldValues = pick(teacher, FORM_FIELDS);
+  state = {
+    teacher,
+    fieldValues,
+    validationMessages: transform(fieldValues, (acc, value, field: InitialTeacherFormKey) => {
+      acc[field] = validateField(field, value, initialTeachersFormSchema, {
+        updateValidationMessage: FORM_INPUTS.includes(field),
+      });
+    }),
+  };
+  assignCurrentTeacherFormFields();
+  $w('#uploadButton' as 'UploadButton').onChange(() => uploadProfileImage());
+  $w('#submit' as 'Button').onClick(() => submitProfileInfoForm());
+});
 
-async function assignCurrentTeacherProfileFormFields($w) {
-  const teachersProfile = await currentTeachersProfile();
-  if (teachersProfile) {
-    state.fieldValues = pick(teachersProfile, FORM_FIELDS);
-  } else {
-    console.info(`Teachers profile not found for ${await wixUsers.currentUser.getEmail()}`);
-  }
-  FORM_FIELDS.forEach((field) => {
-    state.validationMessages[field] = validateField(
-      field,
-      state.fieldValues[field],
-      initialTeachersFormSchema,
-      { updateValidationMessage: FORM_INPUTS.includes(field) }
-    );
-  });
-  await enableSubmissionButton($w);
+function assignCurrentTeacherFormFields() {
+  enableSubmissionButton();
 
   if (state.fieldValues.profileImage) {
     $w('#profileImage' as 'Image').src = state.fieldValues.profileImage;
   }
-  FORM_INPUTS.forEach((field) => {
-    $w(`#${field}` as 'FormElement').value = state.fieldValues[field];
-  });
-
   TEXT_INPUTS.forEach((field) => {
-    $w(`#${field}` as 'TextInput').onInput((event: $w.Event) => {
-      return onInputChange(field, event, $w);
-    });
+    const $input = $w(`#${field}` as 'TextInput');
+    $input.value = state.fieldValues[field];
+    $input.onInput((event: $w.Event) => onInputChange(field, event));
   });
 
   DROPDOWNS.forEach((field) => {
-    $w(`#${field}` as 'Dropdown').onChange((event: $w.Event) => {
-      return onInputChange(field, event, $w);
-    });
+    const $dropdown = $w(`#${field}` as 'Dropdown');
+    $dropdown.value = state.fieldValues[field];
+    $dropdown.onChange((event: $w.Event) => onInputChange(field, event));
   });
 }
 
-function enableSubmissionButton($w): Promise<void> {
+function enableSubmissionButton(): void {
   const $submitButton = $w('#submit' as 'Button');
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   if (some(values(state.validationMessages))) {
     $submissionStatus.text = 'Please fill in all the fields';
     $submissionStatus.show();
-    return $submitButton.disable();
+    $submitButton.disable();
   } else {
     $submissionStatus.text = '';
     $submissionStatus.hide();
-    return $submitButton.enable();
+    $submitButton.enable();
   }
 }
 
-function onInputChange(field: string, event: $w.Event, $w): Promise<void> {
+async function onInputChange(field: string, event: $w.Event): Promise<void> {
   const value = event.target.value;
   state.fieldValues[field] = value;
   state.validationMessages[field] = validateField(field, value, initialTeachersFormSchema);
-  return enableSubmissionButton($w);
+  enableSubmissionButton();
 }
 
-async function setCurrentTeacherName($w) {
-  const teachersInfo = await currentTeachersInfo();
-  if (teachersInfo) {
-    $w('#teacherFullName' as 'Text').text = `${teachersInfo.firstName} ${teachersInfo.lastName}`;
-  } else {
-    console.error(`Could not load current teacher for ${await wixUsers.currentUser.getEmail()}`);
-  }
-}
-
-function uploadProfileImage($w) {
+function uploadProfileImage() {
   const $uploadButton = $w('#uploadButton' as 'UploadButton');
   const $uploadStatus = $w('#uploadStatus' as 'Text');
   if ($uploadButton.value.length > 0) {
@@ -125,25 +101,25 @@ function uploadProfileImage($w) {
       })
       .finally(() => {
         $uploadButton.buttonLabel = previousButtonLabel;
-        return enableSubmissionButton($w);
+        enableSubmissionButton();
       });
   } else {
     $uploadStatus.text = 'Please choose a file to upload.';
   }
 }
 
-async function submitProfileInfoForm($w) {
+async function submitProfileInfoForm() {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();
-  const updatedProfileImage = state.fieldValues.profileImage;
+  // const updatedProfileImage = state.fieldValues.profileImage;
 
   try {
-    await updateInitialTeachersProfile(state.fieldValues);
+    await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-    if (updatedProfileImage) {
-      $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
-    }
+    // if (updatedProfileImage) {
+    //   $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
+    // }
     wixLocation.to('/dashboard');
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;

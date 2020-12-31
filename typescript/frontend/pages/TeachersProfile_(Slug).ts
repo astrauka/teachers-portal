@@ -1,6 +1,6 @@
 import { forEach } from 'lodash';
-import { TeachersProfile } from 'public/common/entities/teachers-profile';
-import { forLoggedInUser } from 'public/for-logged-in-user';
+import { Teacher } from 'public/common/entities/teacher';
+import { forCurrentTeacher } from 'public/for-current-teacher';
 import wixLocation from 'wix-location';
 
 const SOCIAL_ICONS = {
@@ -9,22 +9,20 @@ const SOCIAL_ICONS = {
   linkedIn: 'https://www.linkedin.com/in/',
 };
 
-$w.onReady(() =>
-  forLoggedInUser(async () => {
-    $w('#SelectedTeachersProfile').onReady(() => {
-      const teachersProfile: TeachersProfile = $w('#SelectedTeachersProfile').getCurrentItem();
-      addSocialIconLinks(teachersProfile, $w);
-      addWebsiteLink(teachersProfile, $w);
-      addSendEmailButton(teachersProfile, $w);
-      addAboutHtml(teachersProfile, $w);
-      hideNotFilledInformation(teachersProfile, $w);
-    });
-  })
-);
+forCurrentTeacher(async () => {
+  $w('#SelectedTeacher').onReady(() => {
+    const teacher: Teacher = $w('#SelectedTeacher').getCurrentItem();
+    addSocialIconLinks(teacher, $w);
+    addWebsiteLink(teacher, $w);
+    addSendEmailButton(teacher, $w);
+    addAboutHtml(teacher, $w);
+    hideNotFilledInformation(teacher, $w);
+  });
+});
 
-function addSocialIconLinks(teachersProfile: TeachersProfile, $w) {
+function addSocialIconLinks(teacher: Teacher, $w) {
   forEach(SOCIAL_ICONS, (url, provider) => {
-    const link = teachersProfile[provider];
+    const link = teacher[provider];
     const $icon = $w(`#${provider}` as 'Image');
     if (link) {
       $icon.target = '_blank';
@@ -35,9 +33,9 @@ function addSocialIconLinks(teachersProfile: TeachersProfile, $w) {
   });
 }
 
-function addWebsiteLink(teachersProfile: TeachersProfile, $w) {
+function addWebsiteLink(teacher: Teacher, $w) {
   const $website = $w('#website' as 'Text');
-  const { website } = teachersProfile;
+  const { website } = teacher;
   if (website) {
     $website.html = `<a href="${website}" target="_blank">${website}</a>`;
   } else {
@@ -45,24 +43,26 @@ function addWebsiteLink(teachersProfile: TeachersProfile, $w) {
   }
 }
 
-function addSendEmailButton(teachersProfile: TeachersProfile, $w) {
+function addSendEmailButton(teacher: Teacher, $w) {
   const $button = $w('#sendEmailButton' as 'Button');
-  const { email } = teachersProfile;
+  const { email } = teacher;
   $button.onClick(() => {
     wixLocation.to(`mailto:${email}?subject=MRY%3A%20Question`);
   });
 }
 
-function addAboutHtml(teachersProfile: TeachersProfile, $w) {
-  $w('#about' as 'Text').html = teachersProfile.about;
+function addAboutHtml(teacher: Teacher, $w) {
+  if (teacher.about) {
+    $w('#about' as 'Text').html = teacher.about;
+  }
 }
 
-function hideNotFilledInformation(teachersProfile: TeachersProfile, $w) {
-  if (!teachersProfile.about) {
+function hideNotFilledInformation(teacher: Teacher, $w) {
+  if (!teacher.about) {
     $w('#aboutGroup' as 'Group').collapse();
   }
 
-  if (!teachersProfile.photos?.length) {
+  if (!teacher.photos?.length) {
     $w('#photosGroup' as 'Group').collapse();
   }
 }
