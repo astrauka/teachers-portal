@@ -5,7 +5,8 @@
 
 /src/assets
 /src/database
-/src/lightboxes
+/src/lightboxes/**/pageElements.d.ts
+/src/lightboxes/**/*.json
 /src/pages/**/pageElements.d.ts
 /src/pages/**/*.json
 

@@ -17,7 +17,7 @@ forCurrentTeacher(async (teacher) => {
     await updateHeaderNotificationsCount();
 });
 function askToFillInitialTeachersForm() {
-    if (!isLiveSite())
+    if (!isLiveSite() || 'initial-form' === wixLocation.path[0])
         return;
     const fillInitialTeachersFormTask = state.tasks[0];
     if (fillInitialTeachersFormTask && !fillInitialTeachersFormTask.isCompleted) {

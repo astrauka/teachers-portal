@@ -20,12 +20,21 @@ async function configureFrontendPublic() {
 async function configureFrontendPages() {
   const PAGES_DIST_DIR = path.resolve(DIST_DIR, './frontend/pages');
   const PAGES_SRC_DIR = path.resolve(SRC_DIR, './pages');
+  await configurePages(PAGES_DIST_DIR, PAGES_SRC_DIR);
+}
 
-  const typescriptPages = fs.readdirSync(PAGES_DIST_DIR)
+async function configureFrontendLightboxes() {
+  const PAGES_DIST_DIR = path.resolve(DIST_DIR, './frontend/lightboxes');
+  const PAGES_SRC_DIR = path.resolve(SRC_DIR, './lightboxes');
+  await configurePages(PAGES_DIST_DIR, PAGES_SRC_DIR);
+}
+
+async function configurePages(distDir: string, srcDir: string) {
+  const typescriptPages = fs.readdirSync(distDir)
     .filter(file => !file.endsWith('.spec.js'))
     .map(file => file.split('.js')[0]);
   const corvidPagesDirectories =
-    fs.readdirSync(PAGES_SRC_DIR, {withFileTypes: true})
+    fs.readdirSync(srcDir, {withFileTypes: true})
       .filter((file) => file.isDirectory())
       .map((directory) => directory.name);
 
@@ -47,11 +56,13 @@ async function configureFrontendPages() {
   }
 
   pagesToCopy.forEach(([page, directory]) => {
-    fs.copyFileSync(`${PAGES_DIST_DIR}/${page}.js`, `${PAGES_SRC_DIR}/${directory}/${page}.js`);
+    fs.copyFileSync(`${distDir}/${page}.js`, `${srcDir}/${directory}/${page}.js`);
   });
+
 }
 
 Promise.all([
   configureFrontendPublic(),
   configureFrontendPages(),
+  configureFrontendLightboxes(),
 ]).then(() => console.log('Done'));

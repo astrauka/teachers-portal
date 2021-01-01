@@ -4,12 +4,17 @@ import wixUsers from 'wix-users';
 import { Teacher, TeacherView } from './common/entities/teacher';
 import { getCurrentTeacher } from './global-state';
 
+const PUBLIC_PAGES = ['welcome', 'error', 'privacy-policy', 'site-terms-and-conditions'];
+
 export function forCurrentTeacher(forCurrentTeacherFn: (teacher: Teacher) => Promise<void>) {
   $w.onReady(async () => {
     try {
+      if (PUBLIC_PAGES.includes(wixLocation.path[0])) {
+        return;
+      }
       const currentUser = wixUsers.currentUser;
       if (!currentUser.loggedIn) {
-        console.error('Current user is not logged in');
+        console.info('Current user is not logged in');
         return wixLocation.to('/welcome');
       }
 

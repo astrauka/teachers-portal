@@ -11,8 +11,8 @@ import { GeneratePassword } from './generate-password';
 describe('authenticateTeacher', () => {
   const idToken = 'google-auth-token';
   const googleUser = buildGoogleUser();
-  const signInToken = 'sign-in-token';
-  const teacher = buildTeacher({ id: 'teacher-id' });
+  const sessionToken = 'session-token';
+  const teacher = buildTeacher({ id: 'teacher-id', without: ['profileImage'] });
   const password = 'teacher-password';
 
   const getGoogleAuthService = () =>
@@ -21,7 +21,7 @@ describe('authenticateTeacher', () => {
     });
   const getUsersService = () =>
     stubType<UsersService>((stub) => {
-      stub.signInTeacher.resolves(signInToken);
+      stub.signInTeacher.resolves(sessionToken);
     });
   const getTeachersRepository = (teacher) =>
     stubType<TeachersRepository>((stub) => {
@@ -54,7 +54,10 @@ describe('authenticateTeacher', () => {
       generatePassword,
       authenticateTeacher,
     } = buildTestContext();
-    expect(await authenticateTeacher(idToken)).to.eql(signInToken);
+    expect(await authenticateTeacher(idToken)).to.eql({
+      sessionToken,
+      redirectPath: '/initial-form',
+    });
     expect(googleAuthService.verifyGoogleToken).calledOnceWithExactly(idToken);
     expect(teachersRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
     expect(generatePassword).calledOnceWithExactly(teacher.email);

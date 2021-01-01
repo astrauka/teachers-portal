@@ -27,7 +27,8 @@ forCurrentTeacher(async (teacher: TeacherView) => {
 });
 
 function askToFillInitialTeachersForm() {
-  if (!isLiveSite()) return;
+  if (!isLiveSite() || 'initial-form' === wixLocation.path[0]) return;
+
   const fillInitialTeachersFormTask = state.tasks[0];
   if (fillInitialTeachersFormTask && !fillInitialTeachersFormTask.isCompleted) {
     console.info('Redirecting to initial profile form');

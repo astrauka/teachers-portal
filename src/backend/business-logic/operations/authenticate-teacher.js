@@ -9,7 +9,9 @@ export function authenticateTeacherFactory(googleAuthService, teachersRepository
                 throw new UnauthorizedError('Invalid email - not a teacher');
             }
             const password = await generatePassword(teacher.email);
-            return usersService.signInTeacher(teacher, password);
+            const sessionToken = await usersService.signInTeacher(teacher, password);
+            const redirectPath = teacher.profileImage ? '/' : '/initial-form';
+            return { sessionToken, redirectPath };
         });
     };
 }
