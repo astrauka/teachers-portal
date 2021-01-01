@@ -1,7 +1,7 @@
 import { buildGoogleUser } from '../../../test/builders/google-user';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { GoogleAuthService } from '../../services/google-auth-service';
 import { UsersService } from '../../services/users-service';
@@ -16,15 +16,15 @@ describe('authenticateTeacher', () => {
   const password = 'teacher-password';
 
   const getGoogleAuthService = () =>
-    createStubInstance(GoogleAuthService, (stub) => {
+    stubType<GoogleAuthService>((stub) => {
       stub.verifyGoogleToken.resolves(googleUser);
     });
   const getUsersService = () =>
-    createStubInstance(UsersService, (stub) => {
+    stubType<UsersService>((stub) => {
       stub.signInTeacher.resolves(signInToken);
     });
   const getTeachersRepository = (teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherByEmail.resolves(teacher);
     });
   const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
@@ -57,7 +57,7 @@ describe('authenticateTeacher', () => {
     expect(await authenticateTeacher(idToken)).to.eql(signInToken);
     expect(googleAuthService.verifyGoogleToken).calledOnceWithExactly(idToken);
     expect(teachersRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
-    expect(generatePassword).calledOnceWithExactly(teacher._id);
+    expect(generatePassword).calledOnceWithExactly(teacher.email);
     expect(usersService.signInTeacher).calledOnceWithExactly(teacher, password);
   });
 
@@ -76,7 +76,7 @@ describe('authenticateTeacher', () => {
   context('on invalid auth token', () => {
     const error = new Error('Invalid token');
     const getGoogleAuthService = () =>
-      createStubInstance(GoogleAuthService, (stub) => {
+      stubType<GoogleAuthService>((stub) => {
         stub.verifyGoogleToken.rejects(error);
       });
 

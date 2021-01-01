@@ -76,7 +76,6 @@ export const setupContext = memoize(async (externals: Externals) => {
   const registerTeacher = registerTeacherFactory(
     siteMembersRepository,
     usersService,
-    teachersRepository,
     generatePassword
   );
 

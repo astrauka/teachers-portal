@@ -1,6 +1,6 @@
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance } from '../../../test/utils/stubbing';
+import { stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { UsersService } from '../../services/users-service';
 import { getTeacherFactory } from './get-teacher';
@@ -12,12 +12,12 @@ describe('getTeacher', () => {
   });
 
   const getTeachersRepository = (teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherByEmail.resolves(teacher);
       stub.fetchTeacherByEmailOrThrow.resolves(teacher);
     });
   const getUsersService = () =>
-    createStubInstance(UsersService, (stub) => {
+    stubType<UsersService>((stub) => {
       stub.getCurrentUserEmail.resolves(email);
     });
   const buildTestContext = ({

@@ -1,6 +1,6 @@
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { getCuratingTeacherFactory } from './get-curating-teacher';
@@ -14,7 +14,7 @@ describe('getCuratingTeacher', () => {
   });
 
   const getTeachersRepository = (teacher: Teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherById.resolves(teacher);
     });
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);

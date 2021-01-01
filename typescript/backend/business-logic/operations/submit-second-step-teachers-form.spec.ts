@@ -2,7 +2,7 @@ import { pick } from 'lodash';
 import { SecondStepTeachersForm, Teacher } from '../../../common/entities/teacher';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TaskNumber } from '../../common/entities/task';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { CompleteTeachersTask } from './complete-teachers-task';
@@ -18,7 +18,7 @@ describe('submitSecondStepTeachersForm', () => {
   const updatedTeachersProfile: Teacher = { ...teacher, ...update };
 
   const getTeachersRepository = (teacher: Teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.updateTeacher.resolves(teacher);
     });
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
