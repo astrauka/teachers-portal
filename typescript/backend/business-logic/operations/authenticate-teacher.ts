@@ -19,7 +19,7 @@ export function authenticateTeacherFactory(
       if (!teacher) {
         throw new UnauthorizedError('Invalid email - not a teacher');
       }
-      const password = await generatePassword(teacher._id);
+      const password = await generatePassword(teacher.email);
       return usersService.signInTeacher(teacher, password);
     });
   };

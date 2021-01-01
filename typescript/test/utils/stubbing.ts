@@ -4,17 +4,6 @@ export type Fn = (...args: any) => any;
 
 export type Stub<T> = T & sinon.SinonStubbedInstance<T>;
 
-export function createStubInstance<T>(
-  constructor: sinon.StubbableType<T>,
-  initStub?: (stub: sinon.SinonStubbedInstance<T>) => void
-) {
-  const stub = sinon.createStubInstance(constructor) as Stub<T>;
-  if (initStub) {
-    initStub(stub);
-  }
-  return stub;
-}
-
 export function stubType<T>(initStub?: (stub: sinon.SinonStubbedInstance<T>) => void) {
   const stub = new Proxy({} as Stub<T>, {
     get(obj, prop) {

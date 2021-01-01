@@ -47,7 +47,7 @@ export const setupContext = memoize(async (externals) => {
     // views
     const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
     // hooks
-    const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService, teachersRepository, generatePassword);
+    const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService, generatePassword);
     return {
         repositories: {
             countriesRepository,

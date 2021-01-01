@@ -1,7 +1,7 @@
 import { buildTask } from '../../../test/builders/task';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { Task } from '../../common/entities/task';
 import { Teacher } from '../../common/entities/teacher';
 import { TasksRepository } from '../../repositories/tasks-repository';
@@ -16,12 +16,12 @@ describe('completeTeachersTask', () => {
 
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
   const getTeachersRepository = (completedTasks: Task[]) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.completeTask.resolves();
       stub.fetchCompletedTasks.resolves(completedTasks);
     });
   const getTasksRepository = (task: Task) =>
-    createStubInstance(TasksRepository, (stub) => {
+    stubType<TasksRepository>((stub) => {
       stub.fetchTaskByNumberOrThrow.resolves(task);
     });
   const buildTestContext = ({

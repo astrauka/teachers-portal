@@ -6,26 +6,17 @@ import { setupContext } from './context/setup-context';
 import { withLogger } from './utils/logger';
 
 export async function TeachersProfile_beforeInsert(teacher: Teacher) {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger<Teacher>(`Hook TeachersProfile_beforeInsert ${teacher.email}`, () =>
-    actions.normalizeTeacher(teacher)
+  const { actions, hooks } = await setupContext(EXTERNALS);
+  return withLogger<Teacher>(`Hook TeachersProfile_beforeInsert ${teacher.email}`, async () =>
+    hooks.registerTeacher(await actions.normalizeTeacher(teacher))
   );
 }
 
 export async function TeachersProfile_beforeUpdate(teacher: Teacher) {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger<Teacher>(`Hook TeachersProfile_beforeUpdate ${teacher.email}`, () =>
-    actions.normalizeTeacher(teacher)
+  const { actions, hooks } = await setupContext(EXTERNALS);
+  return withLogger<Teacher>(`Hook TeachersProfile_beforeUpdate ${teacher.email}`, async () =>
+    hooks.registerTeacher(await actions.normalizeTeacher(teacher))
   );
-}
-
-export async function TeachersProfile_afterInsert(teacher: Teacher): Promise<Teacher> {
-  const { hooks } = await setupContext(EXTERNALS);
-  await withLogger(
-    `Hook TeachersProfile_afterInsert ${teacher.email}`,
-    hooks.registerTeacher(teacher)
-  );
-  return teacher;
 }
 
 export function Tasks_beforeInsert(task: Task) {

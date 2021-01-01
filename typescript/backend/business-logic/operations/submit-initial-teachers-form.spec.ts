@@ -4,7 +4,7 @@ import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TaskNumber } from '../../common/entities/task';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
@@ -30,15 +30,15 @@ describe('submitInitialTeachersForm', () => {
   };
 
   const getTeachersRepository = (teacher: Teacher, returnedTeachersProfile: Teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.updateTeacher.resolves(returnedTeachersProfile);
     });
   const getCountriesRepository = (country) =>
-    createStubInstance(CountriesRepository, (stub) => {
+    stubType<CountriesRepository>((stub) => {
       stub.fetchCountryByTitleOrThrow.resolves(country);
     });
   const getLanguagesRepository = (language) =>
-    createStubInstance(LanguagesRepository, (stub) => {
+    stubType<LanguagesRepository>((stub) => {
       stub.fetchLanguageByTitleOrThrow.resolves(language);
     });
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);

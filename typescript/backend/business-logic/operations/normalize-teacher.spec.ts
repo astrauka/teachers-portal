@@ -1,7 +1,7 @@
 import { Teacher } from '../../../common/entities/teacher';
 import { buildAdminFilledTeacher, buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance, stubFn } from '../../../test/utils/stubbing';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { IdProvider } from '../../utils/id';
 import { MAX_SLUG_POSTFIX, normalizeTeacherFactory, TEACHER_DEFAULTS } from './normalize-teacher';
@@ -18,7 +18,7 @@ describe('normalizeTeacher', () => {
   const uuid = 'generated-id';
 
   const getTeachersRepository = (teacher?: Teacher) =>
-    createStubInstance(TeachersRepository, (stub) => {
+    stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherBySlug.resolves(teacher);
     });
   const getGenerateUuid = (uuid: string) => stubFn<IdProvider>().returns(uuid);
@@ -48,7 +48,7 @@ describe('normalizeTeacher', () => {
     const teacher2 = buildTeacher({ properties: { slug: `${slug}-1` } });
     const teacher3 = buildTeacher({ properties: { slug: `${slug}-2` } });
     const getTeachersRepository = () =>
-      createStubInstance(TeachersRepository, (stub) => {
+      stubType<TeachersRepository>((stub) => {
         stub.fetchTeacherBySlug
           .onFirstCall()
           .resolves(teacher1)

@@ -3,7 +3,7 @@ import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
-import { createStubInstance } from '../../../test/utils/stubbing';
+import { stubType } from '../../../test/utils/stubbing';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { makeTeacherViewsFactory } from './make-teacher-views';
@@ -39,11 +39,11 @@ describe('makeTeacherViews', () => {
   const teacherViews = [teacherView1, teacherView2];
 
   const getCountriesRepository = (countries) =>
-    createStubInstance(CountriesRepository, (stub) => {
+    stubType<CountriesRepository>((stub) => {
       stub.fetchCountriesByIds.resolves(countries);
     });
   const getLanguagesRepository = (languages) =>
-    createStubInstance(LanguagesRepository, (stub) => {
+    stubType<LanguagesRepository>((stub) => {
       stub.fetchLanguagesByIds.resolves(languages);
     });
   const buildTestContext = ({
