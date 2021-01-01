@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import {
   AccountStatus,
   AccountStatuses,
@@ -5,7 +6,7 @@ import {
   TeacherLevel,
 } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
-import { resetInputFieldValues, updateInputValueIfChanged } from 'public/inputs-location';
+import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
@@ -23,7 +24,7 @@ const DROPDOWNS: TeachersFilterKey[] = ['level'];
 let state: {
   fieldValues: TeachersFilter;
   teacherLevels: TeacherLevel[];
-  accountStatuses: AccountStatus[];
+  visibleAccountStatusIds: string[];
 };
 
 forCurrentTeacher(async () => {
@@ -33,16 +34,17 @@ forCurrentTeacher(async () => {
   ]);
   state = {
     teacherLevels,
-    accountStatuses,
+    visibleAccountStatusIds: accountStatuses
+      .filter(({ title }) => title !== AccountStatuses.NotATeacher)
+      .map(({ _id }) => _id),
     fieldValues: wixLocation.query,
   };
   await updateTeachersFilter();
   setupInputOnChange();
 
-  $w('#resetFiltersButton' as 'Button').onClick(async () => {
-    resetInputFieldValues(state.fieldValues);
-    updateInputValueIfChanged(state.fieldValues);
-    updateTeachersFilter();
+  $w('#TeacherLevelsDataset').onReady(() => {
+    const $dropdown = $w('#level' as 'Dropdown');
+    $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
   });
 
   $w('#teachersRepeater' as 'Repeater').onItemReady(($item, teacher: Teacher) => {
@@ -52,10 +54,12 @@ forCurrentTeacher(async () => {
 });
 
 function setupInputOnChange() {
+  setupInputChangeHandlers(TEXT_INPUTS, DROPDOWNS);
+
   TEXT_INPUTS.forEach((field) => {
     const $input = $w(`#${field}` as 'TextInput');
     $input.value = state.fieldValues[field];
-    $input.onInput((event: $w.Event) => onInputChange(field, event));
+    $input.onInput(debounce((event: $w.Event) => onInputChange(field, event), 500));
   });
 
   DROPDOWNS.forEach((field) => {
@@ -66,8 +70,7 @@ function setupInputOnChange() {
 }
 
 async function onInputChange(field: string, event: $w.Event): Promise<void> {
-  const value = event.target.value;
-  state.fieldValues[field] = value;
+  state.fieldValues[field] = event.target.value;
   updateTeachersFilter();
 }
 
@@ -75,14 +78,15 @@ async function updateTeachersFilter() {
   const values = state.fieldValues;
   const levelId =
     values.level && state.teacherLevels.find(({ title }) => title === values.level)?._id;
-  const statusId = state.accountStatuses.find(({ title }) => title === AccountStatuses.NotATeacher)
-    ?._id;
 
   const datasetFilter = getFilter([
     [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
     [values.city, (filter) => filter.contains('city', values.city)],
     [levelId, (filter) => filter.eq('levelId', levelId)],
-    [statusId, (filter) => filter.ne('statusId', statusId)],
+    [
+      state.visibleAccountStatusIds,
+      (filter) => filter.hasSome('statusId', state.visibleAccountStatusIds),
+    ],
   ]);
 
   await $w('#TeachersDataset').setFilter(datasetFilter);

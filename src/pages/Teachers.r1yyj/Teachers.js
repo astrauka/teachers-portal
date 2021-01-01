@@ -1,6 +1,7 @@
+import { debounce } from 'lodash';
 import { AccountStatuses, } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
-import { resetInputFieldValues, updateInputValueIfChanged } from 'public/inputs-location';
+import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
@@ -14,15 +15,16 @@ forCurrentTeacher(async () => {
     ]);
     state = {
         teacherLevels,
-        accountStatuses,
+        visibleAccountStatusIds: accountStatuses
+            .filter(({ title }) => title !== AccountStatuses.NotATeacher)
+            .map(({ _id }) => _id),
         fieldValues: wixLocation.query,
     };
     await updateTeachersFilter();
     setupInputOnChange();
-    $w('#resetFiltersButton').onClick(async () => {
-        resetInputFieldValues(state.fieldValues);
-        updateInputValueIfChanged(state.fieldValues);
-        updateTeachersFilter();
+    $w('#TeacherLevelsDataset').onReady(() => {
+        const $dropdown = $w('#level');
+        $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
     });
     $w('#teachersRepeater').onItemReady(($item, teacher) => {
         $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
@@ -30,10 +32,11 @@ forCurrentTeacher(async () => {
     });
 });
 function setupInputOnChange() {
+    setupInputChangeHandlers(TEXT_INPUTS, DROPDOWNS);
     TEXT_INPUTS.forEach((field) => {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
-        $input.onInput((event) => onInputChange(field, event));
+        $input.onInput(debounce((event) => onInputChange(field, event), 500));
     });
     DROPDOWNS.forEach((field) => {
         const $dropdown = $w(`#${field}`);
@@ -42,20 +45,21 @@ function setupInputOnChange() {
     });
 }
 async function onInputChange(field, event) {
-    const value = event.target.value;
-    state.fieldValues[field] = value;
+    state.fieldValues[field] = event.target.value;
     updateTeachersFilter();
 }
 async function updateTeachersFilter() {
-    var _a, _b;
+    var _a;
     const values = state.fieldValues;
     const levelId = values.level && ((_a = state.teacherLevels.find(({ title }) => title === values.level)) === null || _a === void 0 ? void 0 : _a._id);
-    const statusId = (_b = state.accountStatuses.find(({ title }) => title === AccountStatuses.NotATeacher)) === null || _b === void 0 ? void 0 : _b._id;
     const datasetFilter = getFilter([
         [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
         [values.city, (filter) => filter.contains('city', values.city)],
         [levelId, (filter) => filter.eq('levelId', levelId)],
-        [statusId, (filter) => filter.ne('statusId', statusId)],
+        [
+            state.visibleAccountStatusIds,
+            (filter) => filter.hasSome('statusId', state.visibleAccountStatusIds),
+        ],
     ]);
     await $w('#TeachersDataset').setFilter(datasetFilter);
     const $teachersRepeater = $w('#teachersRepeater');

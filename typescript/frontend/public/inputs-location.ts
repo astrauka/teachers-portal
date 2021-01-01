@@ -1,36 +1,18 @@
-import { addWixLocationQueryParams, getWixLocationQuery } from './wix-utils';
+import { debounce } from 'lodash';
+import { addWixLocationQueryParams } from './wix-utils';
 
-export type InputNamesToDbFields = { [inputName: string]: string };
-
-export function setupInputChangeHandlers(inputFields: InputNamesToDbFields, $w) {
-  for (const [input, field] of Object.entries(inputFields)) {
-    if ($w(input as 'TextInput').onInput) {
-      $w(input as 'TextInput').onInput((event) => {
+export function setupInputChangeHandlers(textInputs: string[], dropdowns: string[]) {
+  textInputs.forEach((field) => {
+    $w(`#${field}` as 'TextInput').onInput(
+      debounce((event) => {
         addWixLocationQueryParams({ [field]: event.target.value });
-      });
-    } else {
-      $w(input as 'Dropdown').onChange((event) => {
-        addWixLocationQueryParams({ [field]: event.target.value });
-      });
-    }
-  }
-}
+      }, 500)
+    );
+  });
 
-export function updateInputValueIfChanged(inputFields: InputNamesToDbFields) {
-  const values = getWixLocationQuery();
-  for (const [input, field] of Object.entries(inputFields)) {
-    const inputValue = $w(input as 'TextInput').value;
-    const fieldValue = values[field];
-    if (inputValue !== fieldValue) {
-      $w(input as 'TextInput').value = fieldValue;
-    }
-  }
-}
-
-export function resetInputFieldValues(inputFields: InputNamesToDbFields) {
-  const emptyFields = Object.entries(inputFields).reduce((acc, [input, field]) => {
-    acc[field] = '';
-    return acc;
-  }, {});
-  addWixLocationQueryParams(emptyFields);
+  dropdowns.forEach((field) => {
+    $w(`#${field}` as 'Dropdown').onChange((event) => {
+      addWixLocationQueryParams({ [field]: event.target.value });
+    });
+  });
 }
