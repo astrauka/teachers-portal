@@ -10,7 +10,7 @@ const DROPDOWNS = ['country', 'language'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
-forCurrentTeacher(async (teacher) => {
+forCurrentTeacher(async ({ teacher }) => {
     const fieldValues = pick(teacher, FORM_FIELDS);
     state = {
         teacher,
@@ -94,13 +94,9 @@ async function submitProfileInfoForm() {
     const $submissionStatus = $w('#submissionStatus');
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
-    // const updatedProfileImage = state.fieldValues.profileImage;
     try {
         await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
         $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-        // if (updatedProfileImage) {
-        //   $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
-        // }
         wixLocation.to('/dashboard');
     }
     catch (error) {

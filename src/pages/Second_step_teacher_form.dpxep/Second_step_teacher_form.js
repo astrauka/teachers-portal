@@ -17,7 +17,7 @@ const FIELDS_WITH_VALIDATION = [
     'website',
 ];
 let state;
-forCurrentTeacher(async (teacher) => {
+forCurrentTeacher(async ({ teacher }) => {
     const fieldValues = pick(teacher, FORM_FIELDS);
     state = {
         teacher,

@@ -6,7 +6,7 @@ import {
   TeacherView,
 } from 'public/common/entities/teacher';
 import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
-import { forCurrentTeacher } from 'public/for-current-teacher';
+import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
@@ -22,7 +22,7 @@ let state: {
   validationMessages: ValidationMessages;
 };
 
-forCurrentTeacher(async (teacher: TeacherView) => {
+forCurrentTeacher(async ({ teacher }: InitialState) => {
   const fieldValues = pick(teacher, FORM_FIELDS);
   state = {
     teacher,
@@ -112,14 +112,10 @@ async function submitProfileInfoForm() {
   const $submissionStatus = $w('#submissionStatus' as 'Text');
   $submissionStatus.text = 'Submitting ...';
   $submissionStatus.show();
-  // const updatedProfileImage = state.fieldValues.profileImage;
 
   try {
     await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
-    // if (updatedProfileImage) {
-    //   $w('#headerProfileImage' as 'Image').src = updatedProfileImage;
-    // }
     wixLocation.to('/dashboard');
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;

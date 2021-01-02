@@ -7,7 +7,7 @@ import {
   TeacherView,
 } from 'public/common/entities/teacher';
 import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
-import { forCurrentTeacher } from 'public/for-current-teacher';
+import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { idFromString } from 'public/forms';
 import { onTeacherUpdated } from 'public/on-teacher-updated';
 import { validateField } from 'public/validate';
@@ -35,7 +35,7 @@ let state: {
   validationMessages: ValidationMessages;
 };
 
-forCurrentTeacher(async (teacher: TeacherView) => {
+forCurrentTeacher(async ({ teacher }: InitialState) => {
   const fieldValues = pick(teacher, FORM_FIELDS);
   state = {
     teacher,
