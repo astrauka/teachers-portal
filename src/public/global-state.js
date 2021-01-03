@@ -15,7 +15,9 @@ async function fetchItem(item, fetchFn, refresh = false) {
         }
     }
     const fetched = await fetchFn();
-    memory.setItem(item, JSON.stringify(fetched));
+    if (fetched) {
+        memory.setItem(item, JSON.stringify(fetched));
+    }
     return fetched;
 }
 export async function getCurrentTeacher(refresh) {

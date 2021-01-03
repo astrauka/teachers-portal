@@ -3,12 +3,15 @@ import wixUsers from 'wix-users';
 $w.onReady(function () {
     const $googleLoginIframe = $w('#googleLoginIframe');
     const $acceptTerms = $w('#checkbox1');
+    const $signInDisabled = $w('#signInDisabled');
     $acceptTerms.onClick(() => {
         if ($acceptTerms.checked) {
             $googleLoginIframe.show();
+            $signInDisabled.hide();
         }
         else {
             $googleLoginIframe.hide();
+            $signInDisabled.show();
         }
     });
     $googleLoginIframe.onMessage(async (message) => {

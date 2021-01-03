@@ -5,11 +5,14 @@ $w.onReady(function () {
   const $googleLoginIframe = $w('#googleLoginIframe' as 'HtmlComponent');
 
   const $acceptTerms = $w('#checkbox1' as 'Checkbox');
+  const $signInDisabled = $w('#signInDisabled' as 'Image');
   $acceptTerms.onClick(() => {
     if ($acceptTerms.checked) {
       $googleLoginIframe.show();
+      $signInDisabled.hide();
     } else {
       $googleLoginIframe.hide();
+      $signInDisabled.show();
     }
   });
 
