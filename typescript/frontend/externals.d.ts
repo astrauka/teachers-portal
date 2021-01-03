@@ -3,5 +3,4 @@ declare type PageElementsMap = {
   '#TeacherLevelsDataset': $w.dataset;
   '#SelectedTeacher': $w.dataset;
   '#AccountStatusesDataset': $w.dataset;
-  '#CurrentTeacherDataset': $w.dataset;
 };

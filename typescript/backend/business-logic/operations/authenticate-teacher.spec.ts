@@ -54,10 +54,7 @@ describe('authenticateTeacher', () => {
       generatePassword,
       authenticateTeacher,
     } = buildTestContext();
-    expect(await authenticateTeacher(idToken)).to.eql({
-      sessionToken,
-      redirectPath: '/initial-form',
-    });
+    expect(await authenticateTeacher(idToken)).to.eql(sessionToken);
     expect(googleAuthService.verifyGoogleToken).calledOnceWithExactly(idToken);
     expect(teachersRepository.fetchTeacherByEmail).calledOnceWithExactly(googleUser.email);
     expect(generatePassword).calledOnceWithExactly(teacher.email);

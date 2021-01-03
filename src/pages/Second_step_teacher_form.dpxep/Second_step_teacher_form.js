@@ -4,7 +4,7 @@ import { MediaItemTypes } from 'public/common/common-wix-types';
 import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { idFromString } from 'public/forms';
-import { onTeacherUpdated } from 'public/on-teacher-updated';
+import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['facebook', 'instagram', 'linkedIn', 'website'];
@@ -134,8 +134,9 @@ async function submitForm() {
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
     try {
-        await onTeacherUpdated(await submitSecondStepTeachersForm(state.fieldValues));
+        await submitSecondStepTeachersForm(state.fieldValues);
         $submissionStatus.text = 'Profile updated, redirecting to your profile...';
+        await refreshInitialState();
         wixLocation.to(`/teacher/${state.teacher.slug}`);
     }
     catch (error) {

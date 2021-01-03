@@ -2,7 +2,7 @@ import { submitInitialTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher } from 'public/for-current-teacher';
-import { onTeacherUpdated } from 'public/on-teacher-updated';
+import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['phoneNumber', 'city', 'streetAddress'];
@@ -11,6 +11,7 @@ const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
 forCurrentTeacher(async ({ teacher }) => {
+    $w('#teacherFullName').text = teacher.fullName;
     const fieldValues = pick(teacher, FORM_FIELDS);
     state = {
         teacher,
@@ -95,8 +96,9 @@ async function submitProfileInfoForm() {
     $submissionStatus.text = 'Submitting ...';
     $submissionStatus.show();
     try {
-        await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
+        await submitInitialTeachersForm(state.fieldValues);
         $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
+        await refreshInitialState();
         wixLocation.to('/dashboard');
     }
     catch (error) {

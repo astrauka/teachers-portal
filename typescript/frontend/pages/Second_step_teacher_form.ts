@@ -9,7 +9,7 @@ import {
 import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { idFromString } from 'public/forms';
-import { onTeacherUpdated } from 'public/on-teacher-updated';
+import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import UploadedFile = $w.UploadButton.UploadedFile;
@@ -163,8 +163,9 @@ async function submitForm() {
   $submissionStatus.show();
 
   try {
-    await onTeacherUpdated(await submitSecondStepTeachersForm(state.fieldValues));
+    await submitSecondStepTeachersForm(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to your profile...';
+    await refreshInitialState();
     wixLocation.to(`/teacher/${state.teacher.slug}`);
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;

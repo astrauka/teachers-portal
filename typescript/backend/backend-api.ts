@@ -1,4 +1,3 @@
-import { AuthenticateTeacher } from './business-logic/operations/authenticate-teacher';
 import { MakeTeacherViews } from './business-logic/views/make-teacher-views';
 import { TaskView } from './common/entities/task';
 import {
@@ -11,9 +10,7 @@ import { EXTERNALS } from './context/production-context';
 import { setupContext } from './context/setup-context';
 import { withLogger } from './utils/logger';
 
-export async function loginWithGoogle(
-  idToken: string
-): Promise<{ sessionToken: string; redirectPath: string }> {
+export async function loginWithGoogle(idToken: string): Promise<string> {
   const { actions } = await setupContext(EXTERNALS);
   return withLogger('loginWithGoogle', actions.authenticateTeacher(idToken));
 }

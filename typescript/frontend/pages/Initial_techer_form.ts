@@ -7,7 +7,7 @@ import {
 } from 'public/common/entities/teacher';
 import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
-import { onTeacherUpdated } from 'public/on-teacher-updated';
+import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 
@@ -23,6 +23,7 @@ let state: {
 };
 
 forCurrentTeacher(async ({ teacher }: InitialState) => {
+  $w('#teacherFullName' as 'Text').text = teacher.fullName;
   const fieldValues = pick(teacher, FORM_FIELDS);
   state = {
     teacher,
@@ -114,8 +115,9 @@ async function submitProfileInfoForm() {
   $submissionStatus.show();
 
   try {
-    await onTeacherUpdated(await submitInitialTeachersForm(state.fieldValues));
+    await submitInitialTeachersForm(state.fieldValues);
     $submissionStatus.text = 'Profile updated, redirecting to dashboard...';
+    await refreshInitialState();
     wixLocation.to('/dashboard');
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;

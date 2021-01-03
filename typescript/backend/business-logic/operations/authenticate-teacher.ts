@@ -11,9 +11,7 @@ export function authenticateTeacherFactory(
   usersService: UsersService,
   generatePassword: GeneratePassword
 ) {
-  return async function authenticateTeacher(
-    idToken: string
-  ): Promise<{ sessionToken: string; redirectPath: string }> {
+  return async function authenticateTeacher(idToken: string): Promise<string> {
     const googleUser = await googleAuthService.verifyGoogleToken(idToken);
 
     return withLogger(`authenticateTeacher ${googleUser.email}`, async () => {
@@ -22,9 +20,7 @@ export function authenticateTeacherFactory(
         throw new UnauthorizedError('Invalid email - not a teacher');
       }
       const password = await generatePassword(teacher.email);
-      const sessionToken = await usersService.signInTeacher(teacher, password);
-      const redirectPath = teacher.profileImage ? '/' : '/initial-form';
-      return { sessionToken, redirectPath };
+      return await usersService.signInTeacher(teacher, password);
     });
   };
 }

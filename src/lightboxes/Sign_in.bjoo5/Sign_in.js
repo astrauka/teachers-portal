@@ -1,5 +1,4 @@
 import { loginWithGoogle } from 'backend/backend-api';
-import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 $w.onReady(function () {
     const $googleLoginIframe = $w('#googleLoginIframe');
@@ -18,11 +17,10 @@ $w.onReady(function () {
         const $loginStatus = $w('#loginStatus');
         $loginStatus.text = 'Authenticating, please wait...';
         try {
-            const { sessionToken, redirectPath } = await loginWithGoogle(idToken);
+            const sessionToken = await loginWithGoogle(idToken);
             console.info('Login succeeded for', email);
             $loginStatus.text = 'Authenticated, redirecting...';
             await wixUsers.applySessionToken(sessionToken);
-            wixLocation.to(redirectPath);
         }
         catch (e) {
             console.error('Login failed', email, e);
