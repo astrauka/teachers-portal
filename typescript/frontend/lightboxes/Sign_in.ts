@@ -1,5 +1,4 @@
 import { loginWithGoogle } from 'backend/backend-api';
-import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
 $w.onReady(function () {
@@ -21,11 +20,10 @@ $w.onReady(function () {
     $loginStatus.text = 'Authenticating, please wait...';
 
     try {
-      const { sessionToken, redirectPath } = await loginWithGoogle(idToken);
+      const sessionToken = await loginWithGoogle(idToken);
       console.info('Login succeeded for', email);
       $loginStatus.text = 'Authenticated, redirecting...';
       await wixUsers.applySessionToken(sessionToken);
-      wixLocation.to(redirectPath);
     } catch (e) {
       console.error('Login failed', email, e);
       $loginStatus.text = 'Could not authenticate you.\nPlease contact system administrators.';

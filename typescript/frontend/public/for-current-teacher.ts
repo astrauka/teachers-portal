@@ -1,54 +1,64 @@
+import { isEmpty } from 'lodash';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import { TaskView } from './common/entities/task';
 import { TeacherView } from './common/entities/teacher';
-import { getCurrentTeacher, getTasks } from './global-state';
+import { isInitialStateLoaded, loadInitialState } from './global-state';
+import { sleep } from './sleep';
 
 const PUBLIC_PAGES = ['welcome', 'error', 'privacy-policy', 'site-terms-and-conditions'];
 
 export interface InitialState {
-  teacher?: TeacherView;
-  tasks?: TaskView[];
+  teacher: TeacherView;
+  tasks: TaskView[];
 }
 
 export function forCurrentTeacher(
-  forCurrentTeacherFn: (initialState: InitialState) => Promise<void>
+  forCurrentTeacherFn: (initialState: InitialState) => Promise<void>,
+  forPage = true
 ) {
-  try {
-    if (PUBLIC_PAGES.includes(wixLocation.path[0])) {
-      return;
-    }
+  if (isCurrentUserLoggedIn()) {
+    $w.onReady(async () => {
+      try {
+        const { teacher, tasks } = await getInitialState(forPage);
+        if (!teacher || isEmpty(tasks)) {
+          return wixLocation.to('/error');
+        }
+        if (shouldFillInitialTeacherForm(tasks)) {
+          if (forPage) {
+            return;
+          } else {
+            return wixLocation.to('/initial-form');
+          }
+        }
+        return await forCurrentTeacherFn({ teacher, tasks });
+      } catch (error) {
+        try {
+          console.error(`Failed to execute site code for ${await getUserEmail()}`, error);
+          if (isLiveSite()) {
+            return wixLocation.to('/error');
+          }
+        } catch (error) {
+          console.error('Failed to load the site', error);
+        }
+      }
+    });
+  }
+}
 
+function isCurrentUserLoggedIn(): boolean {
+  try {
     const currentUser = wixUsers.currentUser;
-    if (!currentUser.loggedIn) {
+    if (currentUser.loggedIn) {
+      return true;
+    }
+    if (!isPublicPage()) {
       console.info('Current user is not logged in');
-      return;
     }
   } catch (error) {
     console.error('Failed current user is logged in check', error);
-    return;
   }
-
-  $w.onReady(async () => {
-    try {
-      const [teacher, tasks] = await Promise.all([getTeacher(), getTasks()]);
-      if (!teacher) {
-        return wixLocation.to('/error');
-      }
-      await askToFillInitialTeachersForm(tasks);
-      return await forCurrentTeacherFn({ teacher, tasks });
-    } catch (error) {
-      try {
-        console.error(`Failed to execute site code for ${await getUserEmail()}`, error);
-        if (isLiveSite()) {
-          return wixLocation.to('/error');
-        }
-      } catch (error) {
-        console.error('Failed to load the site', error);
-      }
-    }
-  });
 }
 
 async function getUserEmail(): Promise<string | undefined> {
@@ -59,21 +69,24 @@ async function getUserEmail(): Promise<string | undefined> {
   }
 }
 
-async function getTeacher(): Promise<TeacherView | undefined> {
-  try {
-    return await getCurrentTeacher();
-  } catch (error) {
-    console.error(`Current teacher not found for ${await getUserEmail()}`, error);
-    wixUsers.logout();
-  }
+function shouldFillInitialTeacherForm(tasks: TaskView[]) {
+  return isLiveSite() && 'initial-form' !== wixLocation.path[0] && !tasks[0].isCompleted;
 }
 
-async function askToFillInitialTeachersForm(tasks: TaskView[]) {
-  if (!isLiveSite() || 'initial-form' === wixLocation.path[0]) return;
+function isPublicPage(): boolean {
+  return PUBLIC_PAGES.includes(wixLocation.path[0]);
+}
 
-  const fillInitialTeachersFormTask = tasks[0];
-  if (fillInitialTeachersFormTask && !fillInitialTeachersFormTask.isCompleted) {
-    console.info('Redirecting to initial profile form');
-    wixLocation.to(fillInitialTeachersFormTask.link);
+async function getInitialState(forPage: boolean): Promise<InitialState> {
+  try {
+    if (forPage) {
+      while (!(await isInitialStateLoaded())) {
+        await sleep(100);
+      }
+    }
+    return loadInitialState();
+  } catch (error) {
+    console.error(`Initial state failed to laod ${await getUserEmail()}`, error);
+    wixUsers.logout();
   }
 }

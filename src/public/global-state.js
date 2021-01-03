@@ -1,42 +1,41 @@
 import { getCuratingTeacherView, getCurrentTeachersTasks, getCurrentTeacherView, } from 'backend/backend-api';
-import { memoize } from 'lodash';
-const state = {};
-export async function getCurrentTeacher() {
-    if (state.teacher) {
-        return state.teacher;
+import { memory } from 'wix-storage';
+var GlobalState;
+(function (GlobalState) {
+    GlobalState["Teacher"] = "teacher";
+    GlobalState["Tasks"] = "tasks";
+    GlobalState["CuratingTeacher"] = "curatingTeacher";
+    GlobalState["isInitialStateLoaded"] = "isInitialStateLoaded";
+})(GlobalState || (GlobalState = {}));
+async function fetchItem(item, fetchFn, refresh = false) {
+    if (!refresh) {
+        const persisted = memory.getItem(item);
+        if (persisted) {
+            return JSON.parse(persisted);
+        }
     }
-    return fetchCurrentTeacher();
+    const fetched = await fetchFn();
+    memory.setItem(item, JSON.stringify(fetched));
+    return fetched;
 }
-export function setCurrentTeacher(teacher) {
-    state.teacher = teacher;
+export async function getCurrentTeacher(refresh) {
+    return fetchItem(GlobalState.Teacher, getCurrentTeacherView, refresh);
 }
-const fetchCurrentTeacher = memoize(async () => {
-    const teacher = await getCurrentTeacherView();
-    state.teacher = teacher;
-    return teacher;
-});
-export async function getTasks() {
-    if (state.tasks) {
-        return state.tasks;
-    }
-    return fetchTasks();
+export async function getCuratingTeacher(refresh) {
+    return fetchItem(GlobalState.CuratingTeacher, getCuratingTeacherView, refresh);
 }
-export async function refreshTasks() {
-    state.tasks = await getCurrentTeachersTasks();
+export async function getTasks(refresh) {
+    return fetchItem(GlobalState.Tasks, getCurrentTeachersTasks, refresh);
 }
-const fetchTasks = memoize(async () => {
-    const tasks = await getCurrentTeachersTasks();
-    state.tasks = tasks;
-    return tasks;
-});
-export async function getCuratingTeacher() {
-    if (state.curatingTeacher) {
-        return state.curatingTeacher;
-    }
-    return fetchCuratingTeacher();
+export async function loadInitialState() {
+    const [teacher, tasks] = await Promise.all([getCurrentTeacher(), getTasks()]);
+    memory.setItem(GlobalState.isInitialStateLoaded, 'true');
+    return { teacher, tasks };
 }
-const fetchCuratingTeacher = memoize(async () => {
-    const curatingTeacher = await getCuratingTeacherView();
-    state.curatingTeacher = curatingTeacher;
-    return curatingTeacher;
-});
+export async function isInitialStateLoaded() {
+    return Boolean(await memory.getItem(GlobalState.isInitialStateLoaded));
+}
+export async function refreshInitialState() {
+    const [teacher, tasks] = await Promise.all([getCurrentTeacher(true), getTasks(true)]);
+    return { teacher, tasks };
+}
