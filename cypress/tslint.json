@@ -1,0 +1,3 @@
+{
+  "extends": "../typescript/tslint.json"
+}
