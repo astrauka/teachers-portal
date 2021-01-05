@@ -30,3 +30,4 @@ npm run wix:editor
 * [Wix page](https://www.wix.com/dashboard/4968a067-4750-405d-ad3a-2129f3899310)
 * [Keyboard shortcuts](https://support.wix.com/en/article/corvid-keyboard-shortcuts)
 * [Corvid reference](https://www.wix.com/corvid/reference/)
+
