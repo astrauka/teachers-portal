@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# wix
 *.wix
 .corvid
 
@@ -10,7 +11,11 @@
 /src/pages/**/pageElements.d.ts
 /src/pages/**/*.json
 
+# compiled
 /dist
+
+# tests
+/cypress/integration/examples
 
 # dependencies
 /node_modules

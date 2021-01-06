@@ -16,6 +16,18 @@ Open the editor:
 npm run wix:editor
 ```
 
+## Test
+
+```bash
+npm test
+```
+
+Cypress tests require base url environment variable specified:
+
+```bash
+CYPRESS_BASE_URL=https://www.site.com/ npm run cypress:open
+```
+
 ## Deploy changes to Wix
 
 * Pull changes `npm run wix:pull`
