@@ -4,10 +4,11 @@ import wixUsers from 'wix-users';
 forCurrentTeacher(async ({ teacher, tasks }) => {
     $w('#logoutButton').onClick(() => {
         wixUsers.logout();
-        wixLocation.to('/welcome');
+        wixLocation.to('/');
     });
     updateHeaderNotificationsCount(tasks);
     setProfileImage(teacher);
+    showProfileDropdown();
 }, false);
 function updateHeaderNotificationsCount(tasks) {
     const $headerNotificationsButton = $w('#headerNotificationsButton');
@@ -31,4 +32,14 @@ function setProfileImage(teacher) {
             wixLocation.to(`/teacher/${slug}`);
         });
     }
+}
+function showProfileDropdown() {
+    const $profileImage = $w('#profileIcon');
+    const $profileDropdown = $w('#profileDropdown');
+    $profileImage.onMouseIn(() => {
+        $profileDropdown.expand();
+    });
+    $profileDropdown.onMouseOut(() => {
+        $profileDropdown.collapse();
+    });
 }
