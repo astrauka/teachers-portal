@@ -7,10 +7,6 @@ describe('Public pages', () => {
     cy.visit('site-terms-and-conditions').contains('h1', 'Site terms and conditions');
   });
 
-  it('shows welcome screen', () => {
-    cy.visit('welcome').contains('span', 'Login');
-  });
-
   it('shows error screen', () => {
     cy.visit('error').contains('span', 'Report the problem');
   });

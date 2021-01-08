@@ -7,7 +7,7 @@ import { TeacherView } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 
-const PUBLIC_PAGES = ['welcome', 'error', 'privacy-policy', 'site-terms-and-conditions'];
+const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 
 export interface InitialState {
   teacher: TeacherView;

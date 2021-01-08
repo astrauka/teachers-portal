@@ -4,7 +4,7 @@ import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
-const PUBLIC_PAGES = ['welcome', 'error', 'privacy-policy', 'site-terms-and-conditions'];
+const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 export function forCurrentTeacher(forCurrentTeacherFn, forPage = true) {
     if (isCurrentUserLoggedIn()) {
         $w.onReady(async () => {
