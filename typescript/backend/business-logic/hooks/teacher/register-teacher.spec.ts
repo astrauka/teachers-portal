@@ -2,6 +2,7 @@ import { buildSiteMember } from '../../../../test/builders/site-member';
 import { buildTeacher } from '../../../../test/builders/teacher';
 import { expect } from '../../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../../test/utils/stubbing';
+import { MemberStatus } from '../../../common/common-wix-types';
 import { SiteMembersRepository } from '../../../repositories/site-members-repository';
 import { UsersService } from '../../../services/users-service';
 import { SiteMember } from '../../../types/wix-types';
@@ -12,7 +13,7 @@ describe('registerTeacher', () => {
   const teacher = buildTeacher({ id: 'teacher-id', without: ['siteMemberId'] });
   const password = 'teacher-password';
 
-  const getSiteMembersService = (siteMember?: SiteMember) =>
+  const getSiteMembersRepository = (siteMember?: SiteMember) =>
     stubType<SiteMembersRepository>((stub) => {
       stub.fetchMemberByEmail.resolves(siteMember);
     });
@@ -23,7 +24,7 @@ describe('registerTeacher', () => {
   const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
 
   const buildTestContext = ({
-    siteMembersRepository = getSiteMembersService(),
+    siteMembersRepository = getSiteMembersRepository(),
     usersService = getUsersService(),
     generatePassword = getGeneratePassword(password),
   } = {}) => ({
@@ -33,7 +34,7 @@ describe('registerTeacher', () => {
     registerTeacher: registerTeacherFactory(siteMembersRepository, usersService, generatePassword),
   });
 
-  it('should register teacher, update teacher info and return member', async () => {
+  it('should register teacher', async () => {
     const {
       usersService,
       siteMembersRepository,
@@ -47,21 +48,42 @@ describe('registerTeacher', () => {
   });
 
   context('for existing siteMember', () => {
-    const siteMember = buildSiteMember({ id: 'member' });
+    const siteMember = buildSiteMember();
 
-    it('should return the member', async () => {
+    it('should do nothing', async () => {
       const {
         usersService,
         siteMembersRepository,
         generatePassword,
         registerTeacher,
       } = buildTestContext({
-        siteMembersRepository: getSiteMembersService(siteMember),
+        siteMembersRepository: getSiteMembersRepository(siteMember),
       });
       expect(await registerTeacher(teacher)).to.eql(teacher);
       expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
       expect(generatePassword).not.called;
       expect(usersService.registerUser).not.called;
+    });
+
+    context('on member pending approval', () => {
+      const siteMember = buildSiteMember({
+        properties: {
+          status: MemberStatus.Applicant,
+        },
+      });
+
+      it('should approve it', async () => {
+        const {
+          usersService,
+          siteMembersRepository,
+          generatePassword,
+          registerTeacher,
+        } = buildTestContext({ siteMembersRepository: getSiteMembersRepository(siteMember) });
+        expect(await registerTeacher(teacher)).to.eql(teacher);
+        expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
+        expect(generatePassword).not.called;
+        expect(usersService.approveUser).calledOnceWithExactly(teacher);
+      });
     });
   });
 });

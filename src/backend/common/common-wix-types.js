@@ -10,7 +10,7 @@ export var RegistrationResultStatus;
 })(RegistrationResultStatus || (RegistrationResultStatus = {}));
 export var MemberStatus;
 (function (MemberStatus) {
-    MemberStatus["Applicant"] = "Applicant";
-    MemberStatus["Active"] = "Active";
-    MemberStatus["Blocked"] = "Blocked";
+    MemberStatus["Applicant"] = "APPLICANT";
+    MemberStatus["Active"] = "ACTIVE";
+    MemberStatus["Blocked"] = "BLOCKED";
 })(MemberStatus || (MemberStatus = {}));

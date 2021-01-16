@@ -31,7 +31,7 @@ export enum RegistrationResultStatus {
 }
 
 export enum MemberStatus {
-  Applicant = 'Applicant',
-  Active = 'Active',
-  Blocked = 'Blocked',
+  Applicant = 'APPLICANT',
+  Active = 'ACTIVE',
+  Blocked = 'BLOCKED',
 }
