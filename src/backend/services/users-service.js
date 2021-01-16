@@ -11,7 +11,17 @@ export class UsersService {
             firstName: teacher.firstName,
             lastName: teacher.lastName,
         };
-        return withLogger(`registerUser ${teacher.email}`, this.externals.wixUsers.register(teacher.email, password, { contactInfo }));
+        return withLogger(`registerUser ${teacher.email}`, async () => {
+            const { approvalToken } = await this.externals.wixUsers.register(teacher.email, password, {
+                contactInfo,
+            });
+            return await this.externals.wixUsers.approveByToken(approvalToken);
+        });
+    }
+    async approveUser(teacher) {
+        return withLogger(`approveUser ${teacher.email}`, async () => {
+            return await this.externals.wixUsers.approveByEmail(teacher.email);
+        });
     }
     getCurrentUserEmail() {
         return this.getCurrentUser().getEmail();
