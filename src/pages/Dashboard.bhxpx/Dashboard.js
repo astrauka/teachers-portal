@@ -1,17 +1,16 @@
 import { TaskStatus } from 'public/common/entities/task';
 import { forCurrentTeacher } from 'public/for-current-teacher';
-import { getCuratingTeacher, getTasks } from 'public/global-state';
+import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 const TASK_STATUS_COLORS = {
     [TaskStatus.completed]: '#60bc57',
     [TaskStatus.current]: 'red',
     [TaskStatus.upcoming]: 'grey',
 };
-forCurrentTeacher(async () => {
-    await Promise.all([populateTasksRepeater(), setupCuratingTeacher()]);
+forCurrentTeacher(async ({ tasks }) => {
+    await Promise.all([populateTasksRepeater(tasks), setupCuratingTeacher()]);
 });
-async function populateTasksRepeater() {
-    const tasks = await getTasks();
+async function populateTasksRepeater(tasks) {
     const $tasksRepeater = $w('#tasksRepeater');
     $tasksRepeater.data = tasks;
     $tasksRepeater.forEachItem(($task, task, index) => {

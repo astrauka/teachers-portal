@@ -9,54 +9,66 @@ const SOCIAL_ICONS = {
 forCurrentTeacher(async () => {
     $w('#SelectedTeacher').onReady(() => {
         const teacher = $w('#SelectedTeacher').getCurrentItem();
-        addSocialIconLinks(teacher, $w);
-        addWebsiteLink(teacher, $w);
-        addSendEmailButton(teacher, $w);
-        addAboutHtml(teacher, $w);
-        hideNotFilledInformation(teacher, $w);
+        addSocialIconLinks(teacher);
+        addWebsiteLink(teacher);
+        addSendEmailButton(teacher);
+        addAboutHtml(teacher);
+        showFilledInformation(teacher);
+        makeTeachersNameClickable();
     });
 });
-function addSocialIconLinks(teacher, $w) {
+function addSocialIconLinks(teacher) {
     forEach(SOCIAL_ICONS, (url, provider) => {
         const link = teacher[provider];
         const $icon = $w(`#${provider}`);
         if (link) {
             $icon.target = '_blank';
             $icon.link = `${url}${link}`;
-        }
-        else {
-            $icon.collapse();
+            $icon.expand();
         }
     });
 }
-function addWebsiteLink(teacher, $w) {
+function addWebsiteLink(teacher) {
     const $website = $w('#website');
     const { website } = teacher;
     if (website) {
         $website.html = `<a href="${website}" target="_blank">${website}</a>`;
-    }
-    else {
-        $website.collapse();
+        $website.expand();
     }
 }
-function addSendEmailButton(teacher, $w) {
+function addSendEmailButton(teacher) {
     const $button = $w('#sendEmailButton');
     const { email } = teacher;
     $button.onClick(() => {
         wixLocation.to(`mailto:${email}?subject=MRY%3A%20Question`);
     });
 }
-function addAboutHtml(teacher, $w) {
+function addAboutHtml(teacher) {
     if (teacher.about) {
         $w('#about').html = teacher.about;
+        $w('#aboutGroup').expand();
     }
 }
-function hideNotFilledInformation(teacher, $w) {
+function showFilledInformation(teacher) {
     var _a;
-    if (!teacher.about) {
-        $w('#aboutGroup').collapse();
+    if (teacher.countryId) {
+        $w('#country').expand();
     }
-    if (!((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length)) {
-        $w('#photosGroup').collapse();
+    if (teacher.city) {
+        $w('#city').expand();
     }
+    if ((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length) {
+        $w('#photosGroup').expand();
+    }
+    const $menteesDataset = $w('#MenteesDataset');
+    $menteesDataset.onReady(() => {
+        if ($menteesDataset.getTotalCount()) {
+            $w('#menteesGroup').expand();
+        }
+    });
+}
+function makeTeachersNameClickable() {
+    $w('#teachersRepeater').onItemReady(($item, teacher) => {
+        $item('#teachersName').onClick(() => wixLocation.to(`/teacher/${teacher.slug}`));
+    });
 }
