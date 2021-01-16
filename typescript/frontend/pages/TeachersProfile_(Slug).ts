@@ -12,38 +12,37 @@ const SOCIAL_ICONS = {
 forCurrentTeacher(async () => {
   $w('#SelectedTeacher').onReady(() => {
     const teacher: Teacher = $w('#SelectedTeacher').getCurrentItem();
-    addSocialIconLinks(teacher, $w);
-    addWebsiteLink(teacher, $w);
-    addSendEmailButton(teacher, $w);
-    addAboutHtml(teacher, $w);
-    hideNotFilledInformation(teacher, $w);
+    addSocialIconLinks(teacher);
+    addWebsiteLink(teacher);
+    addSendEmailButton(teacher);
+    addAboutHtml(teacher);
+    showFilledInformation(teacher);
+    makeTeachersNameClickable();
   });
 });
 
-function addSocialIconLinks(teacher: Teacher, $w) {
+function addSocialIconLinks(teacher: Teacher) {
   forEach(SOCIAL_ICONS, (url, provider) => {
     const link = teacher[provider];
     const $icon = $w(`#${provider}` as 'Image');
     if (link) {
       $icon.target = '_blank';
       $icon.link = `${url}${link}`;
-    } else {
-      $icon.collapse();
+      $icon.expand();
     }
   });
 }
 
-function addWebsiteLink(teacher: Teacher, $w) {
+function addWebsiteLink(teacher: Teacher) {
   const $website = $w('#website' as 'Text');
   const { website } = teacher;
   if (website) {
     $website.html = `<a href="${website}" target="_blank">${website}</a>`;
-  } else {
-    $website.collapse();
+    $website.expand();
   }
 }
 
-function addSendEmailButton(teacher: Teacher, $w) {
+function addSendEmailButton(teacher: Teacher) {
   const $button = $w('#sendEmailButton' as 'Button');
   const { email } = teacher;
   $button.onClick(() => {
@@ -51,18 +50,33 @@ function addSendEmailButton(teacher: Teacher, $w) {
   });
 }
 
-function addAboutHtml(teacher: Teacher, $w) {
+function addAboutHtml(teacher: Teacher) {
   if (teacher.about) {
     $w('#about' as 'Text').html = teacher.about;
+    $w('#aboutGroup' as 'Container').expand();
   }
 }
 
-function hideNotFilledInformation(teacher: Teacher, $w) {
-  if (!teacher.about) {
-    $w('#aboutGroup' as 'Group').collapse();
+function showFilledInformation(teacher: Teacher) {
+  if (teacher.countryId) {
+    $w('#country' as 'Text').expand();
   }
+  if (teacher.city) {
+    $w('#city' as 'Text').expand();
+  }
+  if (teacher.photos?.length) {
+    $w('#photosGroup' as 'Container').expand();
+  }
+  const $menteesDataset = $w('#MenteesDataset');
+  $menteesDataset.onReady(() => {
+    if ($menteesDataset.getTotalCount()) {
+      $w('#menteesGroup' as 'Container').expand();
+    }
+  });
+}
 
-  if (!teacher.photos?.length) {
-    $w('#photosGroup' as 'Group').collapse();
-  }
+function makeTeachersNameClickable() {
+  $w('#teachersRepeater' as 'Repeater').onItemReady(($item, teacher: Teacher) => {
+    $item('#teachersName' as 'Text').onClick(() => wixLocation.to(`/teacher/${teacher.slug}`));
+  });
 }

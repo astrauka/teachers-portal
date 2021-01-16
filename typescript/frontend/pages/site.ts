@@ -1,14 +1,13 @@
 import { TaskView } from 'public/common/entities/task';
 import { TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
+import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
 forCurrentTeacher(async ({ teacher, tasks }: InitialState) => {
-  $w('#logoutButton' as 'Button').onClick(() => {
-    wixUsers.logout();
-    wixLocation.to('/');
-  });
+  onLogoutButtonClick();
+  onContactMentorClick(teacher);
   updateHeaderNotificationsCount(tasks);
   setProfileImage(teacher);
   showProfileDropdown();
@@ -47,4 +46,23 @@ function showProfileDropdown() {
   $profileDropdown.onMouseOut(() => {
     $profileDropdown.collapse();
   });
+}
+
+function onLogoutButtonClick() {
+  $w('#logoutButton' as 'Button').onClick(() => {
+    wixUsers.logout();
+    wixLocation.to('/');
+  });
+}
+
+function onContactMentorClick(teacher: TeacherView) {
+  const $contactMentorButton = $w('#contactMentorButton' as 'Button');
+  if (teacher.mentorId) {
+    $contactMentorButton.onClick(async () => {
+      const curatingTeacher = await getCuratingTeacher();
+      wixLocation.to(`mailto:${curatingTeacher.email}?subject=MRY%3A%20Question`);
+    });
+  } else {
+    $contactMentorButton.collapse();
+  }
 }

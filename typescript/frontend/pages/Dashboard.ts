@@ -1,6 +1,6 @@
 import { TaskStatus, TaskView } from 'public/common/entities/task';
-import { forCurrentTeacher } from 'public/for-current-teacher';
-import { getCuratingTeacher, getTasks } from 'public/global-state';
+import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
+import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 
 const TASK_STATUS_COLORS = {
@@ -9,12 +9,11 @@ const TASK_STATUS_COLORS = {
   [TaskStatus.upcoming]: 'grey',
 };
 
-forCurrentTeacher(async () => {
-  await Promise.all([populateTasksRepeater(), setupCuratingTeacher()]);
+forCurrentTeacher(async ({ tasks }: InitialState) => {
+  await Promise.all([populateTasksRepeater(tasks), setupCuratingTeacher()]);
 });
 
-async function populateTasksRepeater() {
-  const tasks = await getTasks();
+async function populateTasksRepeater(tasks: TaskView[]) {
   const $tasksRepeater = $w('#tasksRepeater' as 'Repeater');
   $tasksRepeater.data = tasks;
   $tasksRepeater.forEachItem(($task, task: TaskView, index) => {

@@ -59,7 +59,7 @@ async function assignCurrentTeacherProfileFormFields() {
     const $input = $w(`#${field}` as 'RichTextBox');
     $input.value = state.fieldValues[field];
     $input.onChange((event: $w.Event) => {
-      return onInputChange(field, event, $w);
+      return onInputChange(field, event);
     });
   });
 
@@ -67,12 +67,12 @@ async function assignCurrentTeacherProfileFormFields() {
     const $input = $w(`#${field}` as 'TextInput');
     $input.value = state.fieldValues[field] as string;
     $input.onInput((event: $w.Event) => {
-      return onInputChange(field, event, $w);
+      return onInputChange(field, event);
     });
   });
 }
 
-function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event, $w) {
+function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event) {
   const value = event.target.value;
   state.fieldValues[field] = value;
   if (FIELDS_WITH_VALIDATION.includes(field)) {

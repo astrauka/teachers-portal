@@ -39,18 +39,18 @@ async function assignCurrentTeacherProfileFormFields() {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
         $input.onChange((event) => {
-            return onInputChange(field, event, $w);
+            return onInputChange(field, event);
         });
     });
     TEXT_INPUTS.forEach((field) => {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
         $input.onInput((event) => {
-            return onInputChange(field, event, $w);
+            return onInputChange(field, event);
         });
     });
 }
-function onInputChange(field, event, $w) {
+function onInputChange(field, event) {
     const value = event.target.value;
     state.fieldValues[field] = value;
     if (FIELDS_WITH_VALIDATION.includes(field)) {
