@@ -123,4 +123,46 @@ describe('normalizeTeacher', () => {
       expect(generateUuid).calledOnceWithExactly();
     });
   });
+
+  describe('social links', () => {
+    const facebookUsername = 'facebook-username';
+    const instagramUsername = 'instagram.username';
+    const linkedInUsername = 'linked-in-username';
+
+    const update = buildTeacher({
+      properties: {
+        facebook: `https://www.facebook.com/${facebookUsername}`,
+        instagram: `https://www.instagram.com/${instagramUsername}`,
+        linkedIn: `https://www.linkedin.com/in/${linkedInUsername}`,
+      },
+    });
+
+    it('should persist usernames without site root', async () => {
+      const { normalizeTeacher } = buildTestContext();
+      expect(await normalizeTeacher(update)).to.deep.include({
+        facebook: facebookUsername,
+        instagram: instagramUsername,
+        linkedIn: linkedInUsername,
+      });
+    });
+
+    context('on mobile social links', () => {
+      const update = buildTeacher({
+        properties: {
+          facebook: `https://m.facebook.com/${facebookUsername}`,
+          instagram: `https://www.instagram.com/${instagramUsername}`,
+          linkedIn: `https://www.linkedin.com/in/${linkedInUsername}`,
+        },
+      });
+
+      it('should persist usernames without site root', async () => {
+        const { normalizeTeacher } = buildTestContext();
+        expect(await normalizeTeacher(update)).to.deep.include({
+          facebook: facebookUsername,
+          instagram: instagramUsername,
+          linkedIn: linkedInUsername,
+        });
+      });
+    });
+  });
 });

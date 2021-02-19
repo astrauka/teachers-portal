@@ -23,10 +23,16 @@ export const TEACHER_DEFAULTS = {
 };
 export function normalizeTeacherFactory(teachersRepository, generateId = generateUuid) {
     return async function normalizeTeacher(update) {
+        const facebook = getSocialLinkUsername(update.facebook, 'facebook.com/');
+        const instagram = getSocialLinkUsername(update.instagram, 'instagram.com/');
+        const linkedIn = getSocialLinkUsername(update.linkedIn, 'linkedin.com/in/');
         const teacher = validateTeacher({
             ...TEACHER_DEFAULTS,
             ...update,
             fullName: `${update.firstName} ${update.lastName}`,
+            ...(facebook && { facebook }),
+            ...(instagram && { instagram }),
+            ...(linkedIn && { linkedIn }),
         });
         const slug = convert(teacher.fullName);
         if (teacher.slug === slug) {
@@ -44,5 +50,8 @@ export function normalizeTeacherFactory(teachersRepository, generateId = generat
                 return candidateSlug;
             }
         }
+    }
+    function getSocialLinkUsername(linkOrUsername, separator) {
+        return linkOrUsername ? linkOrUsername.split(separator)[1] || linkOrUsername : undefined;
     }
 }

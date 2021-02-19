@@ -32,10 +32,16 @@ export function normalizeTeacherFactory(
   return async function normalizeTeacher(
     update: Partial<Teacher> & AdminFilledInformation
   ): Promise<Teacher> {
+    const facebook = getSocialLinkUsername(update.facebook, 'facebook.com/');
+    const instagram = getSocialLinkUsername(update.instagram, 'instagram.com/');
+    const linkedIn = getSocialLinkUsername(update.linkedIn, 'linkedin.com/in/');
     const teacher: Teacher = validateTeacher({
       ...TEACHER_DEFAULTS,
       ...update,
       fullName: `${update.firstName} ${update.lastName}`,
+      ...(facebook && { facebook }),
+      ...(instagram && { instagram }),
+      ...(linkedIn && { linkedIn }),
     });
     const slug = convert(teacher.fullName);
     if (teacher.slug === slug) {
@@ -55,5 +61,9 @@ export function normalizeTeacherFactory(
         return candidateSlug;
       }
     }
+  }
+
+  function getSocialLinkUsername(linkOrUsername: string, separator: string): string | undefined {
+    return linkOrUsername ? linkOrUsername.split(separator)[1] || linkOrUsername : undefined;
   }
 }

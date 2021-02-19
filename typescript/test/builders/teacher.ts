@@ -4,13 +4,7 @@ import { builder } from './builder';
 
 export const buildTeacher = builder<Teacher>((id) => ({
   _id: `${id}`,
-  email: `${id}-email@gmail.com`,
-  firstName: `${id}-first-name`,
-  lastName: `${id}-last-name`,
-  levelId: `${id}-level-id`,
-  statusId: `${id}-status-id`,
-  mentorId: `${id}-mentor-id`,
-  certificateExpirationDate: inDaysAsDate(100),
+  ...buildAdminFilledTeacher({ id }),
   fullName: `${id} Full Name`,
   slug: `${id}-full-name`,
   siteMemberId: `${id}-siteMemberId`,
