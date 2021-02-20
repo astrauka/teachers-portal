@@ -26,11 +26,16 @@ async function fetchItem<T>(
       return JSON.parse(persisted);
     }
   }
-  const fetched = await fetchFn();
-  if (fetched) {
-    memory.setItem(item, JSON.stringify(fetched));
+  try {
+    const fetched = await fetchFn();
+    if (fetched) {
+      memory.setItem(item, JSON.stringify(fetched));
+    }
+    return fetched;
+  } catch (error) {
+    console.error(`Failed to fetch global state item ${item}, ${error}`);
+    throw error;
   }
-  return fetched;
 }
 
 export async function getCurrentTeacher(refresh?: boolean): Promise<TeacherView> {
@@ -51,8 +56,8 @@ export async function loadInitialState(): Promise<InitialState> {
   return { teacher, tasks };
 }
 
-export async function isInitialStateLoaded(): Promise<boolean> {
-  return Boolean(await memory.getItem(GlobalState.isInitialStateLoaded));
+export function isInitialStateLoaded(): boolean {
+  return Boolean(memory.getItem(GlobalState.isInitialStateLoaded));
 }
 
 export async function refreshInitialState(): Promise<InitialState> {

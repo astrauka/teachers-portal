@@ -6,21 +6,29 @@ import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
 forCurrentTeacher(async ({ teacher, tasks }: InitialState) => {
+  console.info(1);
   onLogoutButtonClick();
+  console.info(2);
   onContactMentorClick(teacher);
+  console.info(3);
   updateHeaderNotificationsCount(tasks);
+  console.info(4);
   setProfileImage(teacher);
+  console.info(5);
   showProfileDropdown();
+  console.info(6);
 }, false);
 
 function updateHeaderNotificationsCount(tasks: TaskView[]) {
   const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
-  const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
-  if (incompleteTasksCount) {
-    $headerNotificationsButton.label = String(incompleteTasksCount);
-    $headerNotificationsButton.show();
-  } else {
-    $headerNotificationsButton.hide();
+  if ($headerNotificationsButton.id) {
+    const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
+    if (incompleteTasksCount) {
+      $headerNotificationsButton.label = String(incompleteTasksCount);
+      $headerNotificationsButton.show();
+    } else {
+      $headerNotificationsButton.hide();
+    }
   }
 }
 
@@ -40,10 +48,11 @@ function setProfileImage(teacher: TeacherView) {
 function showProfileDropdown() {
   const $profileImage = $w('#profileIcon' as 'Image');
   const $profileDropdown = $w('#profileDropdown' as 'Container');
+  const $hoverArea = $w('#hoverArea' as 'Box');
   $profileImage.onMouseIn(() => {
     $profileDropdown.expand();
   });
-  $profileDropdown.onMouseOut(() => {
+  $hoverArea.onMouseOut(() => {
     $profileDropdown.collapse();
   });
 }

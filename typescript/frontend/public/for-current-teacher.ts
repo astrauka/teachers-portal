@@ -21,10 +21,13 @@ export function forCurrentTeacher(
   if (isCurrentUserLoggedIn()) {
     $w.onReady(async () => {
       try {
+        console.info('a1');
         const { teacher, tasks } = await getInitialState(forPage);
+        console.info('a2');
         if (!teacher || isEmpty(tasks)) {
           return wixLocation.to('/error');
         }
+        console.info('a3');
         if (shouldFillInitialTeacherForm(tasks)) {
           if (forPage) {
             return;
@@ -32,6 +35,7 @@ export function forCurrentTeacher(
             return wixLocation.to('/initial-form');
           }
         }
+        console.info('a4');
         return await forCurrentTeacherFn({ teacher, tasks });
       } catch (error) {
         try {
@@ -80,13 +84,13 @@ function isPublicPage(): boolean {
 async function getInitialState(forPage: boolean): Promise<InitialState> {
   try {
     if (forPage) {
-      while (!(await isInitialStateLoaded())) {
+      while (!isInitialStateLoaded()) {
         await sleep(100);
       }
     }
-    return loadInitialState();
+    return await loadInitialState();
   } catch (error) {
-    console.error(`Initial state failed to laod ${await getUserEmail()}`, error);
-    wixUsers.logout();
+    console.error(`Initial state failed to load ${await getUserEmail()}`, error);
+    throw error;
   }
 }
