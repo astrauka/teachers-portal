@@ -20,6 +20,7 @@ export const TEACHER_DEFAULTS = {
     website: '',
     about: '',
     photos: [],
+    completedTasks: [],
 };
 export function normalizeTeacherFactory(teachersRepository, generateId = generateUuid) {
     return async function normalizeTeacher(update) {

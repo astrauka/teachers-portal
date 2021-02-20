@@ -23,6 +23,7 @@ export const TEACHER_DEFAULTS = {
   website: '',
   about: '',
   photos: [],
+  completedTasks: [],
 };
 
 export function normalizeTeacherFactory(

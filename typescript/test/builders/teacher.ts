@@ -1,4 +1,9 @@
-import { AdminFilledInformation, Teacher, TeacherView } from '../../common/entities/teacher';
+import {
+  AdminFilledInformation,
+  TaskName,
+  Teacher,
+  TeacherView,
+} from '../../common/entities/teacher';
 import { inDaysAsDate } from '../utils/date';
 import { builder } from './builder';
 
@@ -20,6 +25,7 @@ export const buildTeacher = builder<Teacher>((id) => ({
   website: `https://www.${id}-site.com`,
   about: `${id}-about`,
   photos: [],
+  completedTasks: [TaskName.initialProfileForm],
 }));
 
 export const buildAdminFilledTeacher = builder<AdminFilledInformation>((id) => ({

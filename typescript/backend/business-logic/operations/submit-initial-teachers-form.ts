@@ -1,19 +1,17 @@
 import { omit } from 'lodash';
-import { TaskNumber } from '../../common/entities/task';
-import { InitialTeacherForm, Teacher } from '../../common/entities/teacher';
+import { InitialTeacherForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { addCompletedTask } from '../utils/teacher-tasks';
 import { validateInitialTeachersForm } from '../validate';
-import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetTeacher } from './get-teacher';
 
 export function submitInitialTeachersFormFactory(
   teachersRepository: TeachersRepository,
   countriesRepository: CountriesRepository,
   languagesRepository: LanguagesRepository,
-  getTeacher: GetTeacher,
-  completeTeachersTask: CompleteTeachersTask
+  getTeacher: GetTeacher
 ) {
   return async function submitInitialTeachersForm(update: InitialTeacherForm): Promise<Teacher> {
     validateInitialTeachersForm(update);
@@ -27,11 +25,10 @@ export function submitInitialTeachersFormFactory(
       countryId: country._id,
       languageId: language._id,
     };
-    const updatedTeacher = await teachersRepository.updateTeacher({
+    return await teachersRepository.updateTeacher({
       ...teacher,
       ...updateWithIds,
+      completedTasks: addCompletedTask(teacher, TaskName.initialProfileForm),
     });
-    await completeTeachersTask(TaskNumber.initialProfileForm);
-    return updatedTeacher;
   };
 }

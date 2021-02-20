@@ -1,26 +1,27 @@
-import { TaskView } from 'public/common/entities/task';
-import { TeacherView } from 'public/common/entities/teacher';
+import { Tasks, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
-forCurrentTeacher(async ({ teacher, tasks }: InitialState) => {
+forCurrentTeacher(async ({ teacher }: InitialState) => {
   onLogoutButtonClick();
   onContactMentorClick(teacher);
-  updateHeaderNotificationsCount(tasks);
+  updateHeaderNotificationsCount(teacher);
   setProfileImage(teacher);
   showProfileDropdown();
 }, false);
 
-function updateHeaderNotificationsCount(tasks: TaskView[]) {
+function updateHeaderNotificationsCount(teacher: TeacherView) {
   const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
-  const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
-  if (incompleteTasksCount) {
-    $headerNotificationsButton.label = String(incompleteTasksCount);
-    $headerNotificationsButton.show();
-  } else {
-    $headerNotificationsButton.hide();
+  if ($headerNotificationsButton.id) {
+    const incompleteTasksCount = Tasks.length - teacher.completedTasks.length;
+    if (incompleteTasksCount) {
+      $headerNotificationsButton.label = String(incompleteTasksCount);
+      $headerNotificationsButton.show();
+    } else {
+      $headerNotificationsButton.hide();
+    }
   }
 }
 
@@ -40,10 +41,11 @@ function setProfileImage(teacher: TeacherView) {
 function showProfileDropdown() {
   const $profileImage = $w('#profileIcon' as 'Image');
   const $profileDropdown = $w('#profileDropdown' as 'Container');
+  const $hoverArea = $w('#hoverArea' as 'Box');
   $profileImage.onMouseIn(() => {
     $profileDropdown.expand();
   });
-  $profileDropdown.onMouseOut(() => {
+  $hoverArea.onMouseOut(() => {
     $profileDropdown.collapse();
   });
 }

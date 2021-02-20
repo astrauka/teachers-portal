@@ -1,13 +1,15 @@
-import { TaskNumber } from '../../common/entities/task';
+import { TaskName } from '../../common/entities/teacher';
+import { addCompletedTask } from '../utils/teacher-tasks';
 import { validateSecondStepTeachersForm } from '../validate';
-export function submitSecondStepTeachersFormFactory(teachersRepository, getTeacher, completeTeachersTask) {
+export function submitSecondStepTeachersFormFactory(teachersRepository, getTeacher) {
     return async function submitSecondStepTeachersForm(update) {
         validateSecondStepTeachersForm(update);
+        const teacher = await getTeacher({ throwOnNotFound: true });
         const updatedTeacher = teachersRepository.updateTeacher({
-            ...(await getTeacher({ throwOnNotFound: true })),
+            ...teacher,
             ...update,
+            completedTasks: addCompletedTask(teacher, TaskName.secondStepProfileForm),
         });
-        await completeTeachersTask(TaskNumber.secondStepProfileForm);
         return updatedTeacher;
     };
 }

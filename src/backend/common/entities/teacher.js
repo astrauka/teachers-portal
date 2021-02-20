@@ -11,3 +11,15 @@ export var AccountStatuses;
     AccountStatuses["Suspended"] = "Suspended";
     AccountStatuses["NotATeacher"] = "Not a teacher";
 })(AccountStatuses || (AccountStatuses = {}));
+export var TaskName;
+(function (TaskName) {
+    TaskName["initialProfileForm"] = "initialProfileForm";
+    TaskName["secondStepProfileForm"] = "secondStepProfileForm";
+})(TaskName || (TaskName = {}));
+export const Tasks = [TaskName.initialProfileForm, TaskName.secondStepProfileForm];
+export var TaskStatus;
+(function (TaskStatus) {
+    TaskStatus["completed"] = "completed";
+    TaskStatus["current"] = "current";
+    TaskStatus["upcoming"] = "upcoming";
+})(TaskStatus || (TaskStatus = {}));

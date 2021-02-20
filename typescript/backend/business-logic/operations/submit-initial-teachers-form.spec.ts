@@ -1,22 +1,20 @@
 import { pick } from 'lodash';
-import { InitialTeacherForm, Teacher } from '../../../common/entities/teacher';
+import { InitialTeacherForm, TaskName, Teacher } from '../../../common/entities/teacher';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
-import { TaskNumber } from '../../common/entities/task';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
-import { CompleteTeachersTask } from './complete-teachers-task';
 import { GetTeacher } from './get-teacher';
 import { submitInitialTeachersFormFactory } from './submit-initial-teachers-form';
 
 describe('submitInitialTeachersForm', () => {
   const country = buildCountry();
   const language = buildLanguage();
-  const teacher = buildTeacher();
+  const teacher = buildTeacher({ properties: { completedTasks: [] } });
   const update: InitialTeacherForm = {
     ...pick(buildTeacher(), ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
     country: country.title,
@@ -27,6 +25,7 @@ describe('submitInitialTeachersForm', () => {
     ...pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
     countryId: country._id,
     languageId: language._id,
+    completedTasks: [TaskName.initialProfileForm],
   };
 
   const getTeachersRepository = (teacher: Teacher, returnedTeachersProfile: Teacher) =>
@@ -42,24 +41,20 @@ describe('submitInitialTeachersForm', () => {
       stub.fetchLanguageByTitleOrThrow.resolves(language);
     });
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
-  const getCompleteTeachersTask = () => stubFn<CompleteTeachersTask>().resolves();
   const buildTestContext = ({
     teachersRepository = getTeachersRepository(teacher, updatedTeacher),
     countriesRepository = getCountriesRepository(country),
     languagesRepository = getLanguagesRepository(language),
     getTeacher = getGetTeacher(teacher),
-    completeTeachersTask = getCompleteTeachersTask(),
   } = {}) => ({
     teachersRepository,
     languagesRepository,
     getTeacher,
-    completeTeachersTask,
     submitInitialTeachersForm: submitInitialTeachersFormFactory(
       teachersRepository,
       countriesRepository,
       languagesRepository,
-      getTeacher,
-      completeTeachersTask
+      getTeacher
     ),
   });
 
@@ -68,7 +63,6 @@ describe('submitInitialTeachersForm', () => {
       teachersRepository,
       languagesRepository,
       getTeacher,
-      completeTeachersTask,
       submitInitialTeachersForm,
     } = buildTestContext();
 
@@ -76,7 +70,6 @@ describe('submitInitialTeachersForm', () => {
     expect(getTeacher).calledOnceWithExactly({ throwOnNotFound: true });
     expect(languagesRepository.fetchLanguageByTitleOrThrow).calledOnceWithExactly(language.title);
     expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeacher);
-    expect(completeTeachersTask).calledOnceWithExactly(TaskNumber.initialProfileForm);
   });
 
   context('on update validation failed', () => {

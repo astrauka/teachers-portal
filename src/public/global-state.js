@@ -1,9 +1,8 @@
-import { getCuratingTeacherView, getCurrentTeachersTasks, getCurrentTeacherView, } from 'backend/backend-api';
+import { getCuratingTeacherView, getCurrentTeacherView } from 'backend/backend-api';
 import { memory } from 'wix-storage';
 var GlobalState;
 (function (GlobalState) {
     GlobalState["Teacher"] = "teacher";
-    GlobalState["Tasks"] = "tasks";
     GlobalState["CuratingTeacher"] = "curatingTeacher";
     GlobalState["isInitialStateLoaded"] = "isInitialStateLoaded";
 })(GlobalState || (GlobalState = {}));
@@ -14,11 +13,17 @@ async function fetchItem(item, fetchFn, refresh = false) {
             return JSON.parse(persisted);
         }
     }
-    const fetched = await fetchFn();
-    if (fetched) {
-        memory.setItem(item, JSON.stringify(fetched));
+    try {
+        const fetched = await fetchFn();
+        if (fetched) {
+            memory.setItem(item, JSON.stringify(fetched));
+        }
+        return fetched;
     }
-    return fetched;
+    catch (error) {
+        console.error(`Failed to fetch global state item ${item}, ${error}`);
+        throw error;
+    }
 }
 export async function getCurrentTeacher(refresh) {
     return fetchItem(GlobalState.Teacher, getCurrentTeacherView, refresh);
@@ -26,18 +31,15 @@ export async function getCurrentTeacher(refresh) {
 export async function getCuratingTeacher(refresh) {
     return fetchItem(GlobalState.CuratingTeacher, getCuratingTeacherView, refresh);
 }
-export async function getTasks(refresh) {
-    return fetchItem(GlobalState.Tasks, getCurrentTeachersTasks, refresh);
-}
 export async function loadInitialState() {
-    const [teacher, tasks] = await Promise.all([getCurrentTeacher(), getTasks()]);
+    const teacher = await getCurrentTeacher();
     memory.setItem(GlobalState.isInitialStateLoaded, 'true');
-    return { teacher, tasks };
+    return { teacher };
 }
-export async function isInitialStateLoaded() {
-    return Boolean(await memory.getItem(GlobalState.isInitialStateLoaded));
+export function isInitialStateLoaded() {
+    return Boolean(memory.getItem(GlobalState.isInitialStateLoaded));
 }
 export async function refreshInitialState() {
-    const [teacher, tasks] = await Promise.all([getCurrentTeacher(true), getTasks(true)]);
-    return { teacher, tasks };
+    const teacher = await getCurrentTeacher(true);
+    return { teacher };
 }

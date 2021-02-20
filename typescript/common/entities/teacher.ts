@@ -24,6 +24,7 @@ export interface ComputedTeacherInformation {
   fullName: string;
   siteMemberId: string | null;
   slug: string;
+  completedTasks: TaskName[];
 }
 
 export interface InitialTeacherForm {
@@ -81,4 +82,17 @@ export enum AccountStatuses {
   Active = 'Active',
   Suspended = 'Suspended',
   NotATeacher = 'Not a teacher',
+}
+
+export enum TaskName {
+  initialProfileForm = 'initialProfileForm',
+  secondStepProfileForm = 'secondStepProfileForm',
+}
+
+export const Tasks = [TaskName.initialProfileForm, TaskName.secondStepProfileForm];
+
+export enum TaskStatus {
+  completed = 'completed',
+  current = 'current',
+  upcoming = 'upcoming',
 }

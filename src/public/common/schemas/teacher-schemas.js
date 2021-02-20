@@ -1,4 +1,5 @@
 import { chain, omit } from 'lodash';
+import { Tasks, } from '../entities/teacher';
 export const adminFilledInformationSchema = {
     _id: { type: 'string', min: 3, max: 255, optional: true },
     email: { type: 'email' },
@@ -72,6 +73,13 @@ const computedTeacherInformationSchema = {
     fullName: { type: 'string', min: 3 },
     slug: { type: 'string', min: 3, optional: true },
     siteMemberId: { type: 'string', min: 3, optional: true },
+    completedTasks: {
+        type: 'array',
+        items: 'string',
+        enum: Tasks,
+        unique: true,
+        optional: true,
+    },
 };
 export const teacherSchema = {
     ...adminFilledInformationSchema,

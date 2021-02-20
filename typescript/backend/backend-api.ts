@@ -1,5 +1,4 @@
 import { MakeTeacherViews } from './business-logic/views/make-teacher-views';
-import { TaskView } from './common/entities/task';
 import {
   InitialTeacherForm,
   SecondStepTeachersForm,
@@ -39,11 +38,6 @@ export async function submitSecondStepTeachersForm(
     'submitSecondStepTeachersForm',
     getTeacherView(actions.submitSecondStepTeachersForm(update), views.makeTeacherViews)
   );
-}
-
-export async function getCurrentTeachersTasks(): Promise<TaskView[]> {
-  const { actions } = await setupContext(EXTERNALS);
-  return withLogger('getCurrentTeachersTasks', actions.getTeachersTasks());
 }
 
 export async function getCuratingTeacherView(): Promise<TeacherView | undefined> {
