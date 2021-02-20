@@ -1,24 +1,19 @@
+import { Tasks } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-forCurrentTeacher(async ({ teacher, tasks }) => {
-    console.info(1);
+forCurrentTeacher(async ({ teacher }) => {
     onLogoutButtonClick();
-    console.info(2);
     onContactMentorClick(teacher);
-    console.info(3);
-    updateHeaderNotificationsCount(tasks);
-    console.info(4);
+    updateHeaderNotificationsCount(teacher);
     setProfileImage(teacher);
-    console.info(5);
     showProfileDropdown();
-    console.info(6);
 }, false);
-function updateHeaderNotificationsCount(tasks) {
+function updateHeaderNotificationsCount(teacher) {
     const $headerNotificationsButton = $w('#headerNotificationsButton');
     if ($headerNotificationsButton.id) {
-        const incompleteTasksCount = tasks.filter((task) => !task.isCompleted).length;
+        const incompleteTasksCount = Tasks.length - teacher.completedTasks.length;
         if (incompleteTasksCount) {
             $headerNotificationsButton.label = String(incompleteTasksCount);
             $headerNotificationsButton.show();

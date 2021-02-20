@@ -1,4 +1,4 @@
-import { TaskStatus } from 'public/common/entities/task';
+import { Tasks, TaskStatus } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
@@ -7,28 +7,18 @@ const TASK_STATUS_COLORS = {
     [TaskStatus.current]: 'red',
     [TaskStatus.upcoming]: 'grey',
 };
-forCurrentTeacher(async ({ tasks }) => {
-    await Promise.all([populateTasksRepeater(tasks), setupCuratingTeacher()]);
+forCurrentTeacher(async ({ teacher }) => {
+    await Promise.all([populateTasksRepeater(teacher), setupCuratingTeacher()]);
 });
-async function populateTasksRepeater(tasks) {
+async function populateTasksRepeater(teacher) {
     const $tasksRepeater = $w('#tasksRepeater');
-    $tasksRepeater.data = tasks;
-    $tasksRepeater.forEachItem(($task, task, index) => {
-        const previousTask = tasks[index - 1] || { isCompleted: true };
-        const status = task.isCompleted
+    $tasksRepeater.forEachItem(($task, _item, index) => {
+        const status = teacher.completedTasks.includes(Tasks[index])
             ? TaskStatus.completed
-            : previousTask.isCompleted
+            : teacher.completedTasks.includes(Tasks[index - 1])
                 ? TaskStatus.current
                 : TaskStatus.upcoming;
         $task('#taskContainer').style.backgroundColor = TASK_STATUS_COLORS[status];
-        $task('#taskNumber').text = String(task.number);
-        $task('#taskTitle').text = task.title;
-        const $taskButton = $task('#taskButton');
-        $taskButton.label = task.isCompleted ? task.completedButtonText : task.buttonText;
-        $taskButton.link = task.link;
-        if (status === TaskStatus.upcoming) {
-            $taskButton.hide();
-        }
     });
 }
 async function setupCuratingTeacher() {
@@ -39,6 +29,6 @@ async function setupCuratingTeacher() {
         $w('#curatingTeacherAskButton').onClick(() => {
             wixLocation.to(`mailto:${curatingTeacher.email}?subject=MRY%3A%20Question`);
         });
-        await $w('#curatingTeacherGroup').expand();
+        $w('#curatingTeacherGroup').expand();
     }
 }

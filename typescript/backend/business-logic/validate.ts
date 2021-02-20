@@ -1,6 +1,4 @@
-import { Task } from '../common/entities/task';
 import { InitialTeacherForm, SecondStepTeachersForm, Teacher } from '../common/entities/teacher';
-import { taskSchema } from '../common/schemas/task-schemas';
 import {
   initialTeachersFormSchema,
   secondStepTeachersFormSchema,
@@ -16,5 +14,3 @@ export const validateSecondStepTeachersForm = buildValidator<SecondStepTeachersF
   secondStepTeachersFormSchema
 );
 export const validateTeacher = buildValidator<Teacher>(teacherSchema, { strict: false });
-
-export const validateTask = buildValidator<Task>(taskSchema, { strict: false });

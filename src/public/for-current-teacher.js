@@ -1,7 +1,7 @@
-import { isEmpty } from 'lodash';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+import { TaskName } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
@@ -9,14 +9,8 @@ export function forCurrentTeacher(forCurrentTeacherFn, forPage = true) {
     if (isCurrentUserLoggedIn()) {
         $w.onReady(async () => {
             try {
-                console.info('a1');
-                const { teacher, tasks } = await getInitialState(forPage);
-                console.info('a2');
-                if (!teacher || isEmpty(tasks)) {
-                    return wixLocation.to('/error');
-                }
-                console.info('a3');
-                if (shouldFillInitialTeacherForm(tasks)) {
+                const { teacher } = await getInitialState(forPage);
+                if (shouldFillInitialTeacherForm(teacher)) {
                     if (forPage) {
                         return;
                     }
@@ -24,8 +18,7 @@ export function forCurrentTeacher(forCurrentTeacherFn, forPage = true) {
                         return wixLocation.to('/initial-form');
                     }
                 }
-                console.info('a4');
-                return await forCurrentTeacherFn({ teacher, tasks });
+                return await forCurrentTeacherFn({ teacher });
             }
             catch (error) {
                 try {
@@ -63,8 +56,10 @@ async function getUserEmail() {
         console.error(`Could not get current user email`, error);
     }
 }
-function shouldFillInitialTeacherForm(tasks) {
-    return isLiveSite() && 'initial-form' !== wixLocation.path[0] && !tasks[0].isCompleted;
+function shouldFillInitialTeacherForm(teacher) {
+    return (isLiveSite() &&
+        'initial-form' !== wixLocation.path[0] &&
+        !teacher.completedTasks.includes(TaskName.initialProfileForm));
 }
 function isPublicPage() {
     return PUBLIC_PAGES.includes(wixLocation.path[0]);

@@ -27,6 +27,7 @@ export function makeTeacherViewsFactory(
       website: teacher.website || '',
       about: teacher.about || '',
       photos: teacher.photos || [],
+      completedTasks: teacher.completedTasks || [],
       country: get(countriesByIds[teacher.countryId], 'title'),
       language: get(languagesByIds[teacher.languageId], 'title'),
     }));

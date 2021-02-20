@@ -1,17 +1,10 @@
-import { Task } from '../../common/entities/task';
 import { Teacher } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
-import {
-  fetchRecords,
-  findById,
-  findSingleRecord,
-  findSingleRecordOrThrow,
-} from '../utils/database-queries';
+import { findById, findSingleRecord, findSingleRecordOrThrow } from '../utils/database-queries';
 import { NotLoggedInError } from '../utils/errors';
 import { withLogger } from '../utils/logger';
 
 const TEACHERS_COLLECTION = 'TeachersProfile';
-const COMPLETED_TASKS_FIELD = 'completedTasks';
 
 export class TeachersRepository {
   constructor(private readonly externals: Externals) {}
@@ -74,33 +67,6 @@ export class TeachersRepository {
       this.externals.wixData.update(TEACHERS_COLLECTION, teacher, {
         suppressAuth: true,
       })
-    );
-  }
-
-  public async fetchCompletedTasks(teacher: Teacher): Promise<Task[]> {
-    return withLogger(
-      `fetchCompletedTasks ${teacher.email}`,
-      fetchRecords(
-        this.externals.wixData.queryReferenced(
-          TEACHERS_COLLECTION,
-          teacher._id,
-          COMPLETED_TASKS_FIELD,
-          { order: 'asc' }
-        )
-      )
-    );
-  }
-
-  public async completeTask(teacher: Teacher, task: Task): Promise<void> {
-    return withLogger(
-      `completeTask ${teacher.email} ${task.number}`,
-      this.externals.wixData.insertReference(
-        TEACHERS_COLLECTION,
-        COMPLETED_TASKS_FIELD,
-        teacher._id,
-        task._id,
-        { suppressAuth: true }
-      )
     );
   }
 }

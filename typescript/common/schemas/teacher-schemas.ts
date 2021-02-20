@@ -7,6 +7,7 @@ import {
   InitialTeacherForm,
   InitialTeacherFormFilledInformation,
   SecondStepTeachersForm,
+  Tasks,
   Teacher,
 } from '../entities/teacher';
 
@@ -89,6 +90,13 @@ const computedTeacherInformationSchema: ValidationSchema<ComputedTeacherInformat
   fullName: { type: 'string', min: 3 },
   slug: { type: 'string', min: 3, optional: true },
   siteMemberId: { type: 'string', min: 3, optional: true },
+  completedTasks: {
+    type: 'array',
+    items: 'string',
+    enum: Tasks,
+    unique: true,
+    optional: true,
+  },
 };
 
 export const teacherSchema: ValidationSchema<Teacher> = {

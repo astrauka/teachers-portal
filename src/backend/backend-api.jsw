@@ -17,10 +17,6 @@ export async function submitSecondStepTeachersForm(update) {
     const { actions, views } = await setupContext(EXTERNALS);
     return withLogger('submitSecondStepTeachersForm', getTeacherView(actions.submitSecondStepTeachersForm(update), views.makeTeacherViews));
 }
-export async function getCurrentTeachersTasks() {
-    const { actions } = await setupContext(EXTERNALS);
-    return withLogger('getCurrentTeachersTasks', actions.getTeachersTasks());
-}
 export async function getCuratingTeacherView() {
     const { actions, views } = await setupContext(EXTERNALS);
     return withLogger('getCuratingTeacherView', getTeacherView(actions.getCuratingTeacher(), views.makeTeacherViews));

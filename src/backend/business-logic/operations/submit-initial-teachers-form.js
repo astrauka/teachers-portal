@@ -1,7 +1,8 @@
 import { omit } from 'lodash';
-import { TaskNumber } from '../../common/entities/task';
+import { TaskName } from '../../common/entities/teacher';
+import { addCompletedTask } from '../utils/teacher-tasks';
 import { validateInitialTeachersForm } from '../validate';
-export function submitInitialTeachersFormFactory(teachersRepository, countriesRepository, languagesRepository, getTeacher, completeTeachersTask) {
+export function submitInitialTeachersFormFactory(teachersRepository, countriesRepository, languagesRepository, getTeacher) {
     return async function submitInitialTeachersForm(update) {
         validateInitialTeachersForm(update);
         const [teacher, country, language] = await Promise.all([
@@ -14,11 +15,10 @@ export function submitInitialTeachersFormFactory(teachersRepository, countriesRe
             countryId: country._id,
             languageId: language._id,
         };
-        const updatedTeacher = await teachersRepository.updateTeacher({
+        return await teachersRepository.updateTeacher({
             ...teacher,
             ...updateWithIds,
+            completedTasks: addCompletedTask(teacher, TaskName.initialProfileForm),
         });
-        await completeTeachersTask(TaskNumber.initialProfileForm);
-        return updatedTeacher;
     };
 }
