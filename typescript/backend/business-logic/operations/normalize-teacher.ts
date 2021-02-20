@@ -1,5 +1,6 @@
 import { compact } from 'lodash';
 import { convert } from 'url-slug';
+import { normalizeSecondStepTeacherFormInput } from '../../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { generateUuid, IdProvider } from '../../utils/id';
@@ -33,9 +34,9 @@ export function normalizeTeacherFactory(
   return async function normalizeTeacher(
     update: Partial<Teacher> & AdminFilledInformation
   ): Promise<Teacher> {
-    const facebook = getSocialLinkUsername(update.facebook, 'facebook.com/');
-    const instagram = getSocialLinkUsername(update.instagram, 'instagram.com/');
-    const linkedIn = getSocialLinkUsername(update.linkedIn, 'linkedin.com/in/');
+    const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);
+    const instagram = normalizeSecondStepTeacherFormInput('instagram', update.instagram);
+    const linkedIn = normalizeSecondStepTeacherFormInput('linkedIn', update.linkedIn);
     const teacher: Teacher = validateTeacher({
       ...TEACHER_DEFAULTS,
       ...update,
@@ -62,9 +63,5 @@ export function normalizeTeacherFactory(
         return candidateSlug;
       }
     }
-  }
-
-  function getSocialLinkUsername(linkOrUsername: string, separator: string): string | undefined {
-    return linkOrUsername ? linkOrUsername.split(separator)[1] || linkOrUsername : undefined;
   }
 }

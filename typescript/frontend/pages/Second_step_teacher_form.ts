@@ -12,6 +12,7 @@ import { idFromString } from 'public/forms';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
+import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };
@@ -74,7 +75,7 @@ async function assignCurrentTeacherProfileFormFields() {
 
 function onInputChange(field: SecondStepTeachersFormKey, event: $w.Event) {
   const value = event.target.value;
-  state.fieldValues[field] = value;
+  state.fieldValues[field] = normalizeSecondStepTeacherFormInput(field, value);
   if (FIELDS_WITH_VALIDATION.includes(field)) {
     state.validationMessages[field] = validateField(field, value, secondStepTeachersFormSchema);
   }
