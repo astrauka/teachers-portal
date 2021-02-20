@@ -1,7 +1,7 @@
 import { compact } from 'lodash';
 import { convert } from 'url-slug';
-import { normalizeSecondStepTeacherFormInput } from '../../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
+import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { generateUuid, IdProvider } from '../../utils/id';
 import { validateTeacher } from '../validate';

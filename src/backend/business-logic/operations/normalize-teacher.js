@@ -1,6 +1,6 @@
 import { compact } from 'lodash';
 import { convert } from 'url-slug';
-import { normalizeSecondStepTeacherFormInput } from '../../../common/normalize-inputs/second-step-teacher-form-inputs';
+import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { generateUuid } from '../../utils/id';
 import { validateTeacher } from '../validate';
 export const MAX_SLUG_POSTFIX = 20;

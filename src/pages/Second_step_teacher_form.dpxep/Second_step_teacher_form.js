@@ -1,13 +1,13 @@
 import { submitSecondStepTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
 import { MediaItemTypes } from 'public/common/common-wix-types';
+import { normalizeSecondStepTeacherFormInput } from 'public/common/normalize-inputs/second-step-teacher-form-inputs';
 import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { idFromString } from 'public/forms';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 const TEXT_INPUTS = ['facebook', 'instagram', 'linkedIn', 'website'];
 const RICH_TEXT_INPUTS = ['about'];
 const FORM_FIELDS = [...TEXT_INPUTS, ...RICH_TEXT_INPUTS, 'photos'];
@@ -52,8 +52,8 @@ async function assignCurrentTeacherProfileFormFields() {
     });
 }
 function onInputChange(field, event) {
-    const value = event.target.value;
-    state.fieldValues[field] = normalizeSecondStepTeacherFormInput(field, value);
+    const value = normalizeSecondStepTeacherFormInput(field, event.target.value);
+    state.fieldValues[field] = value;
     if (FIELDS_WITH_VALIDATION.includes(field)) {
         state.validationMessages[field] = validateField(field, value, secondStepTeachersFormSchema);
     }
@@ -119,8 +119,7 @@ function uploadPhotos() {
         })
             .catch((uploadError) => {
             $uploadStatus.text = 'File upload error';
-            console.error(`Error: ${uploadError.errorCode}`);
-            console.error(uploadError.errorDescription);
+            console.error(`Error: ${uploadError.errorCode} ${uploadError.errorDescription}`);
         })
             .finally(() => {
             $uploadButton.buttonLabel = previousButtonLabel;
