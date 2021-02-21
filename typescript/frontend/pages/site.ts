@@ -1,10 +1,9 @@
 import { Tasks, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
-import { getExistingElement } from 'public/wix-utils';
+import { getElementWhenExists, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-import { getElementWhenExists } from '../public/wix-utils';
 
 forCurrentTeacher(async ({ teacher }: InitialState) => {
   onLogoutButtonClick();
