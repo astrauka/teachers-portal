@@ -1,8 +1,10 @@
 import { Tasks, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
+import { getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+import { getElementWhenExists } from '../public/wix-utils';
 
 forCurrentTeacher(async ({ teacher }: InitialState) => {
   onLogoutButtonClick();
@@ -13,8 +15,10 @@ forCurrentTeacher(async ({ teacher }: InitialState) => {
 }, false);
 
 function updateHeaderNotificationsCount(teacher: TeacherView) {
-  const $headerNotificationsButton = $w('#headerNotificationsButton' as 'Button');
-  if ($headerNotificationsButton.id) {
+  const $headerNotificationsButton = getElementWhenExists(
+    $w('#headerNotificationsButton' as 'Button')
+  );
+  if ($headerNotificationsButton) {
     const incompleteTasksCount = Tasks.length - teacher.completedTasks.length;
     if (incompleteTasksCount) {
       $headerNotificationsButton.label = String(incompleteTasksCount);
@@ -28,7 +32,10 @@ function updateHeaderNotificationsCount(teacher: TeacherView) {
 function setProfileImage(teacher: TeacherView) {
   const { profileImage, fullName, slug } = teacher;
   if (profileImage) {
-    const $image = $w('#profileIcon' as 'Image');
+    const $image = getExistingElement(
+      $w('#profileIcon' as 'Image'),
+      $w('#profileIconMobile' as 'Image')
+    );
     $image.src = profileImage;
     $image.alt = fullName;
     $image.tooltip = fullName;
@@ -39,26 +46,34 @@ function setProfileImage(teacher: TeacherView) {
 }
 
 function showProfileDropdown() {
-  const $profileImage = $w('#profileIcon' as 'Image');
-  const $profileDropdown = $w('#profileDropdown' as 'Container');
-  const $hoverArea = $w('#hoverArea' as 'Box');
-  $profileImage.onMouseIn(() => {
-    $profileDropdown.expand();
-  });
-  $hoverArea.onMouseOut(() => {
-    $profileDropdown.collapse();
-  });
+  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
+  if ($profileImage) {
+    const $profileDropdown = $w('#profileDropdown' as 'Container');
+    const $hoverArea = $w('#hoverArea' as 'Box');
+    $profileImage.onMouseIn(() => {
+      $profileDropdown.expand();
+    });
+    $hoverArea.onMouseOut(() => {
+      $profileDropdown.collapse();
+    });
+  }
 }
 
 function onLogoutButtonClick() {
-  $w('#logoutButton' as 'Button').onClick(() => {
+  getExistingElement(
+    $w('#logoutButton' as 'Button'),
+    $w('#logoutButtonMobile' as 'Button')
+  ).onClick(() => {
     wixUsers.logout();
     wixLocation.to('/');
   });
 }
 
 function onContactMentorClick(teacher: TeacherView) {
-  const $contactMentorButton = $w('#contactMentorButton' as 'Button');
+  const $contactMentorButton = getExistingElement(
+    $w('#contactMentorButton' as 'Button'),
+    $w('#contactMentorButtonMobile' as 'Button')
+  );
   if (teacher.mentorId) {
     $contactMentorButton.onClick(async () => {
       const curatingTeacher = await getCuratingTeacher();

@@ -23,3 +23,16 @@ export async function loadFirstDatasetPage<T>($dataset): Promise<T[]> {
     });
   });
 }
+
+export function getExistingElement<Element extends { id: string }>(
+  $element: Element,
+  $fallbackElement: Element
+): Element {
+  return getElementWhenExists($element) || $fallbackElement;
+}
+
+export function getElementWhenExists<Element extends { id: string }>(
+  $element: Element
+): Element | undefined {
+  return $element.id ? $element : undefined;
+}
