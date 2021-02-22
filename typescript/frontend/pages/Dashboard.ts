@@ -9,11 +9,12 @@ const TASK_STATUS_COLORS = {
   [TaskStatus.upcoming]: 'grey',
 };
 
-forCurrentTeacher(async ({ teacher }: InitialState) => {
-  await Promise.all([populateTasksRepeater(teacher), setupCuratingTeacher()]);
+forCurrentTeacher('dashboard', async ({ teacher }: InitialState) => {
+  populateTasksRepeater(teacher);
+  await setupCuratingTeacher();
 });
 
-async function populateTasksRepeater(teacher: TeacherView) {
+function populateTasksRepeater(teacher: TeacherView) {
   const $tasksRepeater = $w('#tasksRepeater' as 'Repeater');
   $tasksRepeater.forEachItem(($task, _item, index) => {
     const status = teacher.completedTasks.includes(Tasks[index])

@@ -5,13 +5,17 @@ import { getElementWhenExists, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
-forCurrentTeacher(async ({ teacher }: InitialState) => {
-  onLogoutButtonClick();
-  onContactMentorClick(teacher);
-  updateHeaderNotificationsCount(teacher);
-  setProfileImage(teacher);
-  showProfileDropdown();
-}, false);
+forCurrentTeacher(
+  'site',
+  async ({ teacher }: InitialState) => {
+    onLogoutButtonClick();
+    onContactMentorClick(teacher);
+    updateHeaderNotificationsCount(teacher);
+    setProfileImage(teacher);
+    showProfileDropdown();
+  },
+  false
+);
 
 function updateHeaderNotificationsCount(teacher: TeacherView) {
   const $headerNotificationsButton = getElementWhenExists(

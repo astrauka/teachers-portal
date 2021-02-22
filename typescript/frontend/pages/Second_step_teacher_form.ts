@@ -13,6 +13,7 @@ import { idFromString } from 'public/forms';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
+import { withErrorHandler } from '../public/for-current-teacher';
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };
@@ -36,7 +37,7 @@ let state: {
   validationMessages: ValidationMessages;
 };
 
-forCurrentTeacher(async ({ teacher }: InitialState) => {
+forCurrentTeacher('sendStepTeacherForm', async ({ teacher }: InitialState) => {
   const fieldValues = pick(teacher, FORM_FIELDS);
   state = {
     teacher,

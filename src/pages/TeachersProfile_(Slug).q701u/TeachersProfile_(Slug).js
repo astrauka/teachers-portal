@@ -6,7 +6,7 @@ const SOCIAL_ICONS = {
     instagram: 'https://www.instagram.com/',
     linkedIn: 'https://www.linkedin.com/in/',
 };
-forCurrentTeacher(async () => {
+forCurrentTeacher('teachersProfile', async () => {
     $w('#SelectedTeacher').onReady(() => {
         const teacher = $w('#SelectedTeacher').getCurrentItem();
         addSocialIconLinks(teacher);

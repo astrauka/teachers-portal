@@ -8,7 +8,7 @@ import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['fullName', 'city'];
 const DROPDOWNS = ['level'];
 let state;
-forCurrentTeacher(async () => {
+forCurrentTeacher('teachers', async () => {
     const [teacherLevels, accountStatuses] = await Promise.all([
         loadFirstDatasetPage($w('#TeacherLevelsDataset')),
         loadFirstDatasetPage($w('#AccountStatusesDataset')),

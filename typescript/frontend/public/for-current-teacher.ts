@@ -1,3 +1,4 @@
+import { range } from 'lodash';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
@@ -12,12 +13,13 @@ export interface InitialState {
 }
 
 export function forCurrentTeacher(
+  functionName: string,
   forCurrentTeacherFn: (initialState: InitialState) => Promise<void>,
   forPage = true
 ) {
   if (isCurrentUserLoggedIn()) {
-    $w.onReady(async () => {
-      try {
+    $w.onReady(() =>
+      withErrorHandler('forCurrentTeacher', async () => {
         const { teacher } = await getInitialState(forPage);
         if (shouldFillInitialTeacherForm(teacher)) {
           if (forPage) {
@@ -26,18 +28,21 @@ export function forCurrentTeacher(
             return wixLocation.to('/initial-form');
           }
         }
-        return await forCurrentTeacherFn({ teacher });
-      } catch (error) {
-        try {
-          console.error(`Failed to execute site code for ${await getUserEmail()}`, error);
-          if (isLiveSite()) {
-            return wixLocation.to('/error');
-          }
-        } catch (error) {
-          console.error('Failed to load the site', error);
-        }
-      }
-    });
+        return await withErrorHandler(
+          functionName,
+          async () => await forCurrentTeacherFn({ teacher })
+        );
+      })
+    );
+  }
+}
+
+export async function withErrorHandler(name: string, executeFn) {
+  try {
+    return await executeFn();
+  } catch (error) {
+    console.error(`Failed in ${name} for ${await getUserEmail()} with ${error}`);
+    $w('#headerMessage' as 'Box').expand();
   }
 }
 
@@ -78,8 +83,12 @@ function isPublicPage(): boolean {
 async function getInitialState(forPage: boolean): Promise<InitialState> {
   try {
     if (forPage) {
-      while (!isInitialStateLoaded()) {
-        await sleep(100);
+      for (const _time of range(1, 50)) {
+        if (!isInitialStateLoaded()) {
+          await sleep(100);
+        } else {
+          break;
+        }
       }
     }
     return await loadInitialState();

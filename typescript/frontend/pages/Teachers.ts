@@ -27,7 +27,7 @@ let state: {
   visibleAccountStatusIds: string[];
 };
 
-forCurrentTeacher(async () => {
+forCurrentTeacher('teachers', async () => {
   const [teacherLevels, accountStatuses] = await Promise.all([
     loadFirstDatasetPage<TeacherLevel>($w('#TeacherLevelsDataset')),
     loadFirstDatasetPage<AccountStatus>($w('#AccountStatusesDataset')),

@@ -4,7 +4,7 @@ import { getCuratingTeacher } from 'public/global-state';
 import { getElementWhenExists, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
-forCurrentTeacher(async ({ teacher }) => {
+forCurrentTeacher('site', async ({ teacher }) => {
     onLogoutButtonClick();
     onContactMentorClick(teacher);
     updateHeaderNotificationsCount(teacher);

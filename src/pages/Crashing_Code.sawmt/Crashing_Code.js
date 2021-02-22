@@ -1,4 +1,4 @@
 import { forCurrentTeacher } from 'public/for-current-teacher';
-forCurrentTeacher(() => {
+forCurrentTeacher('crashingCode', () => {
     throw new Error('Something went wrong');
 });
