@@ -1,3 +1,4 @@
+import { range } from 'lodash';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
@@ -5,33 +6,29 @@ import { TaskName } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
-export function forCurrentTeacher(forCurrentTeacherFn, forPage = true) {
+export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
     if (isCurrentUserLoggedIn()) {
-        $w.onReady(async () => {
-            try {
-                const { teacher } = await getInitialState(forPage);
-                if (shouldFillInitialTeacherForm(teacher)) {
-                    if (forPage) {
-                        return;
-                    }
-                    else {
-                        return wixLocation.to('/initial-form');
-                    }
+        $w.onReady(() => withErrorHandler('forCurrentTeacher', async () => {
+            const { teacher } = await getInitialState(forPage);
+            if (shouldFillInitialTeacherForm(teacher)) {
+                if (forPage) {
+                    return;
                 }
-                return await forCurrentTeacherFn({ teacher });
-            }
-            catch (error) {
-                try {
-                    console.error(`Failed to execute site code for ${await getUserEmail()}`, error);
-                    if (isLiveSite()) {
-                        return wixLocation.to('/error');
-                    }
-                }
-                catch (error) {
-                    console.error('Failed to load the site', error);
+                else {
+                    return wixLocation.to('/initial-form');
                 }
             }
-        });
+            return await withErrorHandler(functionName, async () => await forCurrentTeacherFn({ teacher }));
+        }));
+    }
+}
+export async function withErrorHandler(name, executeFn) {
+    try {
+        return await executeFn();
+    }
+    catch (error) {
+        console.error(`Failed in ${name} for ${await getUserEmail()} with ${error}`);
+        $w('#headerMessage').expand();
     }
 }
 function isCurrentUserLoggedIn() {
@@ -67,8 +64,13 @@ function isPublicPage() {
 async function getInitialState(forPage) {
     try {
         if (forPage) {
-            while (!isInitialStateLoaded()) {
-                await sleep(100);
+            for (const _time of range(1, 50)) {
+                if (!isInitialStateLoaded()) {
+                    await sleep(100);
+                }
+                else {
+                    break;
+                }
             }
         }
         return await loadInitialState();

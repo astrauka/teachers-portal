@@ -10,7 +10,7 @@ const DROPDOWNS = ['country', 'language'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
-forCurrentTeacher(async ({ teacher }) => {
+forCurrentTeacher('initialTeacherForm', async ({ teacher }) => {
     $w('#teacherFullName').text = teacher.fullName;
     const fieldValues = pick(teacher, FORM_FIELDS);
     state = {

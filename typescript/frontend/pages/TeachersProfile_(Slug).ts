@@ -9,7 +9,7 @@ const SOCIAL_ICONS = {
   linkedIn: 'https://www.linkedin.com/in/',
 };
 
-forCurrentTeacher(async () => {
+forCurrentTeacher('teachersProfile', async () => {
   $w('#SelectedTeacher').onReady(() => {
     const teacher: Teacher = $w('#SelectedTeacher').getCurrentItem();
     addSocialIconLinks(teacher);

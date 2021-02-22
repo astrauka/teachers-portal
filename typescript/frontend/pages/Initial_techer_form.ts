@@ -22,7 +22,7 @@ let state: {
   validationMessages: ValidationMessages;
 };
 
-forCurrentTeacher(async ({ teacher }: InitialState) => {
+forCurrentTeacher('initialTeacherForm', async ({ teacher }: InitialState) => {
   $w('#teacherFullName' as 'Text').text = teacher.fullName;
   const fieldValues = pick(teacher, FORM_FIELDS);
   state = {

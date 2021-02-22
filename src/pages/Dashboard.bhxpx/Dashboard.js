@@ -7,10 +7,11 @@ const TASK_STATUS_COLORS = {
     [TaskStatus.current]: 'red',
     [TaskStatus.upcoming]: 'grey',
 };
-forCurrentTeacher(async ({ teacher }) => {
-    await Promise.all([populateTasksRepeater(teacher), setupCuratingTeacher()]);
+forCurrentTeacher('dashboard', async ({ teacher }) => {
+    populateTasksRepeater(teacher);
+    await setupCuratingTeacher();
 });
-async function populateTasksRepeater(teacher) {
+function populateTasksRepeater(teacher) {
     const $tasksRepeater = $w('#tasksRepeater');
     $tasksRepeater.forEachItem(($task, _item, index) => {
         const status = teacher.completedTasks.includes(Tasks[index])
