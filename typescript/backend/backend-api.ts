@@ -1,5 +1,6 @@
 import { MakeTeacherViews } from './business-logic/views/make-teacher-views';
 import {
+  AccountStatus,
   InitialTeacherForm,
   SecondStepTeachersForm,
   Teacher,
@@ -45,6 +46,14 @@ export async function getCuratingTeacherView(): Promise<TeacherView | undefined>
   return withLogger(
     'getCuratingTeacherView',
     getTeacherView(actions.getCuratingTeacher(), views.makeTeacherViews)
+  );
+}
+
+export async function getAllAccountStatuses(): Promise<AccountStatus[]> {
+  const { repositories } = await setupContext(EXTERNALS);
+  return withLogger(
+    'getAllAccountStatuses',
+    repositories.accountStatusesRepository.fetchAccountStatuses()
   );
 }
 

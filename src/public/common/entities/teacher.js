@@ -8,7 +8,7 @@ export var TeacherLevels;
 export var AccountStatuses;
 (function (AccountStatuses) {
     AccountStatuses["Active"] = "Active";
-    AccountStatuses["Suspended"] = "Suspended";
+    AccountStatuses["Inactive"] = "Inactive";
     AccountStatuses["NotATeacher"] = "Not a teacher";
 })(AccountStatuses || (AccountStatuses = {}));
 export var TaskName;

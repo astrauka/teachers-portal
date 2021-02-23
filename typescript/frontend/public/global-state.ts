@@ -1,11 +1,16 @@
-import { getCuratingTeacherView, getCurrentTeacherView } from 'backend/backend-api';
+import {
+  getAllAccountStatuses,
+  getCuratingTeacherView,
+  getCurrentTeacherView,
+} from 'backend/backend-api';
 import { memory } from 'wix-storage';
-import { TeacherView } from './common/entities/teacher';
+import { AccountStatus, TeacherView } from './common/entities/teacher';
 import { InitialState } from './for-current-teacher';
 
 enum GlobalState {
   Teacher = 'teacher',
   CuratingTeacher = 'curatingTeacher',
+  AccountStatuses = 'accountStatuses',
   isInitialStateLoaded = 'isInitialStateLoaded',
 }
 
@@ -38,6 +43,10 @@ export async function getCurrentTeacher(refresh?: boolean): Promise<TeacherView>
 
 export async function getCuratingTeacher(refresh?: boolean): Promise<TeacherView> {
   return fetchItem<TeacherView>(GlobalState.CuratingTeacher, getCuratingTeacherView, refresh);
+}
+
+export async function getAccountStatuses(): Promise<AccountStatus[]> {
+  return fetchItem<AccountStatus[]>(GlobalState.AccountStatuses, getAllAccountStatuses);
 }
 
 export async function loadInitialState(): Promise<InitialState> {

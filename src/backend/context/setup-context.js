@@ -9,6 +9,7 @@ import { normalizeTeacherFactory } from '../business-logic/operations/normalize-
 import { submitInitialTeachersFormFactory } from '../business-logic/operations/submit-initial-teachers-form';
 import { submitSecondStepTeachersFormFactory } from '../business-logic/operations/submit-second-step-teachers-form';
 import { makeTeacherViewsFactory } from '../business-logic/views/make-teacher-views';
+import { AccountStatusesRepository } from '../repositories/account-statuses-repository';
 import { CountriesRepository } from '../repositories/countries-repository';
 import { LanguagesRepository } from '../repositories/languages-repository';
 import { SiteMembersRepository } from '../repositories/site-members-repository';
@@ -30,6 +31,7 @@ export const setupContext = memoize(async (externals) => {
     const languagesRepository = new LanguagesRepository(externals);
     const siteMembersRepository = new SiteMembersRepository(externals);
     const teachersRepository = new TeachersRepository(externals);
+    const accountStatusesRepository = new AccountStatusesRepository(externals);
     // actions
     const generatePassword = generatePasswordFactory(PASSWORD_SECRET, PASSWORD_SALT);
     const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersRepository, usersService, generatePassword);
@@ -44,6 +46,7 @@ export const setupContext = memoize(async (externals) => {
     const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService, generatePassword);
     return {
         repositories: {
+            accountStatusesRepository,
             countriesRepository,
             languagesRepository,
             siteMembersRepository,

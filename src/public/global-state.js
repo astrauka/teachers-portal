@@ -1,9 +1,10 @@
-import { getCuratingTeacherView, getCurrentTeacherView } from 'backend/backend-api';
+import { getAllAccountStatuses, getCuratingTeacherView, getCurrentTeacherView, } from 'backend/backend-api';
 import { memory } from 'wix-storage';
 var GlobalState;
 (function (GlobalState) {
     GlobalState["Teacher"] = "teacher";
     GlobalState["CuratingTeacher"] = "curatingTeacher";
+    GlobalState["AccountStatuses"] = "accountStatuses";
     GlobalState["isInitialStateLoaded"] = "isInitialStateLoaded";
 })(GlobalState || (GlobalState = {}));
 async function fetchItem(item, fetchFn, refresh = false) {
@@ -30,6 +31,9 @@ export async function getCurrentTeacher(refresh) {
 }
 export async function getCuratingTeacher(refresh) {
     return fetchItem(GlobalState.CuratingTeacher, getCuratingTeacherView, refresh);
+}
+export async function getAccountStatuses() {
+    return fetchItem(GlobalState.AccountStatuses, getAllAccountStatuses);
 }
 export async function loadInitialState() {
     const teacher = await getCurrentTeacher();
