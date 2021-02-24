@@ -1,6 +1,7 @@
 import { debounce } from 'lodash';
-import { AccountStatuses, } from 'public/common/entities/teacher';
+import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
+import { getAccountStatuses } from 'public/global-state';
 import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { loadFirstDatasetPage } from 'public/wix-utils';
@@ -11,7 +12,7 @@ let state;
 forCurrentTeacher('teachers', async () => {
     const [teacherLevels, accountStatuses] = await Promise.all([
         loadFirstDatasetPage($w('#TeacherLevelsDataset')),
-        loadFirstDatasetPage($w('#AccountStatusesDataset')),
+        getAccountStatuses(),
     ]);
     state = {
         teacherLevels,
@@ -27,8 +28,15 @@ forCurrentTeacher('teachers', async () => {
         $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
     });
     $w('#teachersRepeater').onItemReady(($item, teacher) => {
+        var _a;
         $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
         $item('#teachersName').onClick(() => redirectToTeacher(teacher));
+        if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
+            $item('#teachersStatusActive').expand();
+        }
+        else {
+            $item('#teachersStatusInactive').expand();
+        }
     });
 });
 function setupInputOnChange() {

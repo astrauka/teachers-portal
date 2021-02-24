@@ -9,6 +9,8 @@ export interface AdminFilledInformation {
   statusId: string;
   mentorId: string | null;
   certificateExpirationDate: Date | null;
+  certificateNumber: string;
+  modules: string;
 }
 
 export interface InitialTeacherFormFilledInformation {
@@ -59,6 +61,10 @@ export interface TeacherView extends Teacher {
   language: string;
 }
 
+export interface TeacherWix extends Omit<Teacher, 'statusId'> {
+  statusId: AccountStatus;
+}
+
 export interface TeacherLevel {
   _id: string;
   title: TeacherLevels;
@@ -80,7 +86,7 @@ export interface AccountStatus {
 
 export enum AccountStatuses {
   Active = 'Active',
-  Suspended = 'Suspended',
+  Inactive = 'Inactive',
   NotATeacher = 'Not a teacher',
 }
 

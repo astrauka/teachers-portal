@@ -21,6 +21,10 @@ export async function getCuratingTeacherView() {
     const { actions, views } = await setupContext(EXTERNALS);
     return withLogger('getCuratingTeacherView', getTeacherView(actions.getCuratingTeacher(), views.makeTeacherViews));
 }
+export async function getAllAccountStatuses() {
+    const { repositories } = await setupContext(EXTERNALS);
+    return withLogger('getAllAccountStatuses', repositories.accountStatusesRepository.fetchAccountStatuses());
+}
 async function getTeacherView(teacherPromise, makeTeacherViews) {
     const [teacherView] = await makeTeacherViews([await teacherPromise]);
     return teacherView;

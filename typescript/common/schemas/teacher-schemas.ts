@@ -22,6 +22,8 @@ export const adminFilledInformationSchema: ValidationSchema<
   statusId: { type: 'string', min: 3, max: 255 },
   mentorId: { type: 'string', min: 3, optional: true },
   certificateExpirationDate: { type: 'date', optional: true },
+  certificateNumber: { type: 'string', min: 3, optional: true },
+  modules: { type: 'string', min: 3, optional: true },
   siteMemberId: { type: 'string', min: 3, optional: true },
 };
 

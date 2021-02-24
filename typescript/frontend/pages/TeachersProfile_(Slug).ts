@@ -1,5 +1,5 @@
 import { forEach } from 'lodash';
-import { Teacher } from 'public/common/entities/teacher';
+import { AccountStatuses, TeacherWix } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import wixLocation from 'wix-location';
 
@@ -11,17 +11,18 @@ const SOCIAL_ICONS = {
 
 forCurrentTeacher('teachersProfile', async () => {
   $w('#SelectedTeacher').onReady(() => {
-    const teacher: Teacher = $w('#SelectedTeacher').getCurrentItem();
+    const teacher: TeacherWix = $w('#SelectedTeacher').getCurrentItem();
     addSocialIconLinks(teacher);
     addWebsiteLink(teacher);
     addSendEmailButton(teacher);
     addAboutHtml(teacher);
+    addTeachingModules(teacher);
     showFilledInformation(teacher);
-    makeTeachersNameClickable();
+    showStatus(teacher);
   });
 });
 
-function addSocialIconLinks(teacher: Teacher) {
+function addSocialIconLinks(teacher: TeacherWix) {
   forEach(SOCIAL_ICONS, (url, provider) => {
     const link = teacher[provider];
     const $icon = $w(`#${provider}` as 'Image');
@@ -33,7 +34,7 @@ function addSocialIconLinks(teacher: Teacher) {
   });
 }
 
-function addWebsiteLink(teacher: Teacher) {
+function addWebsiteLink(teacher: TeacherWix) {
   const $website = $w('#website' as 'Text');
   const { website } = teacher;
   if (website) {
@@ -42,7 +43,7 @@ function addWebsiteLink(teacher: Teacher) {
   }
 }
 
-function addSendEmailButton(teacher: Teacher) {
+function addSendEmailButton(teacher: TeacherWix) {
   const $button = $w('#sendEmailButton' as 'Button');
   const { email } = teacher;
   $button.onClick(() => {
@@ -50,14 +51,14 @@ function addSendEmailButton(teacher: Teacher) {
   });
 }
 
-function addAboutHtml(teacher: Teacher) {
+function addAboutHtml(teacher: TeacherWix) {
   if (teacher.about) {
     $w('#about' as 'Text').html = teacher.about;
     $w('#aboutGroup' as 'Container').expand();
   }
 }
 
-function showFilledInformation(teacher: Teacher) {
+function showFilledInformation(teacher: TeacherWix) {
   if (teacher.countryId) {
     $w('#country' as 'Text').expand();
   }
@@ -75,8 +76,14 @@ function showFilledInformation(teacher: Teacher) {
   });
 }
 
-function makeTeachersNameClickable() {
-  $w('#teachersRepeater' as 'Repeater').onItemReady(($item, teacher: Teacher) => {
-    $item('#teachersName' as 'Text').onClick(() => wixLocation.to(`/teacher/${teacher.slug}`));
-  });
+function showStatus(teacher: TeacherWix) {
+  if (teacher.statusId?.title === AccountStatuses.Active) {
+    $w('#teachersStatusActive' as 'Text').expand();
+  } else {
+    $w('#teachersStatusInactive' as 'Text').expand();
+  }
+}
+
+function addTeachingModules(teacher: TeacherWix) {
+  $w('#modules' as 'Text').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
 }

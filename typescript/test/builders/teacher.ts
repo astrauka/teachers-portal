@@ -36,6 +36,8 @@ export const buildAdminFilledTeacher = builder<AdminFilledInformation>((id) => (
   statusId: `${id}-status-id`,
   mentorId: `${id}-mentor-id`,
   certificateExpirationDate: inDaysAsDate(100),
+  modules: `${id}-modules`,
+  certificateNumber: `${id}-certificate-number`,
 }));
 
 export const buildTeacherView = builder<TeacherView>((id) => ({

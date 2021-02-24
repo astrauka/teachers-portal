@@ -1,4 +1,5 @@
 import { forEach } from 'lodash';
+import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import wixLocation from 'wix-location';
 const SOCIAL_ICONS = {
@@ -13,8 +14,9 @@ forCurrentTeacher('teachersProfile', async () => {
         addWebsiteLink(teacher);
         addSendEmailButton(teacher);
         addAboutHtml(teacher);
+        addTeachingModules(teacher);
         showFilledInformation(teacher);
-        makeTeachersNameClickable();
+        showStatus(teacher);
     });
 });
 function addSocialIconLinks(teacher) {
@@ -67,8 +69,15 @@ function showFilledInformation(teacher) {
         }
     });
 }
-function makeTeachersNameClickable() {
-    $w('#teachersRepeater').onItemReady(($item, teacher) => {
-        $item('#teachersName').onClick(() => wixLocation.to(`/teacher/${teacher.slug}`));
-    });
+function showStatus(teacher) {
+    var _a;
+    if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
+        $w('#teachersStatusActive').expand();
+    }
+    else {
+        $w('#teachersStatusInactive').expand();
+    }
+}
+function addTeachingModules(teacher) {
+    $w('#modules').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
 }
