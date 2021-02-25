@@ -22,3 +22,11 @@ export function getExistingElement($element, $fallbackElement) {
 export function getElementWhenExists($element) {
     return $element.id ? $element : undefined;
 }
+const EXECUTION_STATUS_LOADED = 'loaded';
+export async function executeOnce($status, executeFn) {
+    if ($status.text === EXECUTION_STATUS_LOADED) {
+        return;
+    }
+    await executeFn();
+    $status.text = EXECUTION_STATUS_LOADED;
+}
