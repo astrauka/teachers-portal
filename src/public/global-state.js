@@ -2,10 +2,10 @@ import { getAllAccountStatuses, getCuratingTeacherView, getCurrentTeacherView, }
 import { memory } from 'wix-storage';
 var GlobalState;
 (function (GlobalState) {
-    GlobalState["Teacher"] = "teacher";
-    GlobalState["CuratingTeacher"] = "curatingTeacher";
-    GlobalState["AccountStatuses"] = "accountStatuses";
-    GlobalState["isInitialStateLoaded"] = "isInitialStateLoaded";
+    GlobalState["Teacher"] = "Teacher";
+    GlobalState["CuratingTeacher"] = "CuratingTeacher";
+    GlobalState["AccountStatuses"] = "AccountStatuses";
+    GlobalState["InitialStateLoaded"] = "InitialStateLoaded";
 })(GlobalState || (GlobalState = {}));
 async function fetchItem(item, fetchFn, refresh = false) {
     if (!refresh) {
@@ -37,11 +37,11 @@ export async function getAccountStatuses() {
 }
 export async function loadInitialState() {
     const teacher = await getCurrentTeacher();
-    memory.setItem(GlobalState.isInitialStateLoaded, 'true');
+    memory.setItem(GlobalState.InitialStateLoaded, 'true');
     return { teacher };
 }
-export function isInitialStateLoaded() {
-    return Boolean(memory.getItem(GlobalState.isInitialStateLoaded));
+export function InitialStateLoaded() {
+    return Boolean(memory.getItem(GlobalState.InitialStateLoaded));
 }
 export async function refreshInitialState() {
     const teacher = await getCurrentTeacher(true);

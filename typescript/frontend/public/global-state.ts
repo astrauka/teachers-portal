@@ -8,10 +8,10 @@ import { AccountStatus, TeacherView } from './common/entities/teacher';
 import { InitialState } from './for-current-teacher';
 
 enum GlobalState {
-  Teacher = 'teacher',
-  CuratingTeacher = 'curatingTeacher',
-  AccountStatuses = 'accountStatuses',
-  isInitialStateLoaded = 'isInitialStateLoaded',
+  Teacher = 'Teacher',
+  CuratingTeacher = 'CuratingTeacher',
+  AccountStatuses = 'AccountStatuses',
+  InitialStateLoaded = 'InitialStateLoaded',
 }
 
 async function fetchItem<T>(
@@ -51,12 +51,12 @@ export async function getAccountStatuses(): Promise<AccountStatus[]> {
 
 export async function loadInitialState(): Promise<InitialState> {
   const teacher = await getCurrentTeacher();
-  memory.setItem(GlobalState.isInitialStateLoaded, 'true');
+  memory.setItem(GlobalState.InitialStateLoaded, 'true');
   return { teacher };
 }
 
-export function isInitialStateLoaded(): boolean {
-  return Boolean(memory.getItem(GlobalState.isInitialStateLoaded));
+export function InitialStateLoaded(): boolean {
+  return Boolean(memory.getItem(GlobalState.InitialStateLoaded));
 }
 
 export async function refreshInitialState(): Promise<InitialState> {

@@ -3,7 +3,7 @@ import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import { TaskName } from './common/entities/teacher';
-import { isInitialStateLoaded, loadInitialState } from './global-state';
+import { InitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
@@ -65,7 +65,7 @@ async function getInitialState(forPage) {
     try {
         if (forPage) {
             for (const _time of range(1, 50)) {
-                if (!isInitialStateLoaded()) {
+                if (!InitialStateLoaded()) {
                     await sleep(100);
                 }
                 else {
