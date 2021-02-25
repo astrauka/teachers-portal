@@ -36,3 +36,13 @@ export function getElementWhenExists<Element extends { id: string }>(
 ): Element | undefined {
   return $element.id ? $element : undefined;
 }
+
+const EXECUTION_STATUS_LOADED = 'loaded';
+
+export async function executeOnce($status: $w.Text, executeFn: () => any): Promise<void> {
+  if ($status.text === EXECUTION_STATUS_LOADED) {
+    return;
+  }
+  await executeFn();
+  $status.text = EXECUTION_STATUS_LOADED;
+}

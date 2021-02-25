@@ -1,7 +1,7 @@
 import { Tasks, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
-import { getCuratingTeacher } from 'public/global-state';
-import { getElementWhenExists, getExistingElement } from 'public/wix-utils';
+import { getCuratingTeacher, getCurrentTeacher } from 'public/global-state';
+import { executeOnce, getElementWhenExists, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
@@ -9,10 +9,15 @@ forCurrentTeacher(
   'site',
   async ({ teacher }: InitialState) => {
     onLogoutButtonClick();
-    onContactMentorClick(teacher);
-    updateHeaderNotificationsCount(teacher);
-    setProfileImage(teacher);
+    onContactMentorClick();
+    onProfileImageClick();
     showProfileDropdown();
+
+    executeOnce($w('#siteLoadedStatus' as 'Text'), () => {
+      showContactMentorButton(teacher);
+      setProfileImage(teacher);
+      updateHeaderNotificationsCount(teacher);
+    });
   },
   false
 );
@@ -42,10 +47,18 @@ function setProfileImage(teacher: TeacherView) {
     $image.src = profileImage;
     $image.alt = fullName;
     $image.tooltip = fullName;
-    $image.onClick(() => {
-      wixLocation.to(`/teacher/${slug}`);
-    });
   }
+}
+
+function onProfileImageClick() {
+  const $image = getExistingElement(
+    $w('#profileIcon' as 'Image'),
+    $w('#profileIconMobile' as 'Image')
+  );
+  $image.onClick(async () => {
+    const teacher = await getCurrentTeacher();
+    wixLocation.to(`/teacher/${teacher.slug}`);
+  });
 }
 
 function showProfileDropdown() {
@@ -72,17 +85,23 @@ function onLogoutButtonClick() {
   });
 }
 
-function onContactMentorClick(teacher: TeacherView) {
+function showContactMentorButton(teacher: TeacherView) {
+  if (!teacher.mentorId) {
+    const $contactMentorButton = getExistingElement(
+      $w('#contactMentorButton' as 'Button'),
+      $w('#contactMentorButtonMobile' as 'Button')
+    );
+    $contactMentorButton.collapse();
+  }
+}
+
+function onContactMentorClick() {
   const $contactMentorButton = getExistingElement(
     $w('#contactMentorButton' as 'Button'),
     $w('#contactMentorButtonMobile' as 'Button')
   );
-  if (teacher.mentorId) {
-    $contactMentorButton.onClick(async () => {
-      const curatingTeacher = await getCuratingTeacher();
-      wixLocation.to(`mailto:${curatingTeacher.email}?subject=MRY%3A%20Question`);
-    });
-  } else {
-    $contactMentorButton.collapse();
-  }
+  $contactMentorButton.onClick(async () => {
+    const curatingTeacher = await getCuratingTeacher();
+    wixLocation.to(`mailto:${curatingTeacher.email}?subject=MRY%3A%20Question`);
+  });
 }
