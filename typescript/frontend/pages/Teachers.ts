@@ -11,10 +11,11 @@ type TeachersFilter = {
   fullName: string;
   city: string;
   level: string;
+  modules: string;
 };
 type TeachersFilterKey = keyof TeachersFilter;
 
-const TEXT_INPUTS: TeachersFilterKey[] = ['fullName', 'city'];
+const TEXT_INPUTS: TeachersFilterKey[] = ['fullName', 'city', 'modules'];
 const DROPDOWNS: TeachersFilterKey[] = ['level'];
 
 let state: {
@@ -83,6 +84,7 @@ async function updateTeachersFilter() {
   const datasetFilter = getFilter([
     [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
     [values.city, (filter) => filter.contains('city', values.city)],
+    [values.modules, (filter) => filter.contains('modules', values.modules)],
     [levelId, (filter) => filter.eq('levelId', levelId)],
     [
       state.visibleAccountStatusIds,
