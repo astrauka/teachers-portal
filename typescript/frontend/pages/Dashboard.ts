@@ -4,9 +4,8 @@ import { getCuratingTeacher } from 'public/global-state';
 import wixLocation from 'wix-location';
 
 const TASK_STATUS_COLORS = {
-  [TaskStatus.completed]: '#60bc57',
+  [TaskStatus.completed]: '#F0F1F1',
   [TaskStatus.current]: 'red',
-  [TaskStatus.upcoming]: 'grey',
 };
 
 forCurrentTeacher('dashboard', async ({ teacher }: InitialState) => {
@@ -19,10 +18,13 @@ function populateTasksRepeater(teacher: TeacherView) {
   $tasksRepeater.forEachItem(($task, _item, index) => {
     const status = teacher.completedTasks.includes(Tasks[index])
       ? TaskStatus.completed
-      : teacher.completedTasks.includes(Tasks[index - 1])
+      : index === 0 || teacher.completedTasks.includes(Tasks[index - 1])
       ? TaskStatus.current
       : TaskStatus.upcoming;
-    $task('#taskContainer' as 'Box').style.backgroundColor = TASK_STATUS_COLORS[status];
+    const color = TASK_STATUS_COLORS[status];
+    if (color) {
+      $task('#taskContainer' as 'Box').style.backgroundColor = TASK_STATUS_COLORS[status];
+    }
   });
 }
 
