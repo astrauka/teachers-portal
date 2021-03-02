@@ -3,6 +3,7 @@ import { Externals } from '../context/production-context';
 import { ContactInfo } from '../types/wix-types';
 import { withLogger } from '../utils/logger';
 import User = wix_users.User;
+import UserInfo = wix_users_backend.UserInfo;
 
 export class UsersService {
   constructor(private readonly externals: Externals) {}
@@ -31,6 +32,10 @@ export class UsersService {
     return withLogger(`approveUser ${teacher.email}`, async () => {
       return await this.externals.wixUsers.approveByEmail(teacher.email);
     });
+  }
+
+  public async updateUserFields(userId: string, userInfo: Partial<UserInfo>) {
+    return this.externals.wixUsers.updateUserFields(userId, userInfo as UserInfo);
   }
 
   public getCurrentUserEmail(): Promise<string> {

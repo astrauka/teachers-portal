@@ -1,4 +1,4 @@
-import { compact, get, keyBy } from 'lodash';
+import { compact, get, keyBy, omit } from 'lodash';
 export function makeTeacherViewsFactory(countriesRepository, languagesRepository) {
     return async function makeTeacherViews(teachersArray) {
         const teachers = compact(teachersArray);
@@ -13,7 +13,7 @@ export function makeTeacherViewsFactory(countriesRepository, languagesRepository
         const countriesByIds = keyBy(countries, '_id');
         const languagesByIds = keyBy(languages, '_id');
         return teachers.map((teacher) => ({
-            ...teacher,
+            ...omit(teacher, ['streetAddress']),
             facebook: teacher.facebook || '',
             instagram: teacher.instagram || '',
             linkedIn: teacher.linkedIn || '',

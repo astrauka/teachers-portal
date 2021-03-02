@@ -23,6 +23,9 @@ export class UsersService {
             return await this.externals.wixUsers.approveByEmail(teacher.email);
         });
     }
+    async updateUserFields(userId, userInfo) {
+        return this.externals.wixUsers.updateUserFields(userId, userInfo);
+    }
     getCurrentUserEmail() {
         return this.getCurrentUser().getEmail();
     }

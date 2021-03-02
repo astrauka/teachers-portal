@@ -18,7 +18,6 @@ export const buildTeacher = builder<Teacher>((id) => ({
   countryId: `${id}-country-id`,
   languageId: `${id}-language-id`,
   city: `${id}-city-id`,
-  streetAddress: `${id}-street-address`,
   facebook: `${id}-facebook`,
   instagram: `${id}instagram`,
   linkedIn: `${id}-linked-in`,
@@ -38,6 +37,7 @@ export const buildAdminFilledTeacher = builder<AdminFilledInformation>((id) => (
   certificateExpirationDate: inDaysAsDate(100),
   modules: `${id}-modules`,
   certificateNumber: `${id}-certificate-number`,
+  streetAddress: `${id}-street-address`,
 }));
 
 export const buildTeacherView = builder<TeacherView>((id) => ({

@@ -43,7 +43,7 @@ describe('validateInitialTeachersForm', () => {
   context('on invalid input', () => {
     const update = {
       ...(pick(buildTeacherView(), keys(initialTeachersFormSchema)) as InitialTeacherForm),
-      streetAddress: 'a',
+      city: 'a',
     };
 
     it('should throw', () => {

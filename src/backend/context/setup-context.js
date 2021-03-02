@@ -39,7 +39,7 @@ export const setupContext = memoize(async (externals) => {
     const getCuratingTeacher = getCuratingTeacherFactory(getTeacher, teachersRepository);
     const submitInitialTeachersForm = submitInitialTeachersFormFactory(teachersRepository, countriesRepository, languagesRepository, getTeacher);
     const submitSecondStepTeachersForm = submitSecondStepTeachersFormFactory(teachersRepository, getTeacher);
-    const normalizeTeacher = normalizeTeacherFactory(teachersRepository);
+    const normalizeTeacher = normalizeTeacherFactory(usersService, teachersRepository);
     // views
     const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
     // hooks

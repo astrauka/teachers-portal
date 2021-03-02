@@ -11,6 +11,7 @@ export interface AdminFilledInformation {
   certificateExpirationDate: Date | null;
   certificateNumber: string;
   modules: string;
+  streetAddress: string;
 }
 
 export interface InitialTeacherFormFilledInformation {
@@ -19,7 +20,6 @@ export interface InitialTeacherFormFilledInformation {
   countryId: string;
   languageId: string;
   city: string;
-  streetAddress: string;
 }
 
 export interface ComputedTeacherInformation {
@@ -34,7 +34,6 @@ export interface InitialTeacherForm {
   phoneNumber: string;
   country: string;
   city: string;
-  streetAddress: string;
   language: string;
 }
 export type InitialTeacherFormKey = keyof InitialTeacherForm;
@@ -56,12 +55,12 @@ export interface Teacher
     SecondStepTeachersForm,
     ComputedTeacherInformation {}
 
-export interface TeacherView extends Teacher {
+export interface TeacherView extends Omit<Teacher, 'streetAddress'> {
   country: string;
   language: string;
 }
 
-export interface TeacherWix extends Omit<Teacher, 'statusId'> {
+export interface TeacherWix extends Omit<Teacher, 'statusId' | 'streetAddress'> {
   statusId: AccountStatus;
 }
 

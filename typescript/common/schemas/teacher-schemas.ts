@@ -24,6 +24,7 @@ export const adminFilledInformationSchema: ValidationSchema<
   certificateExpirationDate: { type: 'date', optional: true },
   certificateNumber: { type: 'string', min: 3, optional: true },
   modules: { type: 'string', min: 3, optional: true },
+  streetAddress: { type: 'string', min: 3, trim: true, optional: true },
   siteMemberId: { type: 'string', min: 3, optional: true },
 };
 
@@ -31,7 +32,6 @@ export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
   profileImage: { type: 'string', empty: false },
   phoneNumber: { type: 'string', min: 3, max: 255, pattern: /^\+?[\d\-\s]+$/, trim: true },
   city: { type: 'string', min: 3, max: 255, trim: true },
-  streetAddress: { type: 'string', min: 3, trim: true },
   country: { type: 'string', empty: false },
   language: { type: 'string', empty: false },
 };

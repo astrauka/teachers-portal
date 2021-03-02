@@ -3,6 +3,7 @@ import { convert } from 'url-slug';
 import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { UsersService } from '../../services/users-service';
 import { generateUuid, IdProvider } from '../../utils/id';
 import { validateTeacher } from '../validate';
 
@@ -28,6 +29,7 @@ export const TEACHER_DEFAULTS = {
 };
 
 export function normalizeTeacherFactory(
+  usersService: UsersService,
   teachersRepository: TeachersRepository,
   generateId: IdProvider = generateUuid
 ) {

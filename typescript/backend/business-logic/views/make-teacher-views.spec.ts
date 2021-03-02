@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { TeacherView } from '../../../common/entities/teacher';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
@@ -25,13 +26,13 @@ describe('makeTeacherViews', () => {
   });
   const teachers = [teacher1, teacher2];
   const teacherView1: TeacherView = {
-    ...teacher1,
+    ...omit(teacher1, ['streetAddress']),
     country: country1.title,
     language: language1.title,
     photos: teacher1.photos,
   };
   const teacherView2: TeacherView = {
-    ...teacher2,
+    ...omit(teacher2, ['streetAddress']),
     country: country2.title,
     language: language2.title,
     photos: teacher1.photos,
@@ -70,7 +71,11 @@ describe('makeTeacherViews', () => {
 
   context('on country and language not selected', () => {
     const teacher1 = buildTeacher({ without: ['countryId', 'languageId'] });
-    const teacherView1 = { ...teacher1, country: undefined, language: undefined };
+    const teacherView1 = {
+      ...omit(teacher1, ['streetAddress']),
+      country: undefined,
+      language: undefined,
+    };
 
     it('should return no titles', async () => {
       const { countriesRepository, languagesRepository, makeTeacherViews } = buildTestContext({
@@ -97,7 +102,11 @@ describe('makeTeacherViews', () => {
   context('on country and language not existing', () => {
     const countries = [country1];
     const languages = [language1];
-    const teacherView2 = { ...teacher2, country: undefined, language: undefined };
+    const teacherView2 = {
+      ...omit(teacher2, ['streetAddress']),
+      country: undefined,
+      language: undefined,
+    };
 
     it('should return no titles', async () => {
       const { countriesRepository, languagesRepository, makeTeacherViews } = buildTestContext({

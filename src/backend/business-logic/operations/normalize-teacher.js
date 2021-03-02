@@ -23,7 +23,7 @@ export const TEACHER_DEFAULTS = {
     photos: [],
     completedTasks: [],
 };
-export function normalizeTeacherFactory(teachersRepository, generateId = generateUuid) {
+export function normalizeTeacherFactory(usersService, teachersRepository, generateId = generateUuid) {
     return async function normalizeTeacher(update) {
         const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);
         const instagram = normalizeSecondStepTeacherFormInput('instagram', update.instagram);

@@ -3,6 +3,7 @@ import { buildAdminFilledTeacher, buildTeacher } from '../../../test/builders/te
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { UsersService } from '../../services/users-service';
 import { IdProvider } from '../../utils/id';
 import { MAX_SLUG_POSTFIX, normalizeTeacherFactory, TEACHER_DEFAULTS } from './normalize-teacher';
 
@@ -17,18 +18,24 @@ describe('normalizeTeacher', () => {
   });
   const uuid = 'generated-id';
 
+  const getUsersService = () =>
+    stubType<UsersService>((stub) => {
+      stub.updateUserFields.resolves();
+    });
   const getTeachersRepository = (teacher?: Teacher) =>
     stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherBySlug.resolves(teacher);
     });
   const getGenerateUuid = (uuid: string) => stubFn<IdProvider>().returns(uuid);
   const buildTestContext = ({
+    usersService = getUsersService(),
     teachersRepository = getTeachersRepository(),
     generateUuid = getGenerateUuid(uuid),
   } = {}) => ({
+    usersService,
     teachersRepository,
     generateUuid,
-    normalizeTeacher: normalizeTeacherFactory(teachersRepository, generateUuid),
+    normalizeTeacher: normalizeTeacherFactory(usersService, teachersRepository, generateUuid),
   });
 
   it('should return teacher with defaults, fullName and slug', async () => {
@@ -121,6 +128,21 @@ describe('normalizeTeacher', () => {
       });
       expect(teachersRepository.fetchTeacherBySlug).callCount(MAX_SLUG_POSTFIX + 1);
       expect(generateUuid).calledOnceWithExactly();
+    });
+  });
+
+  context.skip('on profile image updated', () => {
+    const update = buildTeacher();
+    const userId = 'current-user-id';
+
+    it('should update site member profile image', async () => {
+      const { usersService, normalizeTeacher } = buildTestContext();
+      await normalizeTeacher(update);
+      expect(usersService.updateUserFields).calledOnceWithExactly(userId, {
+        firstName,
+        lastName,
+        profileImage: { url: update.profileImage },
+      });
     });
   });
 
