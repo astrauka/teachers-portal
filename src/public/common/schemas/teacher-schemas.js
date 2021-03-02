@@ -11,7 +11,7 @@ export const adminFilledInformationSchema = {
     certificateExpirationDate: { type: 'date', optional: true },
     certificateNumber: { type: 'string', min: 3, optional: true },
     modules: { type: 'string', min: 3, optional: true },
-    streetAddress: { type: 'string', min: 3, trim: true, optional: true },
+    streetAddress: { type: 'string', trim: true, optional: true },
     siteMemberId: { type: 'string', min: 3, optional: true },
 };
 export const initialTeachersFormSchema = {

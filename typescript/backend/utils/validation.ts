@@ -22,5 +22,5 @@ export function buildValidator<T>(
 }
 
 function humanizeValidationMessage(errors: ValidationError[]) {
-  return errors.map((error) => error.message).join(' ');
+  return errors.map((error: ValidationError) => `'${error.actual}' ${error.message}`).join(' ');
 }

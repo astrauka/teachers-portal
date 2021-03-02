@@ -21,7 +21,7 @@ describe('validateTeacher', () => {
 
   context('on invalid input', () => {
     const teacher = buildTeacher({
-      properties: { email: 'email' },
+      properties: { email: 'email', streetAddress: '' },
       without: ['profileImage'],
     });
 

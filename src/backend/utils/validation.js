@@ -15,5 +15,5 @@ export function buildValidator(schema, { strict = true } = {}) {
     };
 }
 function humanizeValidationMessage(errors) {
-    return errors.map((error) => error.message).join(' ');
+    return errors.map((error) => `'${error.actual}' ${error.message}`).join(' ');
 }
