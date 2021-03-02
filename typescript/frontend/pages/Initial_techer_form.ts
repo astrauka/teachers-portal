@@ -12,7 +12,7 @@ import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 
 type ValidationMessages = { [key in InitialTeacherFormKey]: string };
-const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city', 'streetAddress'];
+const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city'];
 const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];

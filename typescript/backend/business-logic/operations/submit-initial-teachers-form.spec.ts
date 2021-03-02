@@ -16,13 +16,13 @@ describe('submitInitialTeachersForm', () => {
   const language = buildLanguage();
   const teacher = buildTeacher({ properties: { completedTasks: [] } });
   const update: InitialTeacherForm = {
-    ...pick(buildTeacher(), ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+    ...pick(buildTeacher(), ['profileImage', 'phoneNumber', 'city']),
     country: country.title,
     language: language.title,
   };
   const updatedTeacher: Teacher = {
     ...teacher,
-    ...pick(update, ['profileImage', 'phoneNumber', 'city', 'streetAddress']),
+    ...pick(update, ['profileImage', 'phoneNumber', 'city']),
     countryId: country._id,
     languageId: language._id,
     completedTasks: [TaskName.initialProfileForm],

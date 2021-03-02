@@ -5,7 +5,7 @@ import { forCurrentTeacher } from 'public/for-current-teacher';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
-const TEXT_INPUTS = ['phoneNumber', 'city', 'streetAddress'];
+const TEXT_INPUTS = ['phoneNumber', 'city'];
 const DROPDOWNS = ['country', 'language'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];

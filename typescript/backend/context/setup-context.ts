@@ -57,7 +57,7 @@ export const setupContext = memoize(async (externals: Externals) => {
     teachersRepository,
     getTeacher
   );
-  const normalizeTeacher = normalizeTeacherFactory(teachersRepository);
+  const normalizeTeacher = normalizeTeacherFactory(usersService, teachersRepository);
 
   // views
   const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
