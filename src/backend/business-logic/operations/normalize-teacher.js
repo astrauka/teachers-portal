@@ -23,27 +23,24 @@ export const TEACHER_DEFAULTS = {
     photos: [],
     completedTasks: [],
 };
-export function normalizeTeacherFactory(usersService, teachersRepository, generateId = generateUuid) {
+export function normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation, generateId = generateUuid) {
     return async function normalizeTeacher(update) {
         const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);
         const instagram = normalizeSecondStepTeacherFormInput('instagram', update.instagram);
         const linkedIn = normalizeSecondStepTeacherFormInput('linkedIn', update.linkedIn);
+        const fullName = `${update.firstName} ${update.lastName}`;
+        const slug = convert(fullName);
         const teacher = validateTeacher({
             ...TEACHER_DEFAULTS,
             ...update,
-            fullName: `${update.firstName} ${update.lastName}`,
+            fullName,
             ...(facebook && { facebook }),
             ...(instagram && { instagram }),
             ...(linkedIn && { linkedIn }),
+            slug: update.slug === slug ? slug : (await getUnusedSlug(slug)) || generateId(),
         });
-        const slug = convert(teacher.fullName);
-        if (teacher.slug === slug) {
-            return teacher;
-        }
-        return {
-            ...teacher,
-            slug: (await getUnusedSlug(slug)) || generateId(),
-        };
+        await syncSiteMemberInformation(teacher);
+        return teacher;
     };
     async function getUnusedSlug(slug) {
         for (let slugNumber = 0; slugNumber <= MAX_SLUG_POSTFIX; slugNumber++) {
