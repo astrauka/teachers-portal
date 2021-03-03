@@ -6,6 +6,7 @@ import { TeachersRepository } from '../../repositories/teachers-repository';
 import { UsersService } from '../../services/users-service';
 import { generateUuid, IdProvider } from '../../utils/id';
 import { validateTeacher } from '../validate';
+import { SyncSiteMemberInformation } from './sync-site-member-information';
 
 export const MAX_SLUG_POSTFIX = 20;
 export const TEACHER_DEFAULTS = {
@@ -29,8 +30,8 @@ export const TEACHER_DEFAULTS = {
 };
 
 export function normalizeTeacherFactory(
-  usersService: UsersService,
   teachersRepository: TeachersRepository,
+  syncSiteMemberInformation: SyncSiteMemberInformation,
   generateId: IdProvider = generateUuid
 ) {
   return async function normalizeTeacher(
@@ -39,23 +40,19 @@ export function normalizeTeacherFactory(
     const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);
     const instagram = normalizeSecondStepTeacherFormInput('instagram', update.instagram);
     const linkedIn = normalizeSecondStepTeacherFormInput('linkedIn', update.linkedIn);
+    const fullName = `${update.firstName} ${update.lastName}`;
+    const slug = convert(fullName);
     const teacher: Teacher = validateTeacher({
       ...TEACHER_DEFAULTS,
       ...update,
-      fullName: `${update.firstName} ${update.lastName}`,
+      fullName,
       ...(facebook && { facebook }),
       ...(instagram && { instagram }),
       ...(linkedIn && { linkedIn }),
+      slug: update.slug === slug ? slug : (await getUnusedSlug(slug)) || generateId(),
     });
-    const slug = convert(teacher.fullName);
-    if (teacher.slug === slug) {
-      return teacher;
-    }
-
-    return {
-      ...teacher,
-      slug: (await getUnusedSlug(slug)) || generateId(),
-    };
+    await syncSiteMemberInformation(teacher);
+    return teacher;
   };
 
   async function getUnusedSlug(slug: string): Promise<string | undefined> {

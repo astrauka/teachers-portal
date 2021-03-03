@@ -8,6 +8,7 @@ import { getTeacherFactory } from '../business-logic/operations/get-teacher';
 import { normalizeTeacherFactory } from '../business-logic/operations/normalize-teacher';
 import { submitInitialTeachersFormFactory } from '../business-logic/operations/submit-initial-teachers-form';
 import { submitSecondStepTeachersFormFactory } from '../business-logic/operations/submit-second-step-teachers-form';
+import { syncSiteMemberInformationFactory } from '../business-logic/operations/sync-site-member-information';
 import { makeTeacherViewsFactory } from '../business-logic/views/make-teacher-views';
 import { AccountStatusesRepository } from '../repositories/account-statuses-repository';
 import { CountriesRepository } from '../repositories/countries-repository';
@@ -57,7 +58,11 @@ export const setupContext = memoize(async (externals: Externals) => {
     teachersRepository,
     getTeacher
   );
-  const normalizeTeacher = normalizeTeacherFactory(usersService, teachersRepository);
+  const syncSiteMemberInformation = syncSiteMemberInformationFactory(
+    usersService,
+    siteMembersRepository
+  );
+  const normalizeTeacher = normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation);
 
   // views
   const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
