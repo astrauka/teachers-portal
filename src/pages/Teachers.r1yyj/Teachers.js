@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce, find, pick } from 'lodash';
 import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
@@ -8,8 +8,17 @@ import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['fullName', 'city', 'modules'];
 const DROPDOWNS = ['level'];
+const FILTERS = [...TEXT_INPUTS, ...DROPDOWNS];
 let state;
 forCurrentTeacher('teachers', async () => {
+    await setupInitialState();
+    showTeachersOrLevels();
+    await updateTeachersFilter();
+    setupInputOnChange();
+    addAllValueToLevelsDropdown();
+    addTeacherLoadedHandler();
+});
+async function setupInitialState() {
     const [teacherLevels, accountStatuses] = await Promise.all([
         loadFirstDatasetPage($w('#TeacherLevelsDataset')),
         getAccountStatuses(),
@@ -19,42 +28,46 @@ forCurrentTeacher('teachers', async () => {
         visibleAccountStatusIds: accountStatuses
             .filter(({ title }) => title !== AccountStatuses.NotATeacher)
             .map(({ _id }) => _id),
-        fieldValues: wixLocation.query,
+        fieldValues: pick(wixLocation.query, FILTERS),
     };
-    await updateTeachersFilter();
-    setupInputOnChange();
-    $w('#TeacherLevelsDataset').onReady(() => {
-        const $dropdown = $w('#level');
-        $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
+}
+function showTeachersOrLevels() {
+    const $levelsBox = $w('#levelsBox');
+    const $teachersBox = $w('#teachersBox');
+    if (find(state.fieldValues)) {
+        $levelsBox.collapse();
+        $teachersBox.expand();
+    }
+    else {
+        $levelsBox.expand();
+        $teachersBox.collapse();
+    }
+    state.teacherLevels.forEach((teacherLevel) => {
+        $w(`#level${teacherLevel.order}`).onClick(async () => {
+            $levelsBox.collapse();
+            const value = teacherLevel.title;
+            $w(`#level`).value = value;
+            await onInputChange('level', value);
+            $teachersBox.expand();
+        });
     });
-    $w('#teachersRepeater').onItemReady(($item, teacher) => {
-        var _a;
-        $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
-        $item('#teachersName').onClick(() => redirectToTeacher(teacher));
-        if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
-            $item('#teachersStatusActive').expand();
-        }
-        else {
-            $item('#teachersStatusInactive').expand();
-        }
-    });
-});
+}
 function setupInputOnChange() {
     setupInputChangeHandlers(TEXT_INPUTS, DROPDOWNS);
     TEXT_INPUTS.forEach((field) => {
         const $input = $w(`#${field}`);
         $input.value = state.fieldValues[field];
-        $input.onInput(debounce((event) => onInputChange(field, event), 500));
+        $input.onInput(debounce((event) => onInputChange(field, event.target.value), 500));
     });
     DROPDOWNS.forEach((field) => {
         const $dropdown = $w(`#${field}`);
         $dropdown.value = state.fieldValues[field];
-        $dropdown.onChange((event) => onInputChange(field, event));
+        $dropdown.onChange((event) => onInputChange(field, event.target.value));
     });
 }
-async function onInputChange(field, event) {
-    state.fieldValues[field] = event.target.value;
-    updateTeachersFilter();
+async function onInputChange(field, value) {
+    state.fieldValues[field] = value;
+    await updateTeachersFilter();
 }
 async function updateTeachersFilter() {
     var _a;
@@ -91,4 +104,23 @@ async function updateTeachersFilter() {
 function redirectToTeacher(teacher) {
     const { slug } = teacher;
     wixLocation.to(`/teacher/${slug}`);
+}
+function addAllValueToLevelsDropdown() {
+    $w('#TeacherLevelsDataset').onReady(() => {
+        const $dropdown = $w('#level');
+        $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
+    });
+}
+function addTeacherLoadedHandler() {
+    $w('#teachersRepeater').onItemReady(($item, teacher) => {
+        var _a;
+        $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
+        $item('#teachersName').onClick(() => redirectToTeacher(teacher));
+        if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
+            $item('#teachersStatusActive').expand();
+        }
+        else {
+            $item('#teachersStatusInactive').expand();
+        }
+    });
 }
