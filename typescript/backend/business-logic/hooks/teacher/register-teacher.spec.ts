@@ -6,7 +6,7 @@ import { MemberStatus } from '../../../common/common-wix-types';
 import { SiteMembersRepository } from '../../../repositories/site-members-repository';
 import { UsersService } from '../../../services/users-service';
 import { SiteMember } from '../../../types/wix-types';
-import { GeneratePassword } from '../../operations/generate-password';
+import { IdProvider } from '../../../utils/id';
 import { registerTeacherFactory } from './register-teacher';
 
 describe('registerTeacher', () => {
@@ -21,7 +21,7 @@ describe('registerTeacher', () => {
     stubType<UsersService>((stub) => {
       stub.registerUser.resolves();
     });
-  const getGeneratePassword = (password: string) => stubFn<GeneratePassword>().resolves(password);
+  const getGeneratePassword = (password: string) => stubFn<IdProvider>().returns(password);
 
   const buildTestContext = ({
     siteMembersRepository = getSiteMembersRepository(),
@@ -42,7 +42,7 @@ describe('registerTeacher', () => {
       registerTeacher,
     } = buildTestContext();
     expect(await registerTeacher(teacher)).to.eql(teacher);
-    expect(generatePassword).calledOnceWithExactly(teacher.email);
+    expect(generatePassword).calledOnceWithExactly();
     expect(usersService.registerUser).calledOnceWithExactly(teacher, password);
     expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
   });

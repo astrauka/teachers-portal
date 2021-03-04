@@ -1,9 +1,9 @@
-import { random } from 'faker';
 import { isUndefined, omit, omitBy } from 'lodash';
+import { v4 as uuid } from 'uuid';
 
 export function builder<T>(defaultProperties: (id: string) => T) {
   return function ({
-    id = random.uuid().substring(0, 3),
+    id = uuid().substring(0, 3),
     properties = {},
     without,
   }: {

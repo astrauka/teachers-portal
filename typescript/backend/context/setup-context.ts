@@ -1,5 +1,4 @@
 import { registerTeacherFactory } from '../business-logic/hooks/teacher/register-teacher';
-import { generatePasswordFactory } from '../business-logic/operations/generate-password';
 import { getCuratingTeacherFactory } from '../business-logic/operations/get-curating-teacher';
 import { getTeacherFactory } from '../business-logic/operations/get-teacher';
 import { normalizeTeacherFactory } from '../business-logic/operations/normalize-teacher';
@@ -12,14 +11,12 @@ import { CountriesRepository } from '../repositories/countries-repository';
 import { LanguagesRepository } from '../repositories/languages-repository';
 import { SiteMembersRepository } from '../repositories/site-members-repository';
 import { TeachersRepository } from '../repositories/teachers-repository';
-import { SecretsService } from '../services/secrets-service';
 import { UsersService } from '../services/users-service';
 import { EXTERNALS, Externals } from './production-context';
 
 const setupContext = (externals: Externals) => {
   // services
   const usersService = new UsersService(externals);
-  const secretsService = new SecretsService(externals);
 
   // repositories
   const countriesRepository = new CountriesRepository(externals);
@@ -29,7 +26,6 @@ const setupContext = (externals: Externals) => {
   const accountStatusesRepository = new AccountStatusesRepository(externals);
 
   // actions
-  const generatePassword = generatePasswordFactory(secretsService);
   const getTeacher = getTeacherFactory(teachersRepository, usersService);
   const getCuratingTeacher = getCuratingTeacherFactory(getTeacher, teachersRepository);
   const submitInitialTeachersForm = submitInitialTeachersFormFactory(
@@ -52,11 +48,7 @@ const setupContext = (externals: Externals) => {
   const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
 
   // hooks
-  const registerTeacher = registerTeacherFactory(
-    siteMembersRepository,
-    usersService,
-    generatePassword
-  );
+  const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService);
 
   return {
     repositories: {
