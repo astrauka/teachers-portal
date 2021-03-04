@@ -1,6 +1,7 @@
 import { forEach } from 'lodash';
 import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
+import { ImageDefault, setImageDefault } from 'public/images';
 import wixLocation from 'wix-location';
 const SOCIAL_ICONS = {
     facebook: 'https://www.facebook.com/',
@@ -10,6 +11,7 @@ const SOCIAL_ICONS = {
 forCurrentTeacher('teachersProfile', async () => {
     $w('#SelectedTeacher').onReady(() => {
         const teacher = $w('#SelectedTeacher').getCurrentItem();
+        setImageDefault(teacher.profileImage, $w('#profileImage'), ImageDefault.Profile);
         addSocialIconLinks(teacher);
         addWebsiteLink(teacher);
         addSendEmailButton(teacher);
@@ -39,7 +41,7 @@ function addWebsiteLink(teacher) {
     }
 }
 function addSendEmailButton(teacher) {
-    const $button = $w('#sendEmailButton');
+    const $button = $w('#curatingTeacherAskButton');
     const { email } = teacher;
     $button.onClick(() => {
         wixLocation.to(`mailto:${email}?subject=MRY%3A%20Question`);

@@ -2,6 +2,7 @@ import { debounce, find, pick } from 'lodash';
 import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
+import { ImageDefault, setImageDefault } from 'public/images';
 import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
@@ -116,6 +117,9 @@ function addAllValueToLevelsDropdown() {
 function addTeacherLoadedHandler() {
     $w('#teachersRepeater').onItemReady(($item, teacher) => {
         var _a;
+        const $profileImage = $item('#teachersProfileImage');
+        setImageDefault(teacher.profileImage, $profileImage, ImageDefault.Profile);
+        $profileImage.onClick(() => redirectToTeacher(teacher));
         $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
         $item('#teachersName').onClick(() => redirectToTeacher(teacher));
         if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
