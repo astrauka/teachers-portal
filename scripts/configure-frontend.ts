@@ -64,5 +64,5 @@ async function configurePages(distDir: string, srcDir: string) {
 Promise.all([
   configureFrontendPublic(),
   configureFrontendPages(),
-  configureFrontendLightboxes(),
+  // configureFrontendLightboxes(), unused
 ]).then(() => console.log('Done'));

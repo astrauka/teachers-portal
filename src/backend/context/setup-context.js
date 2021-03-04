@@ -1,7 +1,4 @@
-import { OAuth2Client } from 'google-auth-library';
-import { memoize } from 'lodash';
 import { registerTeacherFactory } from '../business-logic/hooks/teacher/register-teacher';
-import { authenticateTeacherFactory } from '../business-logic/operations/authenticate-teacher';
 import { generatePasswordFactory } from '../business-logic/operations/generate-password';
 import { getCuratingTeacherFactory } from '../business-logic/operations/get-curating-teacher';
 import { getTeacherFactory } from '../business-logic/operations/get-teacher';
@@ -15,18 +12,13 @@ import { CountriesRepository } from '../repositories/countries-repository';
 import { LanguagesRepository } from '../repositories/languages-repository';
 import { SiteMembersRepository } from '../repositories/site-members-repository';
 import { TeachersRepository } from '../repositories/teachers-repository';
-import { GoogleAuthService } from '../services/google-auth-service';
+import { SecretsService } from '../services/secrets-service';
 import { UsersService } from '../services/users-service';
-export const setupContext = memoize(async (externals) => {
-    const [GOOGLE_CLIENT_ID, PASSWORD_SECRET, PASSWORD_SALT] = await Promise.all([
-        externals.getSecret('GOOGLE_CLIENT_ID'),
-        externals.getSecret('PASSWORD_SECRET'),
-        externals.getSecret('PASSWORD_SALT'),
-    ]);
+import { EXTERNALS } from './production-context';
+const setupContext = (externals) => {
     // services
-    const oauthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
-    const googleAuthService = new GoogleAuthService(oauthClient, GOOGLE_CLIENT_ID);
     const usersService = new UsersService(externals);
+    const secretsService = new SecretsService(externals);
     // repositories
     const countriesRepository = new CountriesRepository(externals);
     const languagesRepository = new LanguagesRepository(externals);
@@ -34,8 +26,7 @@ export const setupContext = memoize(async (externals) => {
     const teachersRepository = new TeachersRepository(externals);
     const accountStatusesRepository = new AccountStatusesRepository(externals);
     // actions
-    const generatePassword = generatePasswordFactory(PASSWORD_SECRET, PASSWORD_SALT);
-    const authenticateTeacher = authenticateTeacherFactory(googleAuthService, teachersRepository, usersService, generatePassword);
+    const generatePassword = generatePasswordFactory(secretsService);
     const getTeacher = getTeacherFactory(teachersRepository, usersService);
     const getCuratingTeacher = getCuratingTeacherFactory(getTeacher, teachersRepository);
     const submitInitialTeachersForm = submitInitialTeachersFormFactory(teachersRepository, countriesRepository, languagesRepository, getTeacher);
@@ -55,11 +46,9 @@ export const setupContext = memoize(async (externals) => {
             teachersRepository,
         },
         services: {
-            googleAuthService,
             usersService,
         },
         actions: {
-            authenticateTeacher,
             getTeacher,
             getCuratingTeacher,
             submitInitialTeachersForm,
@@ -73,4 +62,5 @@ export const setupContext = memoize(async (externals) => {
             registerTeacher,
         },
     };
-});
+};
+export const context = setupContext(EXTERNALS);
