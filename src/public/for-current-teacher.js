@@ -8,20 +8,22 @@ import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
-    if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
-        $w.onReady(() => withErrorHandler('forCurrentTeacher', async () => {
-            const { teacher } = await getInitialState(forPage);
-            if (shouldFillInitialTeacherForm(teacher)) {
-                if (forPage) {
-                    return;
+    $w.onReady(() => {
+        if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
+            return withErrorHandler('forCurrentTeacher', async () => {
+                const { teacher } = await getInitialState(forPage);
+                if (shouldFillInitialTeacherForm(teacher)) {
+                    if (forPage) {
+                        return;
+                    }
+                    else {
+                        return wixLocation.to('/initial-form');
+                    }
                 }
-                else {
-                    return wixLocation.to('/initial-form');
-                }
-            }
-            return await withErrorHandler(functionName, async () => await forCurrentTeacherFn({ teacher }));
-        }));
-    }
+                return await withErrorHandler(functionName, async () => await forCurrentTeacherFn({ teacher }));
+            });
+        }
+    });
 }
 export async function withErrorHandler(name, executeFn) {
     try {

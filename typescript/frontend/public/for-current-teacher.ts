@@ -18,9 +18,9 @@ export function forCurrentTeacher(
   forCurrentTeacherFn: (initialState: InitialState) => Promise<void>,
   forPage = true
 ) {
-  if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
-    $w.onReady(() =>
-      withErrorHandler('forCurrentTeacher', async () => {
+  $w.onReady(() => {
+    if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
+      return withErrorHandler('forCurrentTeacher', async () => {
         const { teacher } = await getInitialState(forPage);
         if (shouldFillInitialTeacherForm(teacher)) {
           if (forPage) {
@@ -33,9 +33,9 @@ export function forCurrentTeacher(
           functionName,
           async () => await forCurrentTeacherFn({ teacher })
         );
-      })
-    );
-  }
+      });
+    }
+  });
 }
 
 export async function withErrorHandler(name: string, executeFn) {
