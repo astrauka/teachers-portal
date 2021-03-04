@@ -1,6 +1,9 @@
 export function syncSiteMemberInformationFactory(usersService, siteMembersRepository) {
     return async function syncSiteMemberInformation(teacher) {
-        const siteMember = await siteMembersRepository.fetchMemberByEmailOrThrow(teacher.email);
+        const siteMember = await siteMembersRepository.fetchMemberByEmail(teacher.email);
+        if (!siteMember) {
+            return;
+        }
         if (siteMember.firstName === teacher.firstName &&
             siteMember.lastName === teacher.lastName &&
             siteMember.picture.url === teacher.profileImage) {

@@ -17,7 +17,7 @@ describe('SyncSiteMemberInformation', () => {
     });
   const getSiteMembersRepository = (siteMember: SiteMember) =>
     stubType<SiteMembersRepository>((stub) => {
-      stub.fetchMemberByEmailOrThrow.resolves(siteMember);
+      stub.fetchMemberByEmail.resolves(siteMember);
     });
   const buildTestContext = ({
     usersService = getUsersService(),
@@ -34,7 +34,7 @@ describe('SyncSiteMemberInformation', () => {
   it('should update site members name and profile image', async () => {
     const { usersService, siteMembersRepository, syncSiteMemberInformation } = buildTestContext();
     await syncSiteMemberInformation(teacher);
-    expect(siteMembersRepository.fetchMemberByEmailOrThrow).calledOnceWithExactly(teacher.email);
+    expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
     expect(usersService.updateUserFields).calledOnceWithExactly(siteMember._id, {
       firstName: teacher.firstName,
       lastName: teacher.lastName,
@@ -54,7 +54,20 @@ describe('SyncSiteMemberInformation', () => {
     it('should do nothing', async () => {
       const { usersService, siteMembersRepository, syncSiteMemberInformation } = buildTestContext();
       await syncSiteMemberInformation(teacher);
-      expect(siteMembersRepository.fetchMemberByEmailOrThrow).calledOnceWithExactly(teacher.email);
+      expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
+      expect(usersService.updateUserFields).not.called;
+    });
+  });
+
+  context('on siteMember does not exist', () => {
+    const siteMember = undefined;
+
+    it('should do nothing', async () => {
+      const { usersService, siteMembersRepository, syncSiteMemberInformation } = buildTestContext({
+        siteMembersRepository: getSiteMembersRepository(siteMember),
+      });
+      await syncSiteMemberInformation(teacher);
+      expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
       expect(usersService.updateUserFields).not.called;
     });
   });

@@ -7,7 +7,10 @@ export function syncSiteMemberInformationFactory(
   siteMembersRepository: SiteMembersRepository
 ) {
   return async function syncSiteMemberInformation(teacher: Teacher): Promise<void> {
-    const siteMember = await siteMembersRepository.fetchMemberByEmailOrThrow(teacher.email);
+    const siteMember = await siteMembersRepository.fetchMemberByEmail(teacher.email);
+    if (!siteMember) {
+      return;
+    }
     if (
       siteMember.firstName === teacher.firstName &&
       siteMember.lastName === teacher.lastName &&
