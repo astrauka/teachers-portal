@@ -4,7 +4,7 @@ import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
 import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
-import { loadFirstDatasetPage } from 'public/wix-utils';
+import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 
 type TeachersFilter = {
@@ -61,10 +61,13 @@ function showTeachersOrLevels() {
 
   state.teacherLevels.forEach((teacherLevel) => {
     $w(`#level${teacherLevel.order}` as 'Button').onClick(async () => {
-      $levelsBox.collapse();
+      const field = 'level';
       const value = teacherLevel.title;
-      $w(`#level` as 'Dropdown').value = value;
-      await onInputChange('level', value);
+      $w(`#${field}` as 'Dropdown').value = value;
+      addWixLocationQueryParams({ [field]: value });
+
+      $levelsBox.collapse();
+      await onInputChange(field, value);
       $teachersBox.expand();
     });
   });
