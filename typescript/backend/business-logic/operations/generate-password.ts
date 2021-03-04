@@ -1,10 +1,14 @@
 import * as bcrypt from 'bcrypt';
+import { SecretsService } from '../../services/secrets-service';
 
-export function generatePasswordFactory(secret: string, salt: string) {
+export function generatePasswordFactory(secretsService: SecretsService) {
   return async function generatePassword(id: string): Promise<string> {
-    const plainTextPassword = `${id}${secret}`;
+    const { passwordSalt, passwordSecret } = await secretsService.getSecrets();
+    const plainTextPassword = `${id}${passwordSecret}`;
     // max password allowed length is 15
-    const password = (await bcrypt.hash(plainTextPassword, salt)).replace(salt, '').substr(0, 15);
+    const password = (await bcrypt.hash(plainTextPassword, passwordSalt))
+      .replace(passwordSalt, '')
+      .substr(0, 15);
     return password;
   };
 }
