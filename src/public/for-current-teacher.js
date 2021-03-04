@@ -2,12 +2,13 @@ import { range } from 'lodash';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+import wixWindow from 'wix-window';
 import { TaskName } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
-    if (isCurrentUserLoggedIn()) {
+    if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
         $w.onReady(() => withErrorHandler('forCurrentTeacher', async () => {
             const { teacher } = await getInitialState(forPage);
             if (shouldFillInitialTeacherForm(teacher)) {
