@@ -1,9 +1,10 @@
-import { compact } from 'lodash';
+import { compact, pick } from 'lodash';
 import { convert } from 'url-slug';
 import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { generateUuid, IdProvider } from '../../utils/id';
+import { getLogger, prettyJSON } from '../../utils/logger';
 import { validateTeacher } from '../validate';
 import { SyncSiteMemberInformation } from './sync-site-member-information';
 
@@ -34,7 +35,8 @@ export function normalizeTeacherFactory(
   generateId: IdProvider = generateUuid
 ) {
   return async function normalizeTeacher(
-    update: Partial<Teacher> & AdminFilledInformation
+    update: Partial<Teacher> & AdminFilledInformation,
+    throwOnSyncMemberInformationFailure: boolean
   ): Promise<Teacher> {
     const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);
     const instagram = normalizeSecondStepTeacherFormInput('instagram', update.instagram);
@@ -50,7 +52,18 @@ export function normalizeTeacherFactory(
       ...(linkedIn && { linkedIn }),
       slug: update.slug === slug ? slug : (await getUnusedSlug(slug)) || generateId(),
     });
-    await syncSiteMemberInformation(teacher);
+    try {
+      await syncSiteMemberInformation(teacher);
+    } catch (error) {
+      getLogger('normalizeTeacher').error(
+        `syncSiteMemberInformation failed for ${prettyJSON(
+          pick(teacher, ['email', 'firstName', 'lastName', 'profileImage'])
+        )}`
+      );
+      if (throwOnSyncMemberInformationFailure) {
+        throw error;
+      }
+    }
     return teacher;
   };
 

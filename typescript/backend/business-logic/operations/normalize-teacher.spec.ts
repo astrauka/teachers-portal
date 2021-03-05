@@ -17,6 +17,7 @@ describe('normalizeTeacher', () => {
     without: ['certificateExpirationDate'],
   });
   const uuid = 'generated-id';
+  const throwOnSyncMemberInformationFailure = true;
 
   const getTeachersRepository = (teacher?: Teacher) =>
     stubType<TeachersRepository>((stub) => {
@@ -52,7 +53,9 @@ describe('normalizeTeacher', () => {
       fullName,
       slug,
     };
-    expect(await normalizeTeacher(update)).to.eql(normalizedTeacher);
+    expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.eql(
+      normalizedTeacher
+    );
     expect(teachersRepository.fetchTeacherBySlug).calledOnceWithExactly(slug);
     expect(syncSiteMemberInformation).calledOnceWithExactly(normalizedTeacher);
     expect(generateUuid).not.called;
@@ -80,7 +83,7 @@ describe('normalizeTeacher', () => {
         teachersRepository: getTeachersRepository(),
       });
 
-      expect(await normalizeTeacher(update)).to.eql({
+      expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.eql({
         ...TEACHER_DEFAULTS,
         ...update,
         fullName,
@@ -98,7 +101,7 @@ describe('normalizeTeacher', () => {
       const { teachersRepository, normalizeTeacher } = buildTestContext({
         teachersRepository: getTeachersRepository(teacher),
       });
-      expect(await normalizeTeacher(teacher)).to.eql(teacher);
+      expect(await normalizeTeacher(teacher, throwOnSyncMemberInformationFailure)).to.eql(teacher);
       expect(teachersRepository.fetchTeacherBySlug).not.called;
     });
 
@@ -110,7 +113,7 @@ describe('normalizeTeacher', () => {
 
       it('should update slug', async () => {
         const { teachersRepository, normalizeTeacher } = buildTestContext();
-        expect(await normalizeTeacher(update)).to.eql({
+        expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.eql({
           ...TEACHER_DEFAULTS,
           ...update,
           fullName,
@@ -128,7 +131,7 @@ describe('normalizeTeacher', () => {
       const { teachersRepository, generateUuid, normalizeTeacher } = buildTestContext({
         teachersRepository: getTeachersRepository(existingTeacher),
       });
-      expect(await normalizeTeacher(update)).to.eql({
+      expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.eql({
         ...TEACHER_DEFAULTS,
         ...update,
         fullName,
@@ -136,6 +139,33 @@ describe('normalizeTeacher', () => {
       });
       expect(teachersRepository.fetchTeacherBySlug).callCount(MAX_SLUG_POSTFIX + 1);
       expect(generateUuid).calledOnceWithExactly();
+    });
+  });
+
+  context('on syncSiteMemberInformation failed', () => {
+    const error = new Error('sync failed');
+    const getSyncSiteMemberInformation = () => stubFn<SyncSiteMemberInformation>().rejects(error);
+
+    it('should throw', async () => {
+      const { normalizeTeacher } = buildTestContext({
+        syncSiteMemberInformation: getSyncSiteMemberInformation(),
+      });
+      await expect(normalizeTeacher(update, throwOnSyncMemberInformationFailure)).rejectedWith(
+        error
+      );
+    });
+
+    context('on throwing disabled', () => {
+      const throwOnSyncMemberInformationFailure = false;
+
+      it('should not throw', async () => {
+        const { normalizeTeacher } = buildTestContext({
+          syncSiteMemberInformation: getSyncSiteMemberInformation(),
+        });
+        expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.include({
+          email: update.email,
+        });
+      });
     });
   });
 
@@ -154,7 +184,7 @@ describe('normalizeTeacher', () => {
 
     it('should persist usernames without site root', async () => {
       const { normalizeTeacher } = buildTestContext();
-      expect(await normalizeTeacher(update)).to.deep.include({
+      expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.deep.include({
         facebook: facebookUsername,
         instagram: instagramUsername,
         linkedIn: linkedInUsername,
@@ -172,11 +202,13 @@ describe('normalizeTeacher', () => {
 
       it('should persist usernames without site root', async () => {
         const { normalizeTeacher } = buildTestContext();
-        expect(await normalizeTeacher(update)).to.deep.include({
-          facebook: facebookUsername,
-          instagram: instagramUsername,
-          linkedIn: linkedInUsername,
-        });
+        expect(await normalizeTeacher(update, throwOnSyncMemberInformationFailure)).to.deep.include(
+          {
+            facebook: facebookUsername,
+            instagram: instagramUsername,
+            linkedIn: linkedInUsername,
+          }
+        );
       });
     });
   });
