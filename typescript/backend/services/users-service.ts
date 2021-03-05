@@ -23,6 +23,7 @@ export class UsersService {
     return withLogger(`registerUser ${teacher.email}`, async () => {
       const { approvalToken } = await this.externals.wixUsers.register(teacher.email, password, {
         contactInfo,
+        privacyStatus: 'PUBLIC',
       });
       return await this.externals.wixUsers.approveByToken(approvalToken);
     });
