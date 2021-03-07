@@ -43,7 +43,9 @@ export async function withErrorHandler(name: string, executeFn) {
     return await executeFn();
   } catch (error) {
     console.error(`Failed in ${name} for ${await getUserEmail()} with ${error}`);
-    $w('#headerMessage' as 'Box').expand();
+    const $errorMessage = $w('#headerMessage' as 'Box');
+    $errorMessage.show();
+    setTimeout(() => $errorMessage.hide('fade'), 5000);
   }
 }
 

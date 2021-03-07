@@ -38,27 +38,23 @@ function updateHeaderNotificationsCount(teacher: TeacherView) {
 }
 
 function setProfileImage(teacher: TeacherView) {
-  const { profileImage, fullName, slug } = teacher;
-  if (profileImage) {
-    const $image = getExistingElement(
-      $w('#profileIcon' as 'Image'),
-      $w('#profileIconMobile' as 'Image')
-    );
-    $image.src = profileImage;
-    $image.alt = fullName;
-    $image.tooltip = fullName;
+  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
+  const { profileImage, fullName } = teacher;
+  if ($profileImage && profileImage) {
+    $profileImage.src = profileImage;
+    $profileImage.alt = fullName;
+    $profileImage.tooltip = fullName;
   }
 }
 
 function onProfileImageClick() {
-  const $image = getExistingElement(
-    $w('#profileIcon' as 'Image'),
-    $w('#profileIconMobile' as 'Image')
-  );
-  $image.onClick(async () => {
-    const teacher = await getCurrentTeacher();
-    wixLocation.to(`/teacher/${teacher.slug}`);
-  });
+  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
+  if ($profileImage) {
+    $profileImage.onClick(async () => {
+      const teacher = await getCurrentTeacher();
+      wixLocation.to(`/teacher/${teacher.slug}`);
+    });
+  }
 }
 
 function showProfileDropdown() {

@@ -31,7 +31,9 @@ export async function withErrorHandler(name, executeFn) {
     }
     catch (error) {
         console.error(`Failed in ${name} for ${await getUserEmail()} with ${error}`);
-        $w('#headerMessage').expand();
+        const $errorMessage = $w('#headerMessage');
+        $errorMessage.show();
+        setTimeout(() => $errorMessage.hide('fade'), 5000);
     }
 }
 function isCurrentUserLoggedIn() {

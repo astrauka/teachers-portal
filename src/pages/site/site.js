@@ -29,20 +29,22 @@ function updateHeaderNotificationsCount(teacher) {
     }
 }
 function setProfileImage(teacher) {
-    const { profileImage, fullName, slug } = teacher;
-    if (profileImage) {
-        const $image = getExistingElement($w('#profileIcon'), $w('#profileIconMobile'));
-        $image.src = profileImage;
-        $image.alt = fullName;
-        $image.tooltip = fullName;
+    const $profileImage = getElementWhenExists($w('#profileIcon'));
+    const { profileImage, fullName } = teacher;
+    if ($profileImage && profileImage) {
+        $profileImage.src = profileImage;
+        $profileImage.alt = fullName;
+        $profileImage.tooltip = fullName;
     }
 }
 function onProfileImageClick() {
-    const $image = getExistingElement($w('#profileIcon'), $w('#profileIconMobile'));
-    $image.onClick(async () => {
-        const teacher = await getCurrentTeacher();
-        wixLocation.to(`/teacher/${teacher.slug}`);
-    });
+    const $profileImage = getElementWhenExists($w('#profileIcon'));
+    if ($profileImage) {
+        $profileImage.onClick(async () => {
+            const teacher = await getCurrentTeacher();
+            wixLocation.to(`/teacher/${teacher.slug}`);
+        });
+    }
 }
 function showProfileDropdown() {
     const $profileImage = getElementWhenExists($w('#profileIcon'));
