@@ -13,6 +13,10 @@ export interface InitialState {
   teacher: TeacherView;
 }
 
+function inPasswordResetModal() {
+  return wixLocation.query.forgotPasswordToken;
+}
+
 export function forCurrentTeacher(
   functionName: string,
   forCurrentTeacherFn: (initialState: InitialState) => Promise<void>,
@@ -22,7 +26,7 @@ export function forCurrentTeacher(
     if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
       return withErrorHandler('forCurrentTeacher', async () => {
         const { teacher } = await getInitialState(forPage);
-        if (shouldFillInitialTeacherForm(teacher)) {
+        if (shouldFillInitialTeacherForm(teacher) && !inPasswordResetModal()) {
           if (forPage) {
             return;
           } else {
