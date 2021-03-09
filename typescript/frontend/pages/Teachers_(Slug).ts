@@ -1,5 +1,5 @@
 import { forEach } from 'lodash';
-import { AccountStatuses, TeacherWix } from 'public/common/entities/teacher';
+import { AccountStatuses, AccountStatusIds, TeacherWix } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
 import wixLocation from 'wix-location';
@@ -79,7 +79,10 @@ function showFilledInformation(teacher: TeacherWix) {
 }
 
 function showStatus(teacher: TeacherWix) {
-  if (teacher.statusId?.title === AccountStatuses.Active) {
+  if (
+    ((teacher.statusId as unknown) as string) === AccountStatusIds.Active ||
+    teacher.statusId?.title === AccountStatuses.Active
+  ) {
     $w('#teachersStatusActive' as 'Text').expand();
   } else {
     $w('#teachersStatusInactive' as 'Text').expand();

@@ -4,7 +4,7 @@ import { findById, findSingleRecord, findSingleRecordOrThrow } from '../utils/da
 import { NotLoggedInError } from '../utils/errors';
 import { withLogger } from '../utils/logger';
 
-const TEACHERS_COLLECTION = 'TeachersProfile';
+const TEACHERS_COLLECTION = 'Teachers';
 
 export class TeachersRepository {
   constructor(private readonly externals: Externals) {}

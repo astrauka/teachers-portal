@@ -13,7 +13,7 @@ describe('submitSecondStepTeachersForm', () => {
   const update: SecondStepTeachersForm = {
     ...pick(buildTeacher(), ['facebook', 'instagram', 'linkedIn', 'website', 'about', 'photos']),
   };
-  const updatedTeachersProfile: Teacher = {
+  const updatedTeacher: Teacher = {
     ...teacher,
     ...update,
     completedTasks: [...teacher.completedTasks, TaskName.secondStepProfileForm],
@@ -25,7 +25,7 @@ describe('submitSecondStepTeachersForm', () => {
     });
   const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
   const buildTestContext = ({
-    teachersRepository = getTeachersRepository(updatedTeachersProfile),
+    teachersRepository = getTeachersRepository(updatedTeacher),
     getTeacher = getGetTeacher(teacher),
   } = {}) => ({
     teachersRepository,
@@ -38,9 +38,9 @@ describe('submitSecondStepTeachersForm', () => {
 
   it('should update, return current teacher and complete task', async () => {
     const { teachersRepository, getTeacher, submitSecondStepTeachersForm } = buildTestContext();
-    expect(await submitSecondStepTeachersForm(update)).to.eql(updatedTeachersProfile);
+    expect(await submitSecondStepTeachersForm(update)).to.eql(updatedTeacher);
     expect(getTeacher).calledOnceWithExactly({ throwOnNotFound: true });
-    expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeachersProfile);
+    expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeacher);
   });
 
   context('on update validation failed', () => {

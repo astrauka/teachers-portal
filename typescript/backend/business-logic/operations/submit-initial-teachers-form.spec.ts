@@ -28,9 +28,9 @@ describe('submitInitialTeachersForm', () => {
     completedTasks: [TaskName.initialProfileForm],
   };
 
-  const getTeachersRepository = (teacher: Teacher, returnedTeachersProfile: Teacher) =>
+  const getTeachersRepository = (teacher: Teacher, returnedTeacher: Teacher) =>
     stubType<TeachersRepository>((stub) => {
-      stub.updateTeacher.resolves(returnedTeachersProfile);
+      stub.updateTeacher.resolves(returnedTeacher);
     });
   const getCountriesRepository = (country) =>
     stubType<CountriesRepository>((stub) => {

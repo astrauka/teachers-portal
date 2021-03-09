@@ -1,7 +1,7 @@
 import { findById, findSingleRecord, findSingleRecordOrThrow } from '../utils/database-queries';
 import { NotLoggedInError } from '../utils/errors';
 import { withLogger } from '../utils/logger';
-const TEACHERS_COLLECTION = 'TeachersProfile';
+const TEACHERS_COLLECTION = 'Teachers';
 export class TeachersRepository {
     constructor(externals) {
         this.externals = externals;

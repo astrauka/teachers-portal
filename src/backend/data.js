@@ -1,10 +1,10 @@
 import { context } from './context/setup-context';
 import { withLogger } from './utils/logger';
-export async function TeachersProfile_beforeInsert(teacher) {
+export async function Teachers_beforeInsert(teacher) {
     const { actions, hooks } = context;
-    return withLogger(`Hook TeachersProfile_beforeInsert ${teacher.email}`, async () => hooks.registerTeacher(await actions.normalizeTeacher(teacher, true)));
+    return withLogger(`Hook Teachers_beforeInsert ${teacher.email}`, async () => hooks.registerTeacher(await actions.normalizeTeacher(teacher, true)));
 }
-export async function TeachersProfile_beforeUpdate(teacher) {
+export async function Teachers_beforeUpdate(teacher) {
     const { actions, hooks } = context;
-    return withLogger(`Hook TeachersProfile_beforeUpdate ${teacher.email}`, async () => hooks.registerTeacher(await actions.normalizeTeacher(teacher, false)));
+    return withLogger(`Hook Teachers_beforeUpdate ${teacher.email}`, async () => hooks.registerTeacher(await actions.normalizeTeacher(teacher, false)));
 }
