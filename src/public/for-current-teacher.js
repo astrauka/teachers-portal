@@ -7,15 +7,12 @@ import { TaskName } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
-function inPasswordResetModal() {
-    return wixLocation.query.forgotPasswordToken;
-}
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
     $w.onReady(() => {
         if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
             return withErrorHandler('forCurrentTeacher', async () => {
                 const { teacher } = await getInitialState(forPage);
-                if (shouldFillInitialTeacherForm(teacher) && !inPasswordResetModal()) {
+                if (shouldFillInitialTeacherForm(teacher)) {
                     if (forPage) {
                         return;
                     }
