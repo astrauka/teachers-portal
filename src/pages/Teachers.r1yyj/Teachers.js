@@ -7,7 +7,7 @@ import { setupInputChangeHandlers } from 'public/inputs-location';
 import { getFilter } from 'public/wix-filter';
 import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
-const TEXT_INPUTS = ['fullName', 'city', 'modules'];
+const TEXT_INPUTS = ['fullName', 'city'];
 const DROPDOWNS = ['level'];
 const FILTERS = [...TEXT_INPUTS, ...DROPDOWNS];
 let state;
@@ -79,7 +79,6 @@ async function updateTeachersFilter() {
     const datasetFilter = getFilter([
         [values.fullName, (filter) => filter.contains('fullName', values.fullName)],
         [values.city, (filter) => filter.contains('city', values.city)],
-        [values.modules, (filter) => filter.contains('modules', values.modules)],
         [levelId, (filter) => filter.eq('levelId', levelId)],
         [
             state.visibleAccountStatusIds,

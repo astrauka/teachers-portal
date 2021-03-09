@@ -10,8 +10,7 @@ import { IdProvider } from '../../../utils/id';
 import { registerTeacherFactory } from './register-teacher';
 
 describe('registerTeacher', () => {
-  const teacher = buildTeacher({ id: 'teacher-id', without: ['siteMemberId'] });
-  const generated = 'a76d945a-ffbc-4945-83fa-1c61525a2383';
+  const teacher = buildTeacher({ id: 'teacher-id' });
   const password = 'a76d945affbc';
 
   const getSiteMembersRepository = (siteMember?: SiteMember) =>

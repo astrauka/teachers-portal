@@ -20,7 +20,7 @@ export function makeTeacherViewsFactory(
     const countriesByIds = keyBy(countries, '_id');
     const languagesByIds = keyBy(languages, '_id');
     return teachers.map((teacher) => ({
-      ...omit(teacher, ['streetAddress']),
+      ...teacher,
       facebook: teacher.facebook || '',
       instagram: teacher.instagram || '',
       linkedIn: teacher.linkedIn || '',

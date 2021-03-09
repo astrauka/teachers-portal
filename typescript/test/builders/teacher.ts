@@ -12,7 +12,6 @@ export const buildTeacher = builder<Teacher>((id) => ({
   ...buildAdminFilledTeacher({ id }),
   fullName: `${id} Full Name`,
   slug: `${id}-full-name`,
-  siteMemberId: `${id}-siteMemberId`,
   profileImage: `${id}-profile-image`,
   phoneNumber: '+370-625 5000',
   countryId: `${id}-country-id`,
@@ -35,9 +34,7 @@ export const buildAdminFilledTeacher = builder<AdminFilledInformation>((id) => (
   statusId: `${id}-status-id`,
   mentorId: `${id}-mentor-id`,
   certificateExpirationDate: inDaysAsDate(100),
-  modules: `${id}-modules`,
   certificateNumber: `${id}-certificate-number`,
-  streetAddress: `${id}-street-address`,
 }));
 
 export const buildTeacherView = builder<TeacherView>((id) => ({

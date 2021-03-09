@@ -18,7 +18,6 @@ forCurrentTeacher('teachersProfile', async () => {
     addWebsiteLink(teacher);
     addSendEmailButton(teacher);
     addAboutHtml(teacher);
-    addTeachingModules(teacher);
     showFilledInformation(teacher);
     showStatus(teacher);
   });
@@ -87,8 +86,4 @@ function showStatus(teacher: TeacherWix) {
   } else {
     $w('#teachersStatusInactive' as 'Text').expand();
   }
-}
-
-function addTeachingModules(teacher: TeacherWix) {
-  $w('#modules' as 'Text').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
 }

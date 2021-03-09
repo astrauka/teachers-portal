@@ -16,7 +16,6 @@ forCurrentTeacher('teachersProfile', async () => {
         addWebsiteLink(teacher);
         addSendEmailButton(teacher);
         addAboutHtml(teacher);
-        addTeachingModules(teacher);
         showFilledInformation(teacher);
         showStatus(teacher);
     });
@@ -80,7 +79,4 @@ function showStatus(teacher) {
     else {
         $w('#teachersStatusInactive').expand();
     }
-}
-function addTeachingModules(teacher) {
-    $w('#modules').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
 }

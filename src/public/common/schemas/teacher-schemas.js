@@ -10,9 +10,6 @@ export const adminFilledInformationSchema = {
     mentorId: { type: 'string', min: 3, optional: true },
     certificateExpirationDate: { type: 'date', optional: true },
     certificateNumber: { type: 'string', min: 3, optional: true, trim: true },
-    modules: { type: 'string', min: 3, optional: true },
-    streetAddress: { type: 'string', trim: true, optional: true },
-    siteMemberId: { type: 'string', min: 3, optional: true },
 };
 export const initialTeachersFormSchema = {
     profileImage: { type: 'string', empty: false },
@@ -78,7 +75,6 @@ export const secondStepTeachersFormSchema = {
 const computedTeacherInformationSchema = {
     fullName: { type: 'string', min: 3 },
     slug: { type: 'string', min: 3, optional: true },
-    siteMemberId: { type: 'string', min: 3, optional: true },
     completedTasks: {
         type: 'array',
         items: 'string',
