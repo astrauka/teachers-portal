@@ -14,7 +14,7 @@ export function syncSiteMemberInformationFactory(
     if (
       siteMember.firstName === teacher.firstName &&
       siteMember.lastName === teacher.lastName &&
-      siteMember.picture.url === teacher.profileImage
+      siteMember.picture?.url === teacher.profileImage
     ) {
       return;
     }
@@ -22,7 +22,7 @@ export function syncSiteMemberInformationFactory(
     return await usersService.updateUserFields(siteMember._id, {
       firstName: teacher.firstName,
       lastName: teacher.lastName,
-      picture: { url: teacher.profileImage },
+      ...(teacher.profileImage && { picture: { url: teacher.profileImage } }),
     });
   };
 }

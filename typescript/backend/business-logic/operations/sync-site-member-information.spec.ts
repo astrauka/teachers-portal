@@ -71,4 +71,24 @@ describe('SyncSiteMemberInformation', () => {
       expect(usersService.updateUserFields).not.called;
     });
   });
+
+  context('on profileImage empty', () => {
+    const teacher = buildTeacher({
+      properties: {
+        firstName: siteMember.firstName,
+        lastName: siteMember.lastName,
+        profileImage: '',
+      },
+    });
+
+    it('should not update it', async () => {
+      const { usersService, siteMembersRepository, syncSiteMemberInformation } = buildTestContext();
+      await syncSiteMemberInformation(teacher);
+      expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
+      expect(usersService.updateUserFields).calledOnceWithExactly(siteMember._id, {
+        firstName: teacher.firstName,
+        lastName: teacher.lastName,
+      });
+    });
+  });
 });

@@ -15,14 +15,14 @@ export const adminFilledInformationSchema: ValidationSchema<
   AdminFilledInformation & Storable & { siteMemberId: string }
 > = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
-  email: { type: 'email' },
+  email: { type: 'email', trim: true },
   firstName: { type: 'string', min: 3, max: 255, trim: true },
   lastName: { type: 'string', min: 3, max: 255, trim: true },
   levelId: { type: 'string', min: 3, max: 255 },
   statusId: { type: 'string', min: 3, max: 255 },
   mentorId: { type: 'string', min: 3, optional: true },
   certificateExpirationDate: { type: 'date', optional: true },
-  certificateNumber: { type: 'string', min: 3, optional: true },
+  certificateNumber: { type: 'string', min: 3, optional: true, trim: true },
   modules: { type: 'string', min: 3, optional: true },
   streetAddress: { type: 'string', trim: true, optional: true },
   siteMemberId: { type: 'string', min: 3, optional: true },
@@ -53,24 +53,28 @@ export const secondStepTeachersFormSchema: ValidationSchema<SecondStepTeachersFo
     empty: true,
     max: 300,
     pattern: /^([\w\-]*\/)*[\w\-.]*$/,
+    trim: true,
   },
   instagram: {
     type: 'string',
     empty: true,
     max: 300,
     pattern: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
+    trim: true,
   },
   linkedIn: {
     type: 'string',
     empty: true,
     max: 300,
     pattern: /([^\/?&\s]*)(?:\/|&|\?)?.*$/,
+    trim: true,
   },
   website: {
     type: 'url',
     empty: true,
+    trim: true,
   },
-  about: { type: 'string', empty: true },
+  about: { type: 'string', empty: true, trim: true },
   photos: {
     type: 'array',
     items: {

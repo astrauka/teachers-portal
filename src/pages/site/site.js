@@ -4,6 +4,7 @@ import { getCuratingTeacher, getCurrentTeacher } from 'public/global-state';
 import { executeOnce, getElementWhenExists, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+
 forCurrentTeacher('site', async ({ teacher }) => {
     onLogoutButtonClick();
     onContactMentorClick();

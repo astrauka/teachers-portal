@@ -1,4 +1,4 @@
-import { compact, pick } from 'lodash';
+import { compact, pick, trim } from 'lodash';
 import { convert } from 'url-slug';
 import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
@@ -46,6 +46,7 @@ export function normalizeTeacherFactory(
     const teacher: Teacher = validateTeacher({
       ...TEACHER_DEFAULTS,
       ...update,
+      email: trim(update.email),
       fullName,
       ...(facebook && { facebook }),
       ...(instagram && { instagram }),
