@@ -1,5 +1,5 @@
 import { debounce, find, pick } from 'lodash';
-import { AccountStatuses } from 'public/common/entities/teacher';
+import { AccountStatuses, AccountStatusIds, } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
 import { ImageDefault, setImageDefault } from 'public/images';
@@ -121,7 +121,8 @@ function addTeacherLoadedHandler() {
         $profileImage.onClick(() => redirectToTeacher(teacher));
         $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
         $item('#teachersName').onClick(() => redirectToTeacher(teacher));
-        if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
+        if (teacher.statusId === AccountStatusIds.Active ||
+            ((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
             $item('#teachersStatusActive').expand();
         }
         else {

@@ -8,6 +8,11 @@ const SOCIAL_ICONS = {
     instagram: 'https://www.instagram.com/',
     linkedIn: 'https://www.linkedin.com/in/',
 };
+function setLevelAndCountry(teacher) {
+    var _a, _b;
+    $w('#level').text = (_a = teacher.levelId) === null || _a === void 0 ? void 0 : _a.title;
+    $w('#country').text = (_b = teacher.countryId) === null || _b === void 0 ? void 0 : _b.title;
+}
 forCurrentTeacher('teachersProfile', async () => {
     $w('#SelectedTeacher').onReady(() => {
         const teacher = $w('#SelectedTeacher').getCurrentItem();
@@ -18,6 +23,7 @@ forCurrentTeacher('teachersProfile', async () => {
         addAboutHtml(teacher);
         showFilledInformation(teacher);
         showStatus(teacher);
+        setLevelAndCountry(teacher);
     });
 });
 function addSocialIconLinks(teacher) {

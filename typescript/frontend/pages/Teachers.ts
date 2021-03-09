@@ -1,5 +1,10 @@
 import { debounce, find, pick } from 'lodash';
-import { AccountStatuses, TeacherLevel, TeacherWix } from 'public/common/entities/teacher';
+import {
+  AccountStatuses,
+  AccountStatusIds,
+  TeacherLevel,
+  TeacherWix,
+} from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
 import { ImageDefault, setImageDefault } from 'public/images';
@@ -148,7 +153,10 @@ function addTeacherLoadedHandler() {
     $profileImage.onClick(() => redirectToTeacher(teacher));
     $item('#teachersProfileImage' as 'Image').onClick(() => redirectToTeacher(teacher));
     $item('#teachersName' as 'Text').onClick(() => redirectToTeacher(teacher));
-    if (teacher.statusId?.title === AccountStatuses.Active) {
+    if (
+      ((teacher.statusId as unknown) as string) === AccountStatusIds.Active ||
+      teacher.statusId?.title === AccountStatuses.Active
+    ) {
       $item('#teachersStatusActive' as 'Text').expand();
     } else {
       $item('#teachersStatusInactive' as 'Text').expand();

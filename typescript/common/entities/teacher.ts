@@ -1,4 +1,5 @@
 import { ImageItem } from '../common-wix-types';
+import { Country } from './country';
 import { Storable } from './storable';
 
 export interface AdminFilledInformation {
@@ -57,8 +58,10 @@ export interface TeacherView extends Teacher {
   language: string;
 }
 
-export interface TeacherWix extends Omit<Teacher, 'statusId'> {
+export interface TeacherWix extends Omit<Teacher, 'statusId' | 'levelId' | 'countryId'> {
   statusId: AccountStatus;
+  levelId: TeacherLevel;
+  countryId: Country;
 }
 
 export interface TeacherLevel {

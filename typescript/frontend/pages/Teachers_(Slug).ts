@@ -10,6 +10,11 @@ const SOCIAL_ICONS = {
   linkedIn: 'https://www.linkedin.com/in/',
 };
 
+function setLevelAndCountry(teacher: TeacherWix) {
+  $w('#level' as 'Text').text = teacher.levelId?.title;
+  $w('#country' as 'Text').text = teacher.countryId?.title;
+}
+
 forCurrentTeacher('teachersProfile', async () => {
   $w('#SelectedTeacher').onReady(() => {
     const teacher: TeacherWix = $w('#SelectedTeacher').getCurrentItem();
@@ -20,6 +25,7 @@ forCurrentTeacher('teachersProfile', async () => {
     addAboutHtml(teacher);
     showFilledInformation(teacher);
     showStatus(teacher);
+    setLevelAndCountry(teacher);
   });
 });
 
