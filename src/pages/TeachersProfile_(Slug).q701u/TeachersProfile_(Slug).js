@@ -28,7 +28,6 @@ function addSocialIconLinks(teacher) {
         if (link) {
             $icon.target = '_blank';
             $icon.link = `${url}${link}`;
-            $icon.expand();
         }
     });
 }
@@ -36,7 +35,9 @@ function addWebsiteLink(teacher) {
     const $website = $w('#website');
     const { website } = teacher;
     if (website) {
-        $website.html = `<a href="${website}" target="_blank">${website}</a>`;
+        $website.label = website;
+        $website.target = '_blank';
+        $website.link = website;
         $website.expand();
     }
 }
@@ -50,7 +51,7 @@ function addSendEmailButton(teacher) {
 function addAboutHtml(teacher) {
     if (teacher.about) {
         $w('#about').html = teacher.about;
-        $w('#aboutGroup').expand();
+        $w('#aboutBox').expand();
     }
 }
 function showFilledInformation(teacher) {
@@ -62,12 +63,12 @@ function showFilledInformation(teacher) {
         $w('#city').expand();
     }
     if ((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length) {
-        $w('#photosGroup').expand();
+        $w('#photosBox').expand();
     }
     const $menteesDataset = $w('#MenteesDataset');
     $menteesDataset.onReady(() => {
         if ($menteesDataset.getTotalCount()) {
-            $w('#menteesGroup').expand();
+            $w('#menteesBox').expand();
         }
     });
 }

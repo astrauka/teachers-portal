@@ -31,16 +31,17 @@ function addSocialIconLinks(teacher: TeacherWix) {
     if (link) {
       $icon.target = '_blank';
       $icon.link = `${url}${link}`;
-      $icon.expand();
     }
   });
 }
 
 function addWebsiteLink(teacher: TeacherWix) {
-  const $website = $w('#website' as 'Text');
+  const $website = $w('#website' as 'Button');
   const { website } = teacher;
   if (website) {
-    $website.html = `<a href="${website}" target="_blank">${website}</a>`;
+    $website.label = website;
+    $website.target = '_blank';
+    $website.link = website;
     $website.expand();
   }
 }
@@ -56,7 +57,7 @@ function addSendEmailButton(teacher: TeacherWix) {
 function addAboutHtml(teacher: TeacherWix) {
   if (teacher.about) {
     $w('#about' as 'Text').html = teacher.about;
-    $w('#aboutGroup' as 'Container').expand();
+    $w('#aboutBox' as 'Box').expand();
   }
 }
 
@@ -68,12 +69,12 @@ function showFilledInformation(teacher: TeacherWix) {
     $w('#city' as 'Text').expand();
   }
   if (teacher.photos?.length) {
-    $w('#photosGroup' as 'Container').expand();
+    $w('#photosBox' as 'Box').expand();
   }
   const $menteesDataset = $w('#MenteesDataset');
   $menteesDataset.onReady(() => {
     if ($menteesDataset.getTotalCount()) {
-      $w('#menteesGroup' as 'Container').expand();
+      $w('#menteesBox' as 'Box').expand();
     }
   });
 }
