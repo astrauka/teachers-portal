@@ -10,8 +10,6 @@ export interface AdminFilledInformation {
   mentorId: string | null;
   certificateExpirationDate: Date | null;
   certificateNumber: string;
-  modules: string;
-  streetAddress: string;
 }
 
 export interface InitialTeacherFormFilledInformation {
@@ -24,9 +22,9 @@ export interface InitialTeacherFormFilledInformation {
 
 export interface ComputedTeacherInformation {
   fullName: string;
-  siteMemberId: string | null;
   slug: string;
   completedTasks: TaskName[];
+  modules: string;
 }
 
 export interface InitialTeacherForm {
@@ -55,12 +53,12 @@ export interface Teacher
     SecondStepTeachersForm,
     ComputedTeacherInformation {}
 
-export interface TeacherView extends Omit<Teacher, 'streetAddress'> {
+export interface TeacherView extends Teacher {
   country: string;
   language: string;
 }
 
-export interface TeacherWix extends Omit<Teacher, 'statusId' | 'streetAddress'> {
+export interface TeacherWix extends Omit<Teacher, 'statusId'> {
   statusId: AccountStatus;
 }
 

@@ -11,9 +11,7 @@ import {
   Teacher,
 } from '../entities/teacher';
 
-export const adminFilledInformationSchema: ValidationSchema<
-  AdminFilledInformation & Storable & { siteMemberId: string }
-> = {
+export const adminFilledInformationSchema: ValidationSchema<AdminFilledInformation & Storable> = {
   _id: { type: 'string', min: 3, max: 255, optional: true },
   email: { type: 'email', trim: true },
   firstName: { type: 'string', min: 3, max: 255, trim: true },
@@ -23,9 +21,6 @@ export const adminFilledInformationSchema: ValidationSchema<
   mentorId: { type: 'string', min: 3, optional: true },
   certificateExpirationDate: { type: 'date', optional: true },
   certificateNumber: { type: 'string', min: 3, optional: true, trim: true },
-  modules: { type: 'string', min: 3, optional: true },
-  streetAddress: { type: 'string', trim: true, optional: true },
-  siteMemberId: { type: 'string', min: 3, optional: true },
 };
 
 export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
@@ -95,7 +90,6 @@ export const secondStepTeachersFormSchema: ValidationSchema<SecondStepTeachersFo
 const computedTeacherInformationSchema: ValidationSchema<ComputedTeacherInformation> = {
   fullName: { type: 'string', min: 3 },
   slug: { type: 'string', min: 3, optional: true },
-  siteMemberId: { type: 'string', min: 3, optional: true },
   completedTasks: {
     type: 'array',
     items: 'string',
@@ -103,6 +97,7 @@ const computedTeacherInformationSchema: ValidationSchema<ComputedTeacherInformat
     unique: true,
     optional: true,
   },
+  modules: { type: 'string', optional: true },
 };
 
 export const teacherSchema: ValidationSchema<Teacher> = {

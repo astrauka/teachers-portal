@@ -1,4 +1,3 @@
-import { omit } from 'lodash';
 import { TeacherView } from '../../../common/entities/teacher';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
@@ -26,13 +25,13 @@ describe('makeTeacherViews', () => {
   });
   const teachers = [teacher1, teacher2];
   const teacherView1: TeacherView = {
-    ...omit(teacher1, ['streetAddress']),
+    ...teacher1,
     country: country1.title,
     language: language1.title,
     photos: teacher1.photos,
   };
   const teacherView2: TeacherView = {
-    ...omit(teacher2, ['streetAddress']),
+    ...teacher2,
     country: country2.title,
     language: language2.title,
     photos: teacher1.photos,
@@ -72,7 +71,7 @@ describe('makeTeacherViews', () => {
   context('on country and language not selected', () => {
     const teacher1 = buildTeacher({ without: ['countryId', 'languageId'] });
     const teacherView1 = {
-      ...omit(teacher1, ['streetAddress']),
+      ...teacher1,
       country: undefined,
       language: undefined,
     };
@@ -103,7 +102,7 @@ describe('makeTeacherViews', () => {
     const countries = [country1];
     const languages = [language1];
     const teacherView2 = {
-      ...omit(teacher2, ['streetAddress']),
+      ...teacher2,
       country: undefined,
       language: undefined,
     };
