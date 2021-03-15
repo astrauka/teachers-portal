@@ -37,6 +37,15 @@ export function getElementWhenExists<Element extends { id: string }>(
   return $element.id ? $element : undefined;
 }
 
+export function forExistingElement<Element extends { id: string }, Returned>(
+  $element: Element,
+  executeFn: ($element: Element) => Returned
+) {
+  if (getElementWhenExists<Element>($element)) {
+    return executeFn($element);
+  }
+}
+
 const EXECUTION_STATUS_LOADED = 'loaded';
 
 export async function executeOnce($status: $w.Text, executeFn: () => any): Promise<void> {

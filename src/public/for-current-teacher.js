@@ -6,10 +6,9 @@ import wixWindow from 'wix-window';
 import { TaskName } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
-const PUBLIC_PAGES = ['error', 'privacy-policy', 'site-terms-and-conditions'];
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
     $w.onReady(() => {
-        if (wixWindow.rendering.env === 'browser' && isCurrentUserLoggedIn()) {
+        if (wixWindow.rendering.env === 'browser' && wixUsers.currentUser.loggedIn) {
             return withErrorHandler('forCurrentTeacher', async () => {
                 const { teacher } = await getInitialState(forPage);
                 if (shouldFillInitialTeacherForm(teacher)) {
@@ -36,20 +35,6 @@ export async function withErrorHandler(name, executeFn) {
         setTimeout(() => $errorMessage.hide('fade'), 5000);
     }
 }
-function isCurrentUserLoggedIn() {
-    try {
-        const currentUser = wixUsers.currentUser;
-        if (currentUser.loggedIn) {
-            return true;
-        }
-        if (!isPublicPage()) {
-            console.info('Current user is not logged in');
-        }
-    }
-    catch (error) {
-        console.error('Failed current user is logged in check', error);
-    }
-}
 async function getUserEmail() {
     try {
         return await wixUsers.currentUser.getEmail();
@@ -62,9 +47,6 @@ function shouldFillInitialTeacherForm(teacher) {
     return (isLiveSite() &&
         'initial-form' !== wixLocation.path[0] &&
         !teacher.completedTasks.includes(TaskName.initialProfileForm));
-}
-function isPublicPage() {
-    return PUBLIC_PAGES.includes(wixLocation.path[0]);
 }
 async function getInitialState(forPage) {
     try {

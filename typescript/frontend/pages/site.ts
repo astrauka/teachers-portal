@@ -1,7 +1,7 @@
 import { Tasks, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { getCuratingTeacher, getCurrentTeacher } from 'public/global-state';
-import { executeOnce, getElementWhenExists, getExistingElement } from 'public/wix-utils';
+import { executeOnce, forExistingElement, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 
@@ -23,10 +23,7 @@ forCurrentTeacher(
 );
 
 function updateHeaderNotificationsCount(teacher: TeacherView) {
-  const $headerNotificationsButton = getElementWhenExists(
-    $w('#headerNotificationsButton' as 'Button')
-  );
-  if ($headerNotificationsButton) {
+  forExistingElement($w('#headerNotificationsButton' as 'Button'), ($headerNotificationsButton) => {
     const incompleteTasksCount = Tasks.length - teacher.completedTasks.length;
     if (incompleteTasksCount) {
       $headerNotificationsButton.label = String(incompleteTasksCount);
@@ -34,41 +31,40 @@ function updateHeaderNotificationsCount(teacher: TeacherView) {
     } else {
       $headerNotificationsButton.hide();
     }
-  }
+  });
 }
 
 function setProfileImage(teacher: TeacherView) {
-  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
-  const { profileImage, fullName } = teacher;
-  if ($profileImage && profileImage) {
-    $profileImage.src = profileImage;
-    $profileImage.alt = fullName;
-    $profileImage.tooltip = fullName;
-  }
+  forExistingElement($w('#profileIcon' as 'Image'), ($profileImage) => {
+    const { profileImage, fullName } = teacher;
+    if (profileImage) {
+      $profileImage.src = profileImage;
+      $profileImage.alt = fullName;
+      $profileImage.tooltip = fullName;
+    }
+  });
 }
 
 function onProfileImageClick() {
-  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
-  if ($profileImage) {
-    $profileImage.onClick(async () => {
+  forExistingElement($w('#profileIcon' as 'Image'), ($profileIcon) => {
+    $profileIcon.onClick(async () => {
       const teacher = await getCurrentTeacher();
       wixLocation.to(`/teacher/${teacher.slug}`);
     });
-  }
+  });
 }
 
 function showProfileDropdown() {
-  const $profileImage = getElementWhenExists($w('#profileIcon' as 'Image'));
-  if ($profileImage) {
+  forExistingElement($w('#profileIcon' as 'Image'), ($profileIcon) => {
     const $profileDropdown = $w('#profileDropdown' as 'Container');
     const $hoverArea = $w('#hoverArea' as 'Box');
-    $profileImage.onMouseIn(() => {
+    $profileIcon.onMouseIn(() => {
       $profileDropdown.expand();
     });
     $hoverArea.onMouseOut(() => {
       $profileDropdown.collapse();
     });
-  }
+  });
 }
 
 function onLogoutButtonClick() {
