@@ -6,6 +6,9 @@
     "build": "rm -rf dist && npm run build:backend && npm run build:frontend",
     "build:backend": "tsc --build typescript/backend/tsconfig.json && ts-node scripts/configure-backend.ts",
     "build:frontend": "tsc --build typescript/frontend/tsconfig.json && ts-node scripts/configure-frontend.ts",
+    "build:watch:backend": "npm-watch build:backend",
+    "build:watch:frontend": "npm-watch build:frontend",
+    "build:watch": "run-p build:watch:*",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "lint": "tslint --fix 'typescript/**/*.ts'",
@@ -15,6 +18,16 @@
     "wix:pull": "npx corvid pull --override",
     "wix:editor": "npx corvid open-editor",
     "wix": "npm run wix:pull && npm run test && npm run wix:editor"
+  },
+  "watch": {
+    "build:backend": {
+      "patterns": ["typescript/backend", "typescript/common"],
+      "extensions": "ts"
+    },
+    "build:frontend": {
+      "patterns": ["typescript/frontend", "typescript/common"],
+      "extensions": "ts"
+    }
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",
@@ -29,6 +42,8 @@
     "cypress": "^6.2.1",
     "del": "^6.0.0",
     "mocha": "^8.2.1",
+    "npm-run-all": "^4.1.5",
+    "npm-watch": "^0.9.0",
     "prettier": "^2.1.2",
     "recursive-copy": "^2.0.11",
     "sinon": "^9.2.1",
