@@ -2,8 +2,8 @@ import { debounce, find, pick } from 'lodash';
 import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
-import { ImageDefault, setImageDefault } from 'public/images';
 import { setupInputChangeHandlers } from 'public/inputs-location';
+import { addTeacherLoadedHandler } from 'public/teachers';
 import { getFilter } from 'public/wix-filter';
 import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
@@ -104,29 +104,9 @@ async function updateTeachersFilter() {
         }
     });
 }
-function redirectToTeacher(teacher) {
-    const { slug } = teacher;
-    wixLocation.to(`/teacher/${slug}`);
-}
 function addAllValueToLevelsDropdown() {
     $w('#TeacherLevelsDataset').onReady(() => {
         const $dropdown = $w('#level');
         $dropdown.options = [{ label: 'All', value: '' }, ...$dropdown.options];
-    });
-}
-function addTeacherLoadedHandler() {
-    $w('#teachersRepeater').onItemReady(($item, teacher) => {
-        var _a;
-        const $profileImage = $item('#teachersProfileImage');
-        setImageDefault(teacher.profileImage, $profileImage, ImageDefault.Profile);
-        $profileImage.onClick(() => redirectToTeacher(teacher));
-        $item('#teachersProfileImage').onClick(() => redirectToTeacher(teacher));
-        $item('#teachersName').onClick(() => redirectToTeacher(teacher));
-        if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
-            $item('#teachersStatusActive').expand();
-        }
-        else {
-            $item('#teachersStatusInactive').expand();
-        }
     });
 }

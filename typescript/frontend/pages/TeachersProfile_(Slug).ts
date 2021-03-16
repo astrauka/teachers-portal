@@ -1,7 +1,8 @@
 import { forEach } from 'lodash';
-import { AccountStatuses, TeacherWix } from 'public/common/entities/teacher';
+import { TeacherWix } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
+import { addTeacherLoadedHandler } from 'public/teachers';
 import wixLocation from 'wix-location';
 
 const SOCIAL_ICONS = {
@@ -20,7 +21,7 @@ forCurrentTeacher('teachersProfile', async () => {
     addAboutHtml(teacher);
     addTeachingModules(teacher);
     showFilledInformation(teacher);
-    showStatus(teacher);
+    showMentees();
   });
 });
 
@@ -71,22 +72,19 @@ function showFilledInformation(teacher: TeacherWix) {
   if (teacher.photos?.length) {
     $w('#photosBox' as 'Box').expand();
   }
+}
+
+function addTeachingModules(teacher: TeacherWix) {
+  $w('#modules' as 'Text').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+}
+
+function showMentees() {
   const $menteesDataset = $w('#MenteesDataset');
   $menteesDataset.onReady(() => {
     if ($menteesDataset.getTotalCount()) {
       $w('#menteesBox' as 'Box').expand();
     }
   });
-}
 
-function showStatus(teacher: TeacherWix) {
-  if (teacher.statusId?.title === AccountStatuses.Active) {
-    $w('#teachersStatusActive' as 'Text').expand();
-  } else {
-    $w('#teachersStatusInactive' as 'Text').expand();
-  }
-}
-
-function addTeachingModules(teacher: TeacherWix) {
-  $w('#modules' as 'Text').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+  addTeacherLoadedHandler();
 }
