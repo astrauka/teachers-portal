@@ -1,7 +1,8 @@
-import { registerTeacherFactory } from '../business-logic/hooks/teacher/register-teacher';
+import { normalizeTeacherFactory } from '../business-logic/hooks/normalize-teacher';
+import { normalizeTeacherModuleFactory } from '../business-logic/hooks/normalize-teacher-module';
+import { registerTeacherFactory } from '../business-logic/hooks/register-teacher';
 import { getCuratingTeacherFactory } from '../business-logic/operations/get-curating-teacher';
 import { getTeacherFactory } from '../business-logic/operations/get-teacher';
-import { normalizeTeacherFactory } from '../business-logic/operations/normalize-teacher';
 import { submitInitialTeachersFormFactory } from '../business-logic/operations/submit-initial-teachers-form';
 import { submitSecondStepTeachersFormFactory } from '../business-logic/operations/submit-second-step-teachers-form';
 import { syncSiteMemberInformationFactory } from '../business-logic/operations/sync-site-member-information';
@@ -9,6 +10,7 @@ import { makeTeacherViewsFactory } from '../business-logic/views/make-teacher-vi
 import { AccountStatusesRepository } from '../repositories/account-statuses-repository';
 import { CountriesRepository } from '../repositories/countries-repository';
 import { LanguagesRepository } from '../repositories/languages-repository';
+import { ModulesRepository } from '../repositories/modules-repository';
 import { SiteMembersRepository } from '../repositories/site-members-repository';
 import { TeachersRepository } from '../repositories/teachers-repository';
 import { UsersService } from '../services/users-service';
@@ -24,6 +26,7 @@ const setupContext = (externals: Externals) => {
   const siteMembersRepository = new SiteMembersRepository(externals);
   const teachersRepository = new TeachersRepository(externals);
   const accountStatusesRepository = new AccountStatusesRepository(externals);
+  const modulesRepository = new ModulesRepository(externals);
 
   // actions
   const getTeacher = getTeacherFactory(teachersRepository, usersService);
@@ -42,13 +45,14 @@ const setupContext = (externals: Externals) => {
     usersService,
     siteMembersRepository
   );
-  const normalizeTeacher = normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation);
 
   // views
   const makeTeacherViews = makeTeacherViewsFactory(countriesRepository, languagesRepository);
 
   // hooks
   const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService);
+  const normalizeTeacher = normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation);
+  const normalizeTeacherModule = normalizeTeacherModuleFactory(modulesRepository);
 
   return {
     repositories: {
@@ -66,13 +70,14 @@ const setupContext = (externals: Externals) => {
       getCuratingTeacher,
       submitInitialTeachersForm,
       submitSecondStepTeachersForm,
-      normalizeTeacher,
     },
     views: {
       makeTeacherViews,
     },
     hooks: {
       registerTeacher,
+      normalizeTeacher,
+      normalizeTeacherModule,
     },
   };
 };

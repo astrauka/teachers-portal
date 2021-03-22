@@ -25,6 +25,14 @@ export async function findById<T>(externals: Externals, collection, id): Promise
   return undefined;
 }
 
+export async function findByIdOrThrow<T>(externals: Externals, collection, id): Promise<T> {
+  const item = findById<T>(externals, collection, id);
+  if (item) {
+    return item;
+  }
+  throw new RecordNotFoundError(`Item by id: ${id} not found`);
+}
+
 export async function fetchRecords<T>(
   queryResultPromise: Promise<WixDataQueryResult | WixDataQueryReferencedResult>
 ): Promise<T[]> {

@@ -1,6 +1,11 @@
 import { Teacher } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
-import { findById, findSingleRecord, findSingleRecordOrThrow } from '../utils/database-queries';
+import {
+  findById,
+  findByIdOrThrow,
+  findSingleRecord,
+  findSingleRecordOrThrow,
+} from '../utils/database-queries';
 import { NotLoggedInError } from '../utils/errors';
 import { withLogger } from '../utils/logger';
 
@@ -11,6 +16,13 @@ export class TeachersRepository {
 
   public fetchTeacherById(id: string): Promise<Teacher | undefined> {
     return withLogger(`fetchTeacherById ${id}`, findById(this.externals, TEACHERS_COLLECTION, id));
+  }
+
+  public fetchTeacherByIdOrThrow(id: string): Promise<Teacher> {
+    return withLogger(
+      `fetchTeacherByIdOrThrow ${id}`,
+      findByIdOrThrow(this.externals, TEACHERS_COLLECTION, id)
+    );
   }
 
   public fetchTeacherByEmail(email: string | undefined): Promise<Teacher | undefined> {

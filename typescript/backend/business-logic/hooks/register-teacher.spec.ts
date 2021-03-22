@@ -1,17 +1,16 @@
-import { buildSiteMember } from '../../../../test/builders/site-member';
-import { buildTeacher } from '../../../../test/builders/teacher';
-import { expect } from '../../../../test/utils/expectations';
-import { stubFn, stubType } from '../../../../test/utils/stubbing';
-import { MemberStatus } from '../../../common/common-wix-types';
-import { SiteMembersRepository } from '../../../repositories/site-members-repository';
-import { UsersService } from '../../../services/users-service';
-import { SiteMember } from '../../../types/wix-types';
-import { IdProvider } from '../../../utils/id';
+import { buildSiteMember } from '../../../test/builders/site-member';
+import { buildTeacher } from '../../../test/builders/teacher';
+import { expect } from '../../../test/utils/expectations';
+import { stubFn, stubType } from '../../../test/utils/stubbing';
+import { MemberStatus } from '../../common/common-wix-types';
+import { SiteMembersRepository } from '../../repositories/site-members-repository';
+import { UsersService } from '../../services/users-service';
+import { SiteMember } from '../../types/wix-types';
+import { IdProvider } from '../../utils/id';
 import { registerTeacherFactory } from './register-teacher';
 
 describe('registerTeacher', () => {
   const teacher = buildTeacher({ id: 'teacher-id' });
-  const generated = 'a76d945a-ffbc-4945-83fa-1c61525a2383';
   const password = 'a76d945affbc';
 
   const getSiteMembersRepository = (siteMember?: SiteMember) =>

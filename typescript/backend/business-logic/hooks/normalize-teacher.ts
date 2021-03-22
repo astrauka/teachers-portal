@@ -5,8 +5,8 @@ import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inpu
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { generateUuid, IdProvider } from '../../utils/id';
 import { getLogger, prettyJSON } from '../../utils/logger';
+import { SyncSiteMemberInformation } from '../operations/sync-site-member-information';
 import { validateTeacher } from '../validate';
-import { SyncSiteMemberInformation } from './sync-site-member-information';
 
 export const MAX_SLUG_POSTFIX = 20;
 export const TEACHER_DEFAULTS = {

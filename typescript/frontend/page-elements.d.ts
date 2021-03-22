@@ -4,5 +4,6 @@ declare type PageElementsMap = {
   '#SelectedTeacher': $w.dataset;
   '#AccountStatusesDataset': $w.dataset;
   '#MenteesDataset': $w.dataset;
+  '#TeacherModulesDataset': $w.dataset;
   '#readMoreBox': $w.MultiStateBox;
 };

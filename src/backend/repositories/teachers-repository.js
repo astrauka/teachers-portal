@@ -1,4 +1,4 @@
-import { findById, findSingleRecord, findSingleRecordOrThrow } from '../utils/database-queries';
+import { findById, findByIdOrThrow, findSingleRecord, findSingleRecordOrThrow, } from '../utils/database-queries';
 import { NotLoggedInError } from '../utils/errors';
 import { withLogger } from '../utils/logger';
 const TEACHERS_COLLECTION = 'TeachersProfile';
@@ -8,6 +8,9 @@ export class TeachersRepository {
     }
     fetchTeacherById(id) {
         return withLogger(`fetchTeacherById ${id}`, findById(this.externals, TEACHERS_COLLECTION, id));
+    }
+    fetchTeacherByIdOrThrow(id) {
+        return withLogger(`fetchTeacherByIdOrThrow ${id}`, findByIdOrThrow(this.externals, TEACHERS_COLLECTION, id));
     }
     fetchTeacherByEmail(email) {
         if (email) {

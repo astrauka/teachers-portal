@@ -15,6 +15,13 @@ export async function findById(externals, collection, id) {
     }
     return undefined;
 }
+export async function findByIdOrThrow(externals, collection, id) {
+    const item = findById(externals, collection, id);
+    if (item) {
+        return item;
+    }
+    throw new RecordNotFoundError(`Item by id: ${id} not found`);
+}
 export async function fetchRecords(queryResultPromise) {
     return (await queryResultPromise).items;
 }
