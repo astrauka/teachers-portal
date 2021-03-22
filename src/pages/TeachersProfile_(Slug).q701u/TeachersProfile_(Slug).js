@@ -1,7 +1,7 @@
 import { forEach } from 'lodash';
-import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
+import { addTeacherLoadedHandler } from 'public/teachers';
 import wixLocation from 'wix-location';
 const SOCIAL_ICONS = {
     facebook: 'https://www.facebook.com/',
@@ -18,7 +18,7 @@ forCurrentTeacher('teachersProfile', async () => {
         addAboutHtml(teacher);
         addTeachingModules(teacher);
         showFilledInformation(teacher);
-        showStatus(teacher);
+        showMentees();
     });
 });
 function addSocialIconLinks(teacher) {
@@ -65,22 +65,16 @@ function showFilledInformation(teacher) {
     if ((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length) {
         $w('#photosBox').expand();
     }
+}
+function addTeachingModules(teacher) {
+    $w('#modules').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+}
+function showMentees() {
     const $menteesDataset = $w('#MenteesDataset');
     $menteesDataset.onReady(() => {
         if ($menteesDataset.getTotalCount()) {
             $w('#menteesBox').expand();
         }
     });
-}
-function showStatus(teacher) {
-    var _a;
-    if (((_a = teacher.statusId) === null || _a === void 0 ? void 0 : _a.title) === AccountStatuses.Active) {
-        $w('#teachersStatusActive').expand();
-    }
-    else {
-        $w('#teachersStatusInactive').expand();
-    }
-}
-function addTeachingModules(teacher) {
-    $w('#modules').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+    addTeacherLoadedHandler();
 }
