@@ -21,6 +21,7 @@ forCurrentTeacher('teachersProfile', async () => {
     addAboutHtml(teacher);
     addTeachingModules(teacher);
     showFilledInformation(teacher);
+    showTeacherModules();
     showMentees();
   });
 });
@@ -83,8 +84,16 @@ function showMentees() {
   $menteesDataset.onReady(() => {
     if ($menteesDataset.getTotalCount()) {
       $w('#menteesBox' as 'Box').expand();
+      addTeacherLoadedHandler();
     }
   });
+}
 
-  addTeacherLoadedHandler();
+function showTeacherModules() {
+  const $teacherModulesDataset = $w('#TeacherModulesDataset');
+  $teacherModulesDataset.onReady(() => {
+    if ($teacherModulesDataset.getTotalCount()) {
+      $w('#teachingModulesBox' as 'Box').expand();
+    }
+  });
 }

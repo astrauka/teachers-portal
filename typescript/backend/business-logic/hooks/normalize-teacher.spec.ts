@@ -4,8 +4,8 @@ import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { IdProvider } from '../../utils/id';
+import { SyncSiteMemberInformation } from '../operations/sync-site-member-information';
 import { MAX_SLUG_POSTFIX, normalizeTeacherFactory, TEACHER_DEFAULTS } from './normalize-teacher';
-import { SyncSiteMemberInformation } from './sync-site-member-information';
 
 describe('normalizeTeacher', () => {
   const firstName = 'John';

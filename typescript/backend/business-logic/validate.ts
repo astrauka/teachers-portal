@@ -1,4 +1,6 @@
 import { InitialTeacherForm, SecondStepTeachersForm, Teacher } from '../common/entities/teacher';
+import { TeacherModule } from '../common/entities/teacher-module';
+import { teacherModuleSchema } from '../common/schemas/teacher-module-schemas';
 import {
   initialTeachersFormSchema,
   secondStepTeachersFormSchema,
@@ -14,3 +16,7 @@ export const validateSecondStepTeachersForm = buildValidator<SecondStepTeachersF
   secondStepTeachersFormSchema
 );
 export const validateTeacher = buildValidator<Teacher>(teacherSchema, { strict: false });
+
+export const validateTeacherModule = buildValidator<TeacherModule>(teacherModuleSchema, {
+  strict: false,
+});

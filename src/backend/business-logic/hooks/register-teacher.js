@@ -1,6 +1,6 @@
 import { replace } from 'lodash';
-import { MemberStatus } from '../../../common/common-wix-types';
-import { generateUuid } from '../../../utils/id';
+import { MemberStatus } from '../../common/common-wix-types';
+import { generateUuid } from '../../utils/id';
 export function registerTeacherFactory(siteMembersRepository, usersService, generatePassword = generateUuid) {
     return async function registerTeacher(teacher) {
         const siteMember = await siteMembersRepository.fetchMemberByEmail(teacher.email);

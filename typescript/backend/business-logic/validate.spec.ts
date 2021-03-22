@@ -5,11 +5,13 @@ import {
   secondStepTeachersFormSchema,
 } from '../../common/schemas/teacher-schemas';
 import { buildTeacher, buildTeacherView } from '../../test/builders/teacher';
+import { buildTeacherModule } from '../../test/builders/teacher-module';
 import { expect, getErrorOf } from '../../test/utils/expectations';
 import {
   validateInitialTeachersForm,
   validateSecondStepTeachersForm,
   validateTeacher,
+  validateTeacherModule,
 } from './validate';
 
 describe('validateTeacher', () => {
@@ -87,6 +89,23 @@ describe('validateSecondStepTeachersForm', () => {
     it('should throw', () => {
       const errorMessage = getErrorOf(() => validateSecondStepTeachersForm(update)).message;
       expect(errorMessage).to.include('field fails to match the required pattern');
+    });
+  });
+});
+
+describe('validateTeacherModule', () => {
+  const teacherModule = buildTeacherModule({ without: ['module'] });
+
+  it('should return teacher module', () => {
+    expect(validateTeacherModule(teacherModule)).to.eql(teacherModule);
+  });
+
+  context('on invalid teacher module', () => {
+    const teacherModule = buildTeacherModule({ without: ['teacherId'] });
+
+    it('should throw', () => {
+      const errorMessage = getErrorOf(() => validateTeacherModule(teacherModule)).message;
+      expect(errorMessage).to.include('field is required');
     });
   });
 });
