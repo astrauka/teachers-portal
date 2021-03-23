@@ -1,12 +1,12 @@
 import { keys, pick } from 'lodash';
-import { InitialTeacherForm, SecondStepTeachersForm } from '../../common/entities/teacher';
-import {
-  initialTeachersFormSchema,
-  secondStepTeachersFormSchema,
-} from '../../common/schemas/teacher-schemas';
 import { buildTeacher, buildTeacherView } from '../../test/builders/teacher';
 import { buildTeacherModule } from '../../test/builders/teacher-module';
 import { expect, getErrorOf } from '../../test/utils/expectations';
+import { InitialTeacherForm, SecondStepTeachersForm } from '../common/entities/teacher';
+import {
+  initialTeachersFormSchema,
+  secondStepTeachersFormSchema,
+} from '../common/schemas/teacher-schemas';
 import {
   validateInitialTeachersForm,
   validateSecondStepTeachersForm,
