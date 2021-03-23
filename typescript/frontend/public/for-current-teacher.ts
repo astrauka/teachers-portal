@@ -18,7 +18,7 @@ export function forCurrentTeacher(
 ) {
   $w.onReady(() => {
     if (wixWindow.rendering.env === 'browser' && wixUsers.currentUser.loggedIn) {
-      return withErrorHandler('forCurrentTeacher', async () => {
+      withErrorHandler('forCurrentTeacher', async () => {
         const { teacher } = await getInitialState(forPage);
         if (shouldFillInitialTeacherForm(teacher)) {
           if (forPage) {

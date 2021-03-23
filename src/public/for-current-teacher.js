@@ -9,7 +9,7 @@ import { sleep } from './sleep';
 export function forCurrentTeacher(functionName, forCurrentTeacherFn, forPage = true) {
     $w.onReady(() => {
         if (wixWindow.rendering.env === 'browser' && wixUsers.currentUser.loggedIn) {
-            return withErrorHandler('forCurrentTeacher', async () => {
+            withErrorHandler('forCurrentTeacher', async () => {
                 const { teacher } = await getInitialState(forPage);
                 if (shouldFillInitialTeacherForm(teacher)) {
                     if (forPage) {
