@@ -1,8 +1,8 @@
 import { pick } from 'lodash';
-import { SecondStepTeachersForm, TaskName, Teacher } from '../../../common/entities/teacher';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
+import { SecondStepTeachersForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { GetTeacher } from './get-teacher';
 import { submitSecondStepTeachersFormFactory } from './submit-second-step-teachers-form';

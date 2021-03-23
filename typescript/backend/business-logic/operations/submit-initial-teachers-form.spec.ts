@@ -1,10 +1,10 @@
 import { pick } from 'lodash';
-import { InitialTeacherForm, TaskName, Teacher } from '../../../common/entities/teacher';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
+import { InitialTeacherForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
