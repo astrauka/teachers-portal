@@ -1,6 +1,8 @@
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import QueryObject = wix_location.QueryObject;
+import CollapsedMixin = $w.CollapsedMixin;
+import HiddenMixin = $w.HiddenMixin;
 
 export type WixLocationQueryParams = { [param: string]: string };
 
@@ -54,4 +56,40 @@ export async function executeOnce($status: $w.Text, executeFn: () => any): Promi
   }
   await executeFn();
   $status.text = EXECUTION_STATUS_LOADED;
+}
+
+export function expandIfHasData($element: CollapsedMixin, data: any): void {
+  if (data) {
+    $element.expand();
+  } else {
+    $element.collapse();
+  }
+}
+
+export function showEnabledElement(
+  $enabledElement: HiddenMixin,
+  $disabledElement: HiddenMixin,
+  data: any
+): void {
+  if (data) {
+    $enabledElement.show();
+    $disabledElement.hide();
+  } else {
+    $disabledElement.show();
+    $enabledElement.hide();
+  }
+}
+
+export function expandEnabledElement(
+  $enabledElement: CollapsedMixin,
+  $disabledElement: CollapsedMixin,
+  data: any
+): void {
+  if (data) {
+    $enabledElement.expand();
+    $disabledElement.collapse();
+  } else {
+    $disabledElement.expand();
+    $enabledElement.collapse();
+  }
 }

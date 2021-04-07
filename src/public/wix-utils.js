@@ -35,3 +35,31 @@ export async function executeOnce($status, executeFn) {
     await executeFn();
     $status.text = EXECUTION_STATUS_LOADED;
 }
+export function expandIfHasData($element, data) {
+    if (data) {
+        $element.expand();
+    }
+    else {
+        $element.collapse();
+    }
+}
+export function showEnabledElement($enabledElement, $disabledElement, data) {
+    if (data) {
+        $enabledElement.show();
+        $disabledElement.hide();
+    }
+    else {
+        $disabledElement.show();
+        $enabledElement.hide();
+    }
+}
+export function expandEnabledElement($enabledElement, $disabledElement, data) {
+    if (data) {
+        $enabledElement.expand();
+        $disabledElement.collapse();
+    }
+    else {
+        $disabledElement.expand();
+        $enabledElement.collapse();
+    }
+}

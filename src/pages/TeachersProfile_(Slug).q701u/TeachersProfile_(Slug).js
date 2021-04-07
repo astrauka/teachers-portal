@@ -2,21 +2,21 @@ import { forEach } from 'lodash';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
 import { addTeacherLoadedHandler } from 'public/teachers';
+import { expandIfHasData, showEnabledElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 const SOCIAL_ICONS = {
     facebook: 'https://www.facebook.com/',
     instagram: 'https://www.instagram.com/',
     linkedIn: 'https://www.linkedin.com/in/',
+    website: '',
 };
 forCurrentTeacher('teachersProfile', async () => {
     $w('#SelectedTeacher').onReady(() => {
         const teacher = $w('#SelectedTeacher').getCurrentItem();
         setImageDefault(teacher.profileImage, $w('#profileImage'), ImageDefault.Profile);
         addSocialIconLinks(teacher);
-        addWebsiteLink(teacher);
         addSendEmailButton(teacher);
         addAboutHtml(teacher);
-        addTeachingModules(teacher);
         showFilledInformation(teacher);
         showTeacherModules();
         showMentees();
@@ -29,20 +29,9 @@ function addSocialIconLinks(teacher) {
         if (link) {
             $icon.target = '_blank';
             $icon.link = `${url}${link}`;
-            $icon.show();
-            $w(`#${provider}Disabled`).hide();
         }
+        showEnabledElement($icon, $w(`#${provider}Disabled`), link);
     });
-}
-function addWebsiteLink(teacher) {
-    const $website = $w('#website');
-    const { website } = teacher;
-    if (website) {
-        $website.label = website;
-        $website.target = '_blank';
-        $website.link = website;
-        $website.expand();
-    }
 }
 function addSendEmailButton(teacher) {
     const $button = $w('#curatingTeacherAskButton');
@@ -52,31 +41,22 @@ function addSendEmailButton(teacher) {
     });
 }
 function addAboutHtml(teacher) {
-    if (teacher.about) {
-        $w('#about').html = teacher.about;
-        $w('#aboutBox').expand();
-    }
+    const $aboutBox = $w('#aboutBox');
+    $w('#about').html = teacher.about;
+    expandIfHasData($aboutBox, teacher.about);
 }
 function showFilledInformation(teacher) {
     var _a;
-    if (teacher.countryId) {
-        $w('#country').expand();
-    }
-    if (teacher.city) {
-        $w('#city').expand();
-    }
-    if ((_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length) {
-        $w('#photosBox').expand();
-    }
-}
-function addTeachingModules(teacher) {
-    $w('#modules').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+    expandIfHasData($w('#country'), teacher.countryId);
+    expandIfHasData($w('#city'), teacher.city);
+    expandIfHasData($w('#photosBox'), (_a = teacher.photos) === null || _a === void 0 ? void 0 : _a.length);
 }
 function showMentees() {
     const $menteesDataset = $w('#MenteesDataset');
     $menteesDataset.onReady(() => {
-        if ($menteesDataset.getTotalCount()) {
-            $w('#menteesBox').expand();
+        const menteesCount = $menteesDataset.getTotalCount();
+        expandIfHasData($w('#menteesBox'), menteesCount);
+        if (menteesCount) {
             addTeacherLoadedHandler();
         }
     });
@@ -84,8 +64,6 @@ function showMentees() {
 function showTeacherModules() {
     const $teacherModulesDataset = $w('#TeacherModulesDataset');
     $teacherModulesDataset.onReady(() => {
-        if ($teacherModulesDataset.getTotalCount()) {
-            $w('#teachingModulesBox').expand();
-        }
+        expandIfHasData($w('#teachingModulesBox'), $teacherModulesDataset.getTotalCount());
     });
 }

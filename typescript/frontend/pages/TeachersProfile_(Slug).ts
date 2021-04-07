@@ -3,12 +3,14 @@ import { TeacherWix } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
 import { addTeacherLoadedHandler } from 'public/teachers';
+import { expandIfHasData, showEnabledElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 
 const SOCIAL_ICONS = {
   facebook: 'https://www.facebook.com/',
   instagram: 'https://www.instagram.com/',
   linkedIn: 'https://www.linkedin.com/in/',
+  website: '',
 };
 
 forCurrentTeacher('teachersProfile', async () => {
@@ -16,10 +18,8 @@ forCurrentTeacher('teachersProfile', async () => {
     const teacher: TeacherWix = $w('#SelectedTeacher').getCurrentItem();
     setImageDefault(teacher.profileImage, $w('#profileImage' as 'Image'), ImageDefault.Profile);
     addSocialIconLinks(teacher);
-    addWebsiteLink(teacher);
     addSendEmailButton(teacher);
     addAboutHtml(teacher);
-    addTeachingModules(teacher);
     showFilledInformation(teacher);
     showTeacherModules();
     showMentees();
@@ -33,21 +33,9 @@ function addSocialIconLinks(teacher: TeacherWix) {
     if (link) {
       $icon.target = '_blank';
       $icon.link = `${url}${link}`;
-      $icon.show();
-      $w(`#${provider}Disabled` as 'Image').hide();
     }
+    showEnabledElement($icon, $w(`#${provider}Disabled` as 'Image'), link);
   });
-}
-
-function addWebsiteLink(teacher: TeacherWix) {
-  const $website = $w('#website' as 'Button');
-  const { website } = teacher;
-  if (website) {
-    $website.label = website;
-    $website.target = '_blank';
-    $website.link = website;
-    $website.expand();
-  }
 }
 
 function addSendEmailButton(teacher: TeacherWix) {
@@ -59,33 +47,23 @@ function addSendEmailButton(teacher: TeacherWix) {
 }
 
 function addAboutHtml(teacher: TeacherWix) {
-  if (teacher.about) {
-    $w('#about' as 'Text').html = teacher.about;
-    $w('#aboutBox' as 'Box').expand();
-  }
+  const $aboutBox = $w('#aboutBox' as 'Box');
+  $w('#about' as 'Text').html = teacher.about;
+  expandIfHasData($aboutBox, teacher.about);
 }
 
 function showFilledInformation(teacher: TeacherWix) {
-  if (teacher.countryId) {
-    $w('#country' as 'Text').expand();
-  }
-  if (teacher.city) {
-    $w('#city' as 'Text').expand();
-  }
-  if (teacher.photos?.length) {
-    $w('#photosBox' as 'Box').expand();
-  }
-}
-
-function addTeachingModules(teacher: TeacherWix) {
-  $w('#modules' as 'Text').text = teacher.modules ? `Teaching modules: ${teacher.modules}` : '';
+  expandIfHasData($w('#country' as 'Text'), teacher.countryId);
+  expandIfHasData($w('#city' as 'Text'), teacher.city);
+  expandIfHasData($w('#photosBox' as 'Box'), teacher.photos?.length);
 }
 
 function showMentees() {
   const $menteesDataset = $w('#MenteesDataset');
   $menteesDataset.onReady(() => {
-    if ($menteesDataset.getTotalCount()) {
-      $w('#menteesBox' as 'Box').expand();
+    const menteesCount = $menteesDataset.getTotalCount();
+    expandIfHasData($w('#menteesBox' as 'Box'), menteesCount);
+    if (menteesCount) {
       addTeacherLoadedHandler();
     }
   });
@@ -94,8 +72,6 @@ function showMentees() {
 function showTeacherModules() {
   const $teacherModulesDataset = $w('#TeacherModulesDataset');
   $teacherModulesDataset.onReady(() => {
-    if ($teacherModulesDataset.getTotalCount()) {
-      $w('#teachingModulesBox' as 'Box').expand();
-    }
+    expandIfHasData($w('#teachingModulesBox' as 'Box'), $teacherModulesDataset.getTotalCount());
   });
 }

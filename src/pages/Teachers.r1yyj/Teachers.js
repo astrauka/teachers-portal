@@ -6,6 +6,7 @@ import { setupInputChangeHandlers } from 'public/inputs-location';
 import { addTeacherLoadedHandler } from 'public/teachers';
 import { getFilter } from 'public/wix-filter';
 import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
+import { expandEnabledElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['fullName', 'city', 'modules'];
 const DROPDOWNS = ['level'];
@@ -35,25 +36,21 @@ async function setupInitialState() {
 function showTeachersOrLevels() {
     const $levelsBox = $w('#levelsBox');
     const $teachersBox = $w('#teachersBox');
-    if (find(state.fieldValues)) {
-        $levelsBox.collapse();
-        $teachersBox.expand();
-    }
-    else {
-        $levelsBox.expand();
-        $teachersBox.collapse();
-    }
-    state.teacherLevels.forEach((teacherLevel) => {
-        $w(`#level${teacherLevel.order}`).onClick(async () => {
-            const field = 'level';
-            const value = teacherLevel.title;
-            $w(`#${field}`).value = value;
-            addWixLocationQueryParams({ [field]: value });
-            $levelsBox.collapse();
-            await onInputChange(field, value);
-            $teachersBox.expand();
+    const isAnyFilterApplied = Boolean(find(state.fieldValues));
+    expandEnabledElement($teachersBox, $levelsBox, isAnyFilterApplied);
+    if (!isAnyFilterApplied) {
+        state.teacherLevels.forEach((teacherLevel) => {
+            $w(`#level${teacherLevel.order}`).onClick(async () => {
+                const field = 'level';
+                const value = teacherLevel.title;
+                $w(`#${field}`).value = value;
+                addWixLocationQueryParams({ [field]: value });
+                $levelsBox.collapse();
+                await onInputChange(field, value);
+                $teachersBox.expand();
+            });
         });
-    });
+    }
 }
 function setupInputOnChange() {
     setupInputChangeHandlers(TEXT_INPUTS, DROPDOWNS);
