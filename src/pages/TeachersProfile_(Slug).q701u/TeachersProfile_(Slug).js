@@ -29,6 +29,8 @@ function addSocialIconLinks(teacher) {
         if (link) {
             $icon.target = '_blank';
             $icon.link = `${url}${link}`;
+            $icon.show();
+            $w(`#${provider}Disabled`).hide();
         }
     });
 }

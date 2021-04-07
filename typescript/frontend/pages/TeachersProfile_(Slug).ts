@@ -33,6 +33,8 @@ function addSocialIconLinks(teacher: TeacherWix) {
     if (link) {
       $icon.target = '_blank';
       $icon.link = `${url}${link}`;
+      $icon.show();
+      $w(`#${provider}Disabled` as 'Image').hide();
     }
   });
 }
