@@ -5,20 +5,20 @@ import { getAccountStatuses } from 'public/global-state';
 import { setupInputChangeHandlers } from 'public/inputs-location';
 import { addTeacherLoadedHandler } from 'public/teachers';
 import { getFilter } from 'public/wix-filter';
-import { addWixLocationQueryParams, loadFirstDatasetPage } from 'public/wix-utils';
-import { expandEnabledElement } from 'public/wix-utils';
+import { addWixLocationQueryParams, expandIfHasData, loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['fullName', 'city', 'modules'];
 const DROPDOWNS = ['level'];
 const FILTERS = [...TEXT_INPUTS, ...DROPDOWNS];
 let state;
 forCurrentTeacher('teachers', async () => {
-    await setupInitialState();
-    showTeachersOrLevels();
-    await updateTeachersFilter();
-    setupInputOnChange();
+    showTeacherLevels();
     addAllValueToLevelsDropdown();
     addTeacherLoadedHandler();
+    await setupInitialState();
+    setupTeacherLevelsButtonsOnClick();
+    await updateTeachersFilter();
+    setupInputOnChange();
 });
 async function setupInitialState() {
     const [teacherLevels, accountStatuses] = await Promise.all([
@@ -30,15 +30,21 @@ async function setupInitialState() {
         visibleAccountStatusIds: accountStatuses
             .filter(({ title }) => title !== AccountStatuses.NotATeacher)
             .map(({ _id }) => _id),
-        fieldValues: pick(wixLocation.query, FILTERS),
+        fieldValues: getFieldValuesFromLocationQuery(),
     };
 }
-function showTeachersOrLevels() {
+function getFieldValuesFromLocationQuery() {
+    return pick(wixLocation.query, FILTERS);
+}
+function showTeacherLevels() {
+    $w('#teachersBox').collapse();
+    const isAnyFilterApplied = Boolean(find(getFieldValuesFromLocationQuery()));
+    expandIfHasData($w('#levelsBox'), !isAnyFilterApplied);
+}
+function setupTeacherLevelsButtonsOnClick() {
     const $levelsBox = $w('#levelsBox');
-    const $teachersBox = $w('#teachersBox');
-    const isAnyFilterApplied = Boolean(find(state.fieldValues));
-    expandEnabledElement($teachersBox, $levelsBox, isAnyFilterApplied);
-    if (!isAnyFilterApplied) {
+    if (!$levelsBox.collapsed) {
+        const $teachersBox = $w('#teachersBox');
         state.teacherLevels.forEach((teacherLevel) => {
             $w(`#level${teacherLevel.order}`).onClick(async () => {
                 const field = 'level';
@@ -84,6 +90,9 @@ async function updateTeachersFilter() {
         ],
     ]);
     await $w('#TeachersDataset').setFilter(datasetFilter);
+    if (levelId) {
+        $w('#teachersBox').expand();
+    }
     const $teachersRepeater = $w('#teachersRepeater');
     const $loadMoreButton = $w('#loadMoreButton');
     const $teachersEmptyState = $w('#teachersEmptyState');

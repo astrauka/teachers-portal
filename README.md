@@ -10,6 +10,12 @@ Pull the editor files:
 npm run wix:pull
 ```
 
+Enable typescript files build and sync to Wix javascript files:
+
+```bash
+npm run build:watch
+```
+
 Open the editor:
 
 ```bash
