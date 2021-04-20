@@ -72,6 +72,6 @@ function showMentees() {
 function showTeacherModules() {
   const $teacherModulesDataset = $w('#TeacherModulesDataset');
   $teacherModulesDataset.onReady(() => {
-    expandIfHasData($w('#teachingModulesBox' as 'Box'), $teacherModulesDataset.getTotalCount());
+    expandIfHasData($w('#teachingModules' as 'Table'), $teacherModulesDataset.getTotalCount());
   });
 }
