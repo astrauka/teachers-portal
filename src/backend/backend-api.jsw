@@ -1,26 +1,22 @@
 import { context } from './context/setup-context';
 import { withLogger } from './utils/logger';
 export async function getCurrentTeacherView() {
-    const { actions, views } = context;
-    return withLogger('getCurrentTeacherView', getTeacherView(actions.getTeacher({ throwOnNotFound: true }), views.makeTeacherViews));
+    const { actions } = context;
+    return withLogger('getCurrentTeacherView', actions.getCurrentTeacher());
 }
 export async function submitInitialTeachersForm(update) {
-    const { actions, views } = context;
-    return withLogger('submitInitialTeachersForm', getTeacherView(actions.submitInitialTeachersForm(update), views.makeTeacherViews));
+    const { actions } = context;
+    return withLogger('submitInitialTeachersForm', actions.submitInitialTeachersForm(update));
 }
 export async function submitSecondStepTeachersForm(update) {
-    const { actions, views } = context;
-    return withLogger('submitSecondStepTeachersForm', getTeacherView(actions.submitSecondStepTeachersForm(update), views.makeTeacherViews));
+    const { actions, hooks } = context;
+    return withLogger('submitSecondStepTeachersForm', actions.submitSecondStepTeachersForm(update));
 }
 export async function getCuratingTeacherView() {
-    const { actions, views } = context;
-    return withLogger('getCuratingTeacherView', getTeacherView(actions.getCuratingTeacher(), views.makeTeacherViews));
+    const { actions } = context;
+    return withLogger('getCuratingTeacherView', actions.getCuratingTeacher());
 }
 export async function getAllAccountStatuses() {
     const { repositories } = context;
     return withLogger('getAllAccountStatuses', repositories.accountStatusesRepository.fetchAccountStatuses());
-}
-async function getTeacherView(teacherPromise, makeTeacherViews) {
-    const [teacherView] = await makeTeacherViews([await teacherPromise]);
-    return teacherView;
 }

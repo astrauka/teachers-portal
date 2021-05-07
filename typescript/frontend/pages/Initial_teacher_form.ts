@@ -1,5 +1,7 @@
 import { submitInitialTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
+import { Country } from 'public/common/entities/country';
+import { Language } from 'public/common/entities/language';
 import {
   InitialTeacherForm,
   InitialTeacherFormKey,
@@ -9,11 +11,12 @@ import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
+import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 
 type ValidationMessages = { [key in InitialTeacherFormKey]: string };
 const TEXT_INPUTS: InitialTeacherFormKey[] = ['phoneNumber', 'city'];
-const DROPDOWNS: InitialTeacherFormKey[] = ['country', 'language'];
+const DROPDOWNS: InitialTeacherFormKey[] = ['countryId', 'languageId'];
 const FORM_INPUTS: InitialTeacherFormKey[] = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS: InitialTeacherFormKey[] = [...FORM_INPUTS, 'profileImage'];
 let state: {
@@ -37,6 +40,7 @@ forCurrentTeacher('initialTeacherForm', async ({ teacher }: InitialState) => {
   assignCurrentTeacherFormFields();
   $w('#uploadButton' as 'UploadButton').onChange(() => uploadProfileImage());
   $w('#submit' as 'Button').onClick(() => submitProfileInfoForm());
+  await updateDropdownValues();
 });
 
 function assignCurrentTeacherFormFields() {
@@ -122,4 +126,20 @@ async function submitProfileInfoForm() {
   } catch (error) {
     $submissionStatus.text = `Update failed: ${error.message}`;
   }
+}
+
+async function updateDropdownValues() {
+  $w('#countryId' as 'Dropdown').options = (
+    await loadFirstDatasetPage<Country>($w('#CountriesDataset'))
+  ).map((country: Country) => ({
+    value: country._id,
+    label: country.title,
+  }));
+
+  $w('#languageId' as 'Dropdown').options = (
+    await loadFirstDatasetPage<Language>($w('#LanguagesDataset'))
+  ).map((language: Language) => ({
+    value: language._id,
+    label: language.title,
+  }));
 }

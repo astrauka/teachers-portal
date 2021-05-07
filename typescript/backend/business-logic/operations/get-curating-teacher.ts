@@ -1,13 +1,13 @@
 import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
-import { GetTeacher } from './get-teacher';
+import { GetCurrentTeacher } from './get-current-teacher';
 
 export function getCuratingTeacherFactory(
-  getTeacher: GetTeacher,
+  getCurrentTeacher: GetCurrentTeacher,
   teachersRepository: TeachersRepository
 ) {
   return async function getCuratingTeacher(): Promise<Teacher | undefined> {
-    const { mentorId } = await getTeacher();
+    const { mentorId } = await getCurrentTeacher();
     if (!mentorId) {
       return;
     }

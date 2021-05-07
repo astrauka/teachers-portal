@@ -22,7 +22,7 @@ export class TeachersRepository {
         }
         return undefined;
     }
-    fetchTeacherByEmailOrThrow(email) {
+    fetchTeacherByEmailOrThrow(email, returnPrivateFields) {
         if (!email) {
             throw new NotLoggedInError();
         }
@@ -30,7 +30,7 @@ export class TeachersRepository {
             .query(TEACHERS_COLLECTION)
             .eq('email', email)
             .limit(1)
-            .find({ suppressAuth: true })));
+            .find({ suppressAuth: true, suppressHooks: returnPrivateFields })));
     }
     fetchTeacherBySlug(slug) {
         if (slug) {

@@ -41,7 +41,10 @@ export class TeachersRepository {
     return undefined;
   }
 
-  public fetchTeacherByEmailOrThrow(email: string | undefined): Promise<Teacher> {
+  public fetchTeacherByEmailOrThrow(
+    email: string | undefined,
+    returnPrivateFields: boolean
+  ): Promise<Teacher> {
     if (!email) {
       throw new NotLoggedInError();
     }
@@ -52,7 +55,7 @@ export class TeachersRepository {
           .query(TEACHERS_COLLECTION)
           .eq('email', email)
           .limit(1)
-          .find({ suppressAuth: true })
+          .find({ suppressAuth: true, suppressHooks: returnPrivateFields })
       )
     );
   }

@@ -1,30 +1,23 @@
-import { pick } from 'lodash';
 import { buildCountry } from '../../../test/builders/country';
 import { buildLanguage } from '../../../test/builders/language';
-import { buildTeacher } from '../../../test/builders/teacher';
+import { buildInitialTeacherForm, buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { InitialTeacherForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
-import { GetTeacher } from './get-teacher';
+import { GetCurrentTeacher } from './get-current-teacher';
 import { submitInitialTeachersFormFactory } from './submit-initial-teachers-form';
 
 describe('submitInitialTeachersForm', () => {
   const country = buildCountry();
   const language = buildLanguage();
   const teacher = buildTeacher({ properties: { completedTasks: [] } });
-  const update: InitialTeacherForm = {
-    ...pick(buildTeacher(), ['profileImage', 'phoneNumber', 'city']),
-    country: country.title,
-    language: language.title,
-  };
+  const update = buildInitialTeacherForm();
   const updatedTeacher: Teacher = {
     ...teacher,
-    ...pick(update, ['profileImage', 'phoneNumber', 'city']),
-    countryId: country._id,
-    languageId: language._id,
+    ...update,
     completedTasks: [TaskName.initialProfileForm],
   };
 
@@ -34,41 +27,44 @@ describe('submitInitialTeachersForm', () => {
     });
   const getCountriesRepository = (country) =>
     stubType<CountriesRepository>((stub) => {
-      stub.fetchCountryByTitleOrThrow.resolves(country);
+      stub.fetchCountryByIdOrThrow.resolves(country);
     });
   const getLanguagesRepository = (language) =>
     stubType<LanguagesRepository>((stub) => {
-      stub.fetchLanguageByTitleOrThrow.resolves(language);
+      stub.fetchLanguageByIdOrThrow.resolves(language);
     });
-  const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
+  const getGetTeacher = (teacher: Teacher) => stubFn<GetCurrentTeacher>().resolves(teacher);
   const buildTestContext = ({
     teachersRepository = getTeachersRepository(teacher, updatedTeacher),
     countriesRepository = getCountriesRepository(country),
     languagesRepository = getLanguagesRepository(language),
-    getTeacher = getGetTeacher(teacher),
+    getCurrentTeacher = getGetTeacher(teacher),
   } = {}) => ({
     teachersRepository,
+    countriesRepository,
     languagesRepository,
-    getTeacher,
+    getCurrentTeacher,
     submitInitialTeachersForm: submitInitialTeachersFormFactory(
       teachersRepository,
       countriesRepository,
       languagesRepository,
-      getTeacher
+      getCurrentTeacher
     ),
   });
 
   it('should update, return current teacher and complete task', async () => {
     const {
       teachersRepository,
+      countriesRepository,
       languagesRepository,
-      getTeacher,
+      getCurrentTeacher,
       submitInitialTeachersForm,
     } = buildTestContext();
 
     expect(await submitInitialTeachersForm(update)).to.eql(updatedTeacher);
-    expect(getTeacher).calledOnceWithExactly({ throwOnNotFound: true });
-    expect(languagesRepository.fetchLanguageByTitleOrThrow).calledOnceWithExactly(language.title);
+    expect(getCurrentTeacher).calledOnceWithExactly();
+    expect(countriesRepository.fetchCountryByIdOrThrow).calledOnceWithExactly(update.countryId);
+    expect(languagesRepository.fetchLanguageByIdOrThrow).calledOnceWithExactly(update.languageId);
     expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeacher);
   });
 
@@ -76,9 +72,9 @@ describe('submitInitialTeachersForm', () => {
     const update = { phoneNumber: '11', city: 'a' } as InitialTeacherForm;
 
     it('should return human readable error', async () => {
-      const { getTeacher, submitInitialTeachersForm } = buildTestContext();
+      const { getCurrentTeacher, submitInitialTeachersForm } = buildTestContext();
       await expect(submitInitialTeachersForm(update)).rejectedWith(/field is required/);
-      expect(getTeacher).not.called;
+      expect(getCurrentTeacher).not.called;
     });
   });
 });

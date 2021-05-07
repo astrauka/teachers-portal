@@ -1,28 +1,11 @@
 import { compact, pick, trim } from 'lodash';
 import { convert } from 'url-slug';
+import { TEACHER_DEFAULTS } from '../../common/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { generateUuid } from '../../utils/id';
 import { getLogger, prettyJSON } from '../../utils/logger';
 import { validateTeacher } from '../validate';
 export const MAX_SLUG_POSTFIX = 20;
-export const TEACHER_DEFAULTS = {
-    slug: null,
-    mentorId: null,
-    certificateExpirationDate: null,
-    profileImage: '',
-    phoneNumber: '',
-    countryId: null,
-    city: '',
-    modules: '',
-    languageId: null,
-    facebook: '',
-    instagram: '',
-    linkedIn: '',
-    website: '',
-    about: '',
-    photos: [],
-    completedTasks: [],
-};
 export function normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation, generateId = generateUuid) {
     return async function normalizeTeacher(update, throwOnSyncMemberInformationFailure) {
         const facebook = normalizeSecondStepTeacherFormInput('facebook', update.facebook);

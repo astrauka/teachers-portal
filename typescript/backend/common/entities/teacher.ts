@@ -30,9 +30,9 @@ export interface ComputedTeacherInformation {
 export interface InitialTeacherForm {
   profileImage: string;
   phoneNumber: string;
-  country: string;
+  countryId: string;
   city: string;
-  language: string;
+  languageId: string;
 }
 export type InitialTeacherFormKey = keyof InitialTeacherForm;
 
@@ -53,13 +53,54 @@ export interface Teacher
     SecondStepTeachersForm,
     ComputedTeacherInformation {}
 
-export const PRIVATE_TEACHER_FIELDS: (keyof Teacher)[] = ['phoneNumber'];
-export type PublicTeacher = Omit<Teacher, 'phoneNumber'>;
+export const TEACHER_PUBLIC_FIELDS: (keyof Teacher)[] = [
+  '_id',
+  'email',
+  'firstName',
+  'lastName',
+  'levelId',
+  'statusId',
+  'mentorId',
+  'certificateExpirationDate',
+  'certificateNumber',
+  'countryId',
+  'languageId',
+  'city',
+  'fullName',
+  'slug',
+  'completedTasks',
+  'modules',
+  'profileImage',
+  'facebook',
+  'instagram',
+  'linkedIn',
+  'website',
+  'about',
+  'photos',
+];
+export const TEACHER_ALL_FIELDS: (keyof Teacher)[] = [...TEACHER_PUBLIC_FIELDS, 'phoneNumber'];
+export type TeacherView = Pick<Teacher, typeof TEACHER_PUBLIC_FIELDS[number]> & {
+  phoneNumber?: string;
+};
 
-export interface TeacherView extends Teacher {
-  country: string;
-  language: string;
-}
+export const TEACHER_DEFAULTS = {
+  slug: null,
+  mentorId: null,
+  certificateExpirationDate: null,
+  profileImage: '',
+  phoneNumber: '',
+  countryId: null,
+  city: '',
+  modules: '',
+  languageId: null,
+  facebook: '',
+  instagram: '',
+  linkedIn: '',
+  website: '',
+  about: '',
+  photos: [],
+  completedTasks: [],
+};
 
 export interface TeacherWix extends Omit<Teacher, 'statusId'> {
   statusId: AccountStatus;

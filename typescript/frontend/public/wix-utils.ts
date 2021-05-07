@@ -1,8 +1,8 @@
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
-import QueryObject = wix_location.QueryObject;
 import CollapsedMixin = $w.CollapsedMixin;
 import HiddenMixin = $w.HiddenMixin;
+import QueryObject = wix_location.QueryObject;
 
 export type WixLocationQueryParams = { [param: string]: string };
 

@@ -1,5 +1,5 @@
 import { keys, pick } from 'lodash';
-import { buildTeacher, buildTeacherView } from '../../test/builders/teacher';
+import { buildInitialTeacherForm, buildTeacher } from '../../test/builders/teacher';
 import { buildTeacherModule } from '../../test/builders/teacher-module';
 import { expect, getErrorOf } from '../../test/utils/expectations';
 import { InitialTeacherForm, SecondStepTeachersForm } from '../common/entities/teacher';
@@ -36,7 +36,7 @@ describe('validateTeacher', () => {
 });
 
 describe('validateInitialTeachersForm', () => {
-  const update = pick(buildTeacherView(), keys(initialTeachersFormSchema)) as InitialTeacherForm;
+  const update = buildInitialTeacherForm();
 
   it('should return the update', () => {
     expect(validateInitialTeachersForm(update)).to.eql(update);
@@ -44,7 +44,7 @@ describe('validateInitialTeachersForm', () => {
 
   context('on invalid input', () => {
     const update = {
-      ...(pick(buildTeacherView(), keys(initialTeachersFormSchema)) as InitialTeacherForm),
+      ...(pick(buildTeacher(), keys(initialTeachersFormSchema)) as InitialTeacherForm),
       city: 'a',
     };
 
@@ -56,10 +56,7 @@ describe('validateInitialTeachersForm', () => {
 });
 
 describe('validateSecondStepTeachersForm', () => {
-  const update = pick(
-    buildTeacherView(),
-    keys(secondStepTeachersFormSchema)
-  ) as SecondStepTeachersForm;
+  const update = pick(buildTeacher(), keys(secondStepTeachersFormSchema)) as SecondStepTeachersForm;
 
   it('should return the update', () => {
     expect(validateSecondStepTeachersForm(update)).to.eql(update);
@@ -82,7 +79,7 @@ describe('validateSecondStepTeachersForm', () => {
 
   context('on invalid input', () => {
     const update = {
-      ...pick(buildTeacherView(), keys(secondStepTeachersFormSchema)),
+      ...pick(buildTeacher(), keys(secondStepTeachersFormSchema)),
       facebook: '~!@#@#  ///',
     } as SecondStepTeachersForm;
 
