@@ -1,3 +1,4 @@
+import { hidePrivateTeacherDataFactory } from '../business-logic/hooks/hide-private-teacher-data';
 import { normalizeTeacherFactory } from '../business-logic/hooks/normalize-teacher';
 import { normalizeTeacherModuleFactory } from '../business-logic/hooks/normalize-teacher-module';
 import { registerTeacherFactory } from '../business-logic/hooks/register-teacher';
@@ -52,6 +53,7 @@ const setupContext = (externals: Externals) => {
   // hooks
   const registerTeacher = registerTeacherFactory(siteMembersRepository, usersService);
   const normalizeTeacher = normalizeTeacherFactory(teachersRepository, syncSiteMemberInformation);
+  const hidePrivateTeacherData = hidePrivateTeacherDataFactory();
   const normalizeTeacherModule = normalizeTeacherModuleFactory(modulesRepository);
 
   return {
@@ -77,6 +79,7 @@ const setupContext = (externals: Externals) => {
     hooks: {
       registerTeacher,
       normalizeTeacher,
+      hidePrivateTeacherData,
       normalizeTeacherModule,
     },
   };

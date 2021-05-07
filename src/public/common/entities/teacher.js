@@ -1,3 +1,4 @@
+export const PRIVATE_TEACHER_FIELDS = ['phoneNumber'];
 export var TeacherLevels;
 (function (TeacherLevels) {
     TeacherLevels["UtaraAhikari"] = "Utara Adhikari";

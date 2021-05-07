@@ -53,6 +53,9 @@ export interface Teacher
     SecondStepTeachersForm,
     ComputedTeacherInformation {}
 
+export const PRIVATE_TEACHER_FIELDS: (keyof Teacher)[] = ['phoneNumber'];
+export type PublicTeacher = Omit<Teacher, 'phoneNumber'>;
+
 export interface TeacherView extends Teacher {
   country: string;
   language: string;
