@@ -1,4 +1,4 @@
-import { PublicTeacher, Teacher } from './common/entities/teacher';
+import { Teacher, TeacherView } from './common/entities/teacher';
 import { TeacherModule } from './common/entities/teacher-module';
 import { context } from './context/setup-context';
 import { withLogger } from './utils/logger';
@@ -19,17 +19,16 @@ export async function TeachersProfile_beforeUpdate(teacher: Teacher) {
 
 export async function TeachersProfile_afterGet(teacher: Teacher) {
   const { hooks } = context;
-  return withLogger<PublicTeacher>(
-    `Hook TeachersProfile_afterGet ${teacher.email}`,
-    hooks.hidePrivateTeacherData(teacher)
-  );
+  return withLogger<TeacherView>(`Hook TeachersProfile_afterGet ${teacher.email}`, async () => {
+    return hooks.makeTeacherView(teacher);
+  });
 }
 
 export async function TeachersProfile_afterQuery(teacher: Teacher) {
   const { hooks } = context;
-  return withLogger<PublicTeacher>(
+  return withLogger<TeacherView>(
     `Hook TeachersProfile_afterQuery ${teacher.email}`,
-    hooks.hidePrivateTeacherData(teacher)
+    hooks.makeTeacherView(teacher)
   );
 }
 

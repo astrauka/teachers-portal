@@ -4,7 +4,7 @@ import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { getCuratingTeacherFactory } from './get-curating-teacher';
-import { GetTeacher } from './get-teacher';
+import { GetCurrentTeacher } from './get-current-teacher';
 
 describe('getCuratingTeacher', () => {
   const curatingTeacher = buildTeacher({ id: 'curating' });
@@ -17,20 +17,20 @@ describe('getCuratingTeacher', () => {
     stubType<TeachersRepository>((stub) => {
       stub.fetchTeacherById.resolves(teacher);
     });
-  const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
+  const getGetTeacher = (teacher: Teacher) => stubFn<GetCurrentTeacher>().resolves(teacher);
   const buildTestContext = ({
-    getTeacher = getGetTeacher(currentTeacher),
+    getCurrentTeacher = getGetTeacher(currentTeacher),
     teachersRepository = getTeachersRepository(curatingTeacher),
   } = {}) => ({
-    getTeacher,
+    getCurrentTeacher,
     teachersRepository,
-    getCuratingTeacher: getCuratingTeacherFactory(getTeacher, teachersRepository),
+    getCuratingTeacher: getCuratingTeacherFactory(getCurrentTeacher, teachersRepository),
   });
 
   it('should return curating teacher', async () => {
-    const { getTeacher, teachersRepository, getCuratingTeacher } = buildTestContext();
+    const { getCurrentTeacher, teachersRepository, getCuratingTeacher } = buildTestContext();
     expect(await getCuratingTeacher()).to.eql(curatingTeacher);
-    expect(getTeacher).calledOnceWithExactly();
+    expect(getCurrentTeacher).calledOnceWithExactly();
     expect(teachersRepository.fetchTeacherById).calledOnceWithExactly(currentTeacher.mentorId);
   });
 
@@ -38,11 +38,11 @@ describe('getCuratingTeacher', () => {
     const currentTeacher = buildTeacher({ without: ['mentorId'] });
 
     it('should return undefined', async () => {
-      const { getTeacher, teachersRepository, getCuratingTeacher } = buildTestContext({
-        getTeacher: getGetTeacher(currentTeacher),
+      const { getCurrentTeacher, teachersRepository, getCuratingTeacher } = buildTestContext({
+        getCurrentTeacher: getGetTeacher(currentTeacher),
       });
       expect(await getCuratingTeacher()).to.be.undefined;
-      expect(getTeacher).calledOnceWithExactly();
+      expect(getCurrentTeacher).calledOnceWithExactly();
       expect(teachersRepository.fetchTeacherById).not.called;
     });
   });
@@ -51,11 +51,11 @@ describe('getCuratingTeacher', () => {
     const curatingTeacher = undefined;
 
     it('should return undefined', async () => {
-      const { getTeacher, teachersRepository, getCuratingTeacher } = buildTestContext({
+      const { getCurrentTeacher, teachersRepository, getCuratingTeacher } = buildTestContext({
         teachersRepository: getTeachersRepository(curatingTeacher),
       });
       expect(await getCuratingTeacher()).to.be.undefined;
-      expect(getTeacher).calledOnceWithExactly();
+      expect(getCurrentTeacher).calledOnceWithExactly();
       expect(teachersRepository.fetchTeacherById).calledOnceWithExactly(currentTeacher.mentorId);
     });
   });

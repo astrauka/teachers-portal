@@ -4,9 +4,10 @@ import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { refreshInitialState } from 'public/global-state';
 import { validateField } from 'public/validate';
+import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 const TEXT_INPUTS = ['phoneNumber', 'city'];
-const DROPDOWNS = ['country', 'language'];
+const DROPDOWNS = ['countryId', 'languageId'];
 const FORM_INPUTS = [...TEXT_INPUTS, ...DROPDOWNS];
 const FORM_FIELDS = [...FORM_INPUTS, 'profileImage'];
 let state;
@@ -25,6 +26,7 @@ forCurrentTeacher('initialTeacherForm', async ({ teacher }) => {
     assignCurrentTeacherFormFields();
     $w('#uploadButton').onChange(() => uploadProfileImage());
     $w('#submit').onClick(() => submitProfileInfoForm());
+    await updateDropdownValues();
 });
 function assignCurrentTeacherFormFields() {
     enableSubmissionButton();
@@ -104,4 +106,14 @@ async function submitProfileInfoForm() {
     catch (error) {
         $submissionStatus.text = `Update failed: ${error.message}`;
     }
+}
+async function updateDropdownValues() {
+    $w('#countryId').options = (await loadFirstDatasetPage($w('#CountriesDataset'))).map((country) => ({
+        value: country._id,
+        label: country.title,
+    }));
+    $w('#languageId').options = (await loadFirstDatasetPage($w('#LanguagesDataset'))).map((language) => ({
+        value: language._id,
+        label: language.title,
+    }));
 }

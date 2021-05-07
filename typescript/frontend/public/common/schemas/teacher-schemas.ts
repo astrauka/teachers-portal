@@ -27,8 +27,8 @@ export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
   profileImage: { type: 'string', empty: false },
   phoneNumber: { type: 'string', min: 3, max: 255, pattern: /^\+?[\d\-\s]+$/, trim: true },
   city: { type: 'string', min: 3, max: 255, trim: true },
-  country: { type: 'string', empty: false },
-  language: { type: 'string', empty: false },
+  countryId: { type: 'string', empty: false },
+  languageId: { type: 'string', empty: false },
 };
 
 export const initialFormFilledInformationSchema: ValidationSchema<InitialTeacherFormFilledInformation> = {

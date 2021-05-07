@@ -1,6 +1,6 @@
 import { compact, pick, trim } from 'lodash';
 import { convert } from 'url-slug';
-import { AdminFilledInformation, Teacher } from '../../common/entities/teacher';
+import { AdminFilledInformation, Teacher, TEACHER_DEFAULTS } from '../../common/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { generateUuid, IdProvider } from '../../utils/id';
@@ -9,24 +9,6 @@ import { SyncSiteMemberInformation } from '../operations/sync-site-member-inform
 import { validateTeacher } from '../validate';
 
 export const MAX_SLUG_POSTFIX = 20;
-export const TEACHER_DEFAULTS = {
-  slug: null,
-  mentorId: null,
-  certificateExpirationDate: null,
-  profileImage: '',
-  phoneNumber: '',
-  countryId: null,
-  city: '',
-  modules: '',
-  languageId: null,
-  facebook: '',
-  instagram: '',
-  linkedIn: '',
-  website: '',
-  about: '',
-  photos: [],
-  completedTasks: [],
-};
 
 export function normalizeTeacherFactory(
   teachersRepository: TeachersRepository,

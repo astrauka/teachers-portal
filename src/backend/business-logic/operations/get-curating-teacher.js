@@ -1,6 +1,6 @@
-export function getCuratingTeacherFactory(getTeacher, teachersRepository) {
+export function getCuratingTeacherFactory(getCurrentTeacher, teachersRepository) {
     return async function getCuratingTeacher() {
-        const { mentorId } = await getTeacher();
+        const { mentorId } = await getCurrentTeacher();
         if (!mentorId) {
             return;
         }

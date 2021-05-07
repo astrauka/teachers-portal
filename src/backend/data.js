@@ -10,11 +10,13 @@ export async function TeachersProfile_beforeUpdate(teacher) {
 }
 export async function TeachersProfile_afterGet(teacher) {
     const { hooks } = context;
-    return withLogger(`Hook TeachersProfile_afterGet ${teacher.email}`, hooks.hidePrivateTeacherData(teacher));
+    return withLogger(`Hook TeachersProfile_afterGet ${teacher.email}`, async () => {
+        return hooks.makeTeacherView(teacher);
+    });
 }
 export async function TeachersProfile_afterQuery(teacher) {
     const { hooks } = context;
-    return withLogger(`Hook TeachersProfile_afterQuery ${teacher.email}`, hooks.hidePrivateTeacherData(teacher));
+    return withLogger(`Hook TeachersProfile_afterQuery ${teacher.email}`, hooks.makeTeacherView(teacher));
 }
 export async function TeacherModules_beforeInsert(teacherModule) {
     const { hooks } = context;

@@ -1,4 +1,47 @@
-export const PRIVATE_TEACHER_FIELDS = ['phoneNumber'];
+export const TEACHER_PUBLIC_FIELDS = [
+    '_id',
+    'email',
+    'firstName',
+    'lastName',
+    'levelId',
+    'statusId',
+    'mentorId',
+    'certificateExpirationDate',
+    'certificateNumber',
+    'countryId',
+    'languageId',
+    'city',
+    'fullName',
+    'slug',
+    'completedTasks',
+    'modules',
+    'profileImage',
+    'facebook',
+    'instagram',
+    'linkedIn',
+    'website',
+    'about',
+    'photos',
+];
+export const TEACHER_ALL_FIELDS = [...TEACHER_PUBLIC_FIELDS, 'phoneNumber'];
+export const TEACHER_DEFAULTS = {
+    slug: null,
+    mentorId: null,
+    certificateExpirationDate: null,
+    profileImage: '',
+    phoneNumber: '',
+    countryId: null,
+    city: '',
+    modules: '',
+    languageId: null,
+    facebook: '',
+    instagram: '',
+    linkedIn: '',
+    website: '',
+    about: '',
+    photos: [],
+    completedTasks: [],
+};
 export var TeacherLevels;
 (function (TeacherLevels) {
     TeacherLevels["UtaraAhikari"] = "Utara Adhikari";

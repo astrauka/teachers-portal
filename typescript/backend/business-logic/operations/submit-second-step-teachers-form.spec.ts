@@ -4,7 +4,7 @@ import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { SecondStepTeachersForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
-import { GetTeacher } from './get-teacher';
+import { GetCurrentTeacher } from './get-current-teacher';
 import { submitSecondStepTeachersFormFactory } from './submit-second-step-teachers-form';
 
 describe('submitSecondStepTeachersForm', () => {
@@ -23,23 +23,27 @@ describe('submitSecondStepTeachersForm', () => {
     stubType<TeachersRepository>((stub) => {
       stub.updateTeacher.resolves(teacher);
     });
-  const getGetTeacher = (teacher: Teacher) => stubFn<GetTeacher>().resolves(teacher);
+  const getGetTeacher = (teacher: Teacher) => stubFn<GetCurrentTeacher>().resolves(teacher);
   const buildTestContext = ({
     teachersRepository = getTeachersRepository(updatedTeachersProfile),
-    getTeacher = getGetTeacher(teacher),
+    getCurrentTeacher = getGetTeacher(teacher),
   } = {}) => ({
     teachersRepository,
-    getTeacher,
+    getCurrentTeacher,
     submitSecondStepTeachersForm: submitSecondStepTeachersFormFactory(
       teachersRepository,
-      getTeacher
+      getCurrentTeacher
     ),
   });
 
   it('should update, return current teacher and complete task', async () => {
-    const { teachersRepository, getTeacher, submitSecondStepTeachersForm } = buildTestContext();
+    const {
+      teachersRepository,
+      getCurrentTeacher,
+      submitSecondStepTeachersForm,
+    } = buildTestContext();
     expect(await submitSecondStepTeachersForm(update)).to.eql(updatedTeachersProfile);
-    expect(getTeacher).calledOnceWithExactly({ throwOnNotFound: true });
+    expect(getCurrentTeacher).calledOnceWithExactly();
     expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeachersProfile);
   });
 
@@ -47,11 +51,11 @@ describe('submitSecondStepTeachersForm', () => {
     const update = { facebook: '!!!!!not~!@#$$%%^   valid///' } as SecondStepTeachersForm;
 
     it('should return human readable error', async () => {
-      const { getTeacher, submitSecondStepTeachersForm } = buildTestContext();
+      const { getCurrentTeacher, submitSecondStepTeachersForm } = buildTestContext();
       await expect(submitSecondStepTeachersForm(update)).rejectedWith(
         /fails to match the required pattern/
       );
-      expect(getTeacher).not.called;
+      expect(getCurrentTeacher).not.called;
     });
   });
 });

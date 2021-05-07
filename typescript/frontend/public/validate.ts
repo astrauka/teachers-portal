@@ -1,5 +1,6 @@
 import { default as FastestValidator, ValidationError, ValidationSchema } from 'fastest-validator';
 import { pick } from 'lodash';
+import { getElementWhenExists } from './wix-utils';
 
 const validator = new FastestValidator();
 
@@ -29,20 +30,25 @@ export function validateField(
   schema: ValidationSchema,
   { updateValidationMessage = true }: { updateValidationMessage?: boolean } = {}
 ): string {
-  const $validationMessage = $w(`#${field}ValidationMessage` as 'Text');
   const validationResult = validator.validate({ [field]: value }, pick(schema, field));
   const message = humanizeValidationMessage(validationResult);
   if (!updateValidationMessage) {
     return message;
   }
-  if (message) {
-    $validationMessage.text = message;
-    $validationMessage.show();
-  } else {
-    $validationMessage.hide();
-    $validationMessage.text = '';
+
+  const $validationMessage = getElementWhenExists($w(`#${field}ValidationMessage` as 'Text'));
+  if ($validationMessage) {
+    if (message) {
+      $validationMessage.text = message;
+      $validationMessage.show();
+    } else {
+      $validationMessage.hide();
+      $validationMessage.text = '';
+    }
+    return message;
   }
-  return message;
+
+  console.error(`Missing validation for ${field}`);
 }
 
 function humanizeValidationMessage(validationResult: boolean | ValidationError[]) {

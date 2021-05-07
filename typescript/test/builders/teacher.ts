@@ -1,8 +1,11 @@
+import { pick } from 'lodash';
 import {
   AdminFilledInformation,
+  InitialTeacherForm,
   TaskName,
   Teacher,
   TeacherView,
+  TEACHER_PUBLIC_FIELDS,
 } from '../../common/entities/teacher';
 import { inDaysAsDate } from '../utils/date';
 import { builder } from './builder';
@@ -38,9 +41,14 @@ export const buildAdminFilledTeacher = builder<AdminFilledInformation>((id) => (
   certificateNumber: `${id}-certificate-number`,
 }));
 
-export const buildTeacherView = builder<TeacherView>((id) => ({
-  ...buildTeacher({ id }),
-  country: `${id}-country-title`,
-  language: `${id}-language-title`,
-  photos: [],
+export const buildInitialTeacherForm = builder<InitialTeacherForm>((id) => ({
+  profileImage: `${id}-profileImage`,
+  phoneNumber: '+370-625 5000',
+  countryId: `${id}-country`,
+  city: `${id}-city`,
+  languageId: `${id}-language`,
 }));
+
+export const buildTeacherView = builder<TeacherView>((id) =>
+  pick(buildTeacher({ id }), TEACHER_PUBLIC_FIELDS)
+);
