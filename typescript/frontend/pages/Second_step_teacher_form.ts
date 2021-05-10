@@ -1,16 +1,16 @@
 import { submitSecondStepTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { ImageItem, MediaItemTypes } from 'public/common/common-wix-types';
+import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
+import { idFromString } from 'public/forms';
+import { refreshInitialState } from 'public/global-state';
+import { ImageItem, MediaItemTypes } from 'public/universal/common-wix-types';
 import {
   SecondStepTeachersForm,
   SecondStepTeachersFormKey,
   TeacherView,
-} from 'public/common/entities/teacher';
-import { normalizeSecondStepTeacherFormInput } from 'public/common/normalize-inputs/second-step-teacher-form-inputs';
-import { secondStepTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
-import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
-import { idFromString } from 'public/forms';
-import { refreshInitialState } from 'public/global-state';
+} from 'public/universal/entities/teacher';
+import { normalizeSecondStepTeacherFormInput } from 'public/universal/normalize-inputs/second-step-teacher-form-inputs';
+import { secondStepTeachersFormSchema } from 'public/universal/schemas/teacher-schemas';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import UploadedFile = $w.UploadButton.UploadedFile;

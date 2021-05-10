@@ -1,5 +1,5 @@
 /// <reference types="corvid-types/types/backend" />
-import { MemberStatus } from '../common/common-wix-types';
+import { MemberStatus } from '../universal/common-wix-types';
 
 export import ContactInfo = wix_crm_backend.ContactInfo;
 export import UserPicture = wix_users_backend.Picture;

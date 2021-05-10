@@ -1,8 +1,8 @@
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
-import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { Teacher } from '../../universal/entities/teacher';
 import { getCuratingTeacherFactory } from './get-curating-teacher';
 import { GetCurrentTeacher } from './get-current-teacher';
 

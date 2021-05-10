@@ -1,6 +1,6 @@
-import { Tasks } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getCuratingTeacher, getCurrentTeacher } from 'public/global-state';
+import { Tasks } from 'public/universal/entities/teacher';
 import { executeOnce, forExistingElement, getExistingElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';

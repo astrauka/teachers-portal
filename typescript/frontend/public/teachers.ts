@@ -1,5 +1,5 @@
+import { TeacherWix } from 'public/universal/entities/teacher';
 import wixLocation from 'wix-location';
-import { TeacherWix } from './common/entities/teacher';
 import { ImageDefault, setImageDefault } from './images';
 
 export function addTeacherLoadedHandler() {

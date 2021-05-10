@@ -1,10 +1,10 @@
+import { context } from './context/setup-context';
 import {
   AccountStatus,
   InitialTeacherForm,
   SecondStepTeachersForm,
   TeacherView,
-} from './common/entities/teacher';
-import { context } from './context/setup-context';
+} from './universal/entities/teacher';
 import { withLogger } from './utils/logger';
 
 export async function getCurrentTeacherView(): Promise<TeacherView> {

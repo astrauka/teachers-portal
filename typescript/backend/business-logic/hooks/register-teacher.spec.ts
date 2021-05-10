@@ -2,10 +2,10 @@ import { buildSiteMember } from '../../../test/builders/site-member';
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
-import { MemberStatus } from '../../common/common-wix-types';
 import { SiteMembersRepository } from '../../repositories/site-members-repository';
 import { UsersService } from '../../services/users-service';
 import { SiteMember } from '../../types/wix-types';
+import { MemberStatus } from '../../universal/common-wix-types';
 import { IdProvider } from '../../utils/id';
 import { registerTeacherFactory } from './register-teacher';
 

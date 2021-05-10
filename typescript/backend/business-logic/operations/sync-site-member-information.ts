@@ -1,6 +1,6 @@
-import { Teacher } from '../../common/entities/teacher';
 import { SiteMembersRepository } from '../../repositories/site-members-repository';
 import { UsersService } from '../../services/users-service';
+import { Teacher } from '../../universal/entities/teacher';
 
 export function syncSiteMemberInformationFactory(
   usersService: UsersService,

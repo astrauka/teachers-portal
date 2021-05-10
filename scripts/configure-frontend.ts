@@ -12,9 +12,13 @@ const SRC_DIR = path.resolve(DIST_DIR, './src');
 async function configureFrontendPublic() {
   const PUBLIC_DIST_DIR = path.resolve(DIST_DIR, './frontend/public');
   const PUBLIC_SRC_DIR = path.resolve(SRC_DIR, './public');
+  const UNIVERSAL_DIST_DIR = path.resolve(DIST_DIR, './backend/universal');
 
   await del(PUBLIC_SRC_DIR);
   await copy(PUBLIC_DIST_DIR, PUBLIC_SRC_DIR, { filter: ['**/*.js', '!**/*.spec.js'] });
+  await copy(UNIVERSAL_DIST_DIR, `${PUBLIC_SRC_DIR}/universal`, {
+    filter: ['**/*.js', '!**/*.spec.js'],
+  });
   await copy(`${CURRENT_DIR}/tsconfig.public.json`, `${PUBLIC_SRC_DIR}/tsconfig.json`);
   await rsync(`${PUBLIC_SRC_DIR}/`, path.resolve(CURRENT_DIR, '../src/public'));
 }

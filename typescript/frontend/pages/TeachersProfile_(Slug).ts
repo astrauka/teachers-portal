@@ -1,8 +1,8 @@
 import { forEach } from 'lodash';
-import { TeacherWix } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { ImageDefault, setImageDefault } from 'public/images';
 import { addTeacherLoadedHandler } from 'public/teachers';
+import { TeacherWix } from 'public/universal/entities/teacher';
 import { expandIfHasData, showEnabledElement } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 

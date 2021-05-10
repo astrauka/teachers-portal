@@ -3,6 +3,7 @@
     "outDir": "../../dist/",
     "types" : ["corvid-types/types/pages", "mocha"],
     "paths": {
+      "public/universal/*": ["../backend/universal/*"],
       "public/*": ["./public/*"],
       "backend/backend-api": ["../../dist/backend/backend-api"]
     },

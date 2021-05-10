@@ -1,4 +1,4 @@
-import { TaskName } from '../../common/entities/teacher';
+import { TaskName } from '../../universal/entities/teacher';
 import { addCompletedTask } from '../utils/teacher-tasks';
 import { validateSecondStepTeachersForm } from '../validate';
 export function submitSecondStepTeachersFormFactory(teachersRepository, getCurrentTeacher) {

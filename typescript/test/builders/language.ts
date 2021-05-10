@@ -1,4 +1,4 @@
-import { Language } from '../../common/entities/language';
+import { Language } from '../../backend/universal/entities/language';
 import { builder } from './builder';
 
 export const buildLanguage = builder<Language>((id) => ({

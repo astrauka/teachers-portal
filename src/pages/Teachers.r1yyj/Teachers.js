@@ -1,9 +1,9 @@
 import { debounce, find, pick } from 'lodash';
-import { AccountStatuses } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getAccountStatuses } from 'public/global-state';
 import { setupInputChangeHandlers } from 'public/inputs-location';
 import { addTeacherLoadedHandler } from 'public/teachers';
+import { AccountStatuses } from 'public/universal/entities/teacher';
 import { getFilter } from 'public/wix-filter';
 import { addWixLocationQueryParams, expandIfHasData, loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';

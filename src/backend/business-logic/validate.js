@@ -1,5 +1,5 @@
-import { teacherModuleSchema } from '../common/schemas/teacher-module-schemas';
-import { initialTeachersFormSchema, secondStepTeachersFormSchema, teacherSchema, } from '../common/schemas/teacher-schemas';
+import { teacherModuleSchema } from '../universal/schemas/teacher-module-schemas';
+import { initialTeachersFormSchema, secondStepTeachersFormSchema, teacherSchema, } from '../universal/schemas/teacher-schemas';
 import { buildValidator } from '../utils/validation';
 export const validateInitialTeachersForm = buildValidator(initialTeachersFormSchema);
 export const validateSecondStepTeachersForm = buildValidator(secondStepTeachersFormSchema);

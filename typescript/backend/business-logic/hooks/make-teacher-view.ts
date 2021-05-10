@@ -5,7 +5,7 @@ import {
   TEACHER_ALL_FIELDS,
   TEACHER_DEFAULTS,
   TEACHER_PUBLIC_FIELDS,
-} from '../../common/entities/teacher';
+} from '../../universal/entities/teacher';
 
 export type MakeTeacherView = ReturnType<typeof makeTeacherViewFactory>;
 

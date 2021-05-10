@@ -1,11 +1,11 @@
-import { InitialTeacherForm, SecondStepTeachersForm, Teacher } from '../common/entities/teacher';
-import { TeacherModule } from '../common/entities/teacher-module';
-import { teacherModuleSchema } from '../common/schemas/teacher-module-schemas';
+import { InitialTeacherForm, SecondStepTeachersForm, Teacher } from '../universal/entities/teacher';
+import { TeacherModule } from '../universal/entities/teacher-module';
+import { teacherModuleSchema } from '../universal/schemas/teacher-module-schemas';
 import {
   initialTeachersFormSchema,
   secondStepTeachersFormSchema,
   teacherSchema,
-} from '../common/schemas/teacher-schemas';
+} from '../universal/schemas/teacher-schemas';
 
 import { buildValidator } from '../utils/validation';
 

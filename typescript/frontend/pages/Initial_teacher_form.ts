@@ -1,15 +1,15 @@
 import { submitInitialTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { Country } from 'public/common/entities/country';
-import { Language } from 'public/common/entities/language';
+import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
+import { refreshInitialState } from 'public/global-state';
+import { Country } from 'public/universal/entities/country';
+import { Language } from 'public/universal/entities/language';
 import {
   InitialTeacherForm,
   InitialTeacherFormKey,
   TeacherView,
-} from 'public/common/entities/teacher';
-import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
-import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
-import { refreshInitialState } from 'public/global-state';
+} from 'public/universal/entities/teacher';
+import { initialTeachersFormSchema } from 'public/universal/schemas/teacher-schemas';
 import { validateField } from 'public/validate';
 import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';

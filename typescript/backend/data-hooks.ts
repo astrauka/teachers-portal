@@ -1,6 +1,6 @@
-import { Teacher, TeacherView } from './common/entities/teacher';
-import { TeacherModule } from './common/entities/teacher-module';
 import { context } from './context/setup-context';
+import { Teacher, TeacherView } from './universal/entities/teacher';
+import { TeacherModule } from './universal/entities/teacher-module';
 import { withLogger } from './utils/logger';
 
 export async function TeachersProfile_beforeInsert(teacher: Teacher) {
