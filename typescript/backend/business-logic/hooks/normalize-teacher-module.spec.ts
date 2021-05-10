@@ -1,8 +1,8 @@
-import { Module } from '../../../common/entities/teacher-module';
 import { buildModule, buildTeacherModule } from '../../../test/builders/teacher-module';
 import { expect } from '../../../test/utils/expectations';
 import { stubType } from '../../../test/utils/stubbing';
 import { ModulesRepository } from '../../repositories/modules-repository';
+import { Module } from '../../universal/entities/teacher-module';
 import { normalizeTeacherModuleFactory } from './normalize-teacher-module';
 
 describe('normalizeTeacherModule', () => {

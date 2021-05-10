@@ -1,9 +1,9 @@
 import { range } from 'lodash';
+import { TaskName, TeacherView } from 'public/universal/entities/teacher';
 import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import wixWindow from 'wix-window';
-import { TaskName, TeacherView } from './common/entities/teacher';
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 

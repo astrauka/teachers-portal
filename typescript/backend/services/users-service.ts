@@ -1,6 +1,6 @@
-import { Teacher } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
 import { ContactInfo } from '../types/wix-types';
+import { Teacher } from '../universal/entities/teacher';
 import { withLogger } from '../utils/logger';
 import User = wix_users.User;
 import UserInfo = wix_users_backend.UserInfo;

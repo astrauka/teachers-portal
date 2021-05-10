@@ -1,6 +1,6 @@
-import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { UsersService } from '../../services/users-service';
+import { Teacher } from '../../universal/entities/teacher';
 import { MakeTeacherView } from '../hooks/make-teacher-view';
 
 export function getCurrentTeacherFactory(

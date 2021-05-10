@@ -6,7 +6,7 @@ import {
   Teacher,
   TeacherView,
   TEACHER_PUBLIC_FIELDS,
-} from '../../common/entities/teacher';
+} from '../../backend/universal/entities/teacher';
 import { inDaysAsDate } from '../utils/date';
 import { builder } from './builder';
 

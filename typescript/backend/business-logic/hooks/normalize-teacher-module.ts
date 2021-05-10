@@ -1,5 +1,5 @@
-import { TeacherModule } from '../../../common/entities/teacher-module';
 import { ModulesRepository } from '../../repositories/modules-repository';
+import { TeacherModule } from '../../universal/entities/teacher-module';
 
 export type NormalizeTeacherModule = ReturnType<typeof normalizeTeacherModuleFactory>;
 

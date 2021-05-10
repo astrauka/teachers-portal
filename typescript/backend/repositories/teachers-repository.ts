@@ -1,5 +1,5 @@
-import { Teacher } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
+import { Teacher } from '../universal/entities/teacher';
 import {
   findById,
   findByIdOrThrow,

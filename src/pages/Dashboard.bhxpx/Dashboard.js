@@ -1,6 +1,6 @@
-import { Tasks, TaskStatus } from 'public/common/entities/teacher';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
+import { Tasks, TaskStatus } from 'public/universal/entities/teacher';
 import wixLocation from 'wix-location';
 const TASK_STATUS_COLORS = {
     [TaskStatus.completed]: '#F0F1F1',

@@ -1,7 +1,7 @@
 import { compact, pick, trim } from 'lodash';
 import { convert } from 'url-slug';
-import { TEACHER_DEFAULTS } from '../../common/entities/teacher';
-import { normalizeSecondStepTeacherFormInput } from '../../common/normalize-inputs/second-step-teacher-form-inputs';
+import { TEACHER_DEFAULTS, } from '../../universal/entities/teacher';
+import { normalizeSecondStepTeacherFormInput } from '../../universal/normalize-inputs/second-step-teacher-form-inputs';
 import { generateUuid } from '../../utils/id';
 import { getLogger, prettyJSON } from '../../utils/logger';
 import { validateTeacher } from '../validate';

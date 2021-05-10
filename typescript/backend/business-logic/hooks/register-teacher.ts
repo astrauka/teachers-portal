@@ -1,8 +1,8 @@
 import { replace } from 'lodash';
-import { MemberStatus } from '../../common/common-wix-types';
-import { Teacher } from '../../common/entities/teacher';
 import { SiteMembersRepository } from '../../repositories/site-members-repository';
 import { UsersService } from '../../services/users-service';
+import { MemberStatus } from '../../universal/common-wix-types';
+import { Teacher } from '../../universal/entities/teacher';
 import { generateUuid, IdProvider } from '../../utils/id';
 
 export function registerTeacherFactory(

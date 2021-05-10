@@ -1,5 +1,5 @@
-import { Module } from '../common/entities/teacher-module';
 import { Externals } from '../context/production-context';
+import { Module } from '../universal/entities/teacher-module';
 import { findByIdOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 

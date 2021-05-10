@@ -1,8 +1,8 @@
 import { submitInitialTeachersForm } from 'backend/backend-api';
 import { pick, some, transform, values } from 'lodash';
-import { initialTeachersFormSchema } from 'public/common/schemas/teacher-schemas';
 import { forCurrentTeacher } from 'public/for-current-teacher';
 import { refreshInitialState } from 'public/global-state';
+import { initialTeachersFormSchema } from 'public/universal/schemas/teacher-schemas';
 import { validateField } from 'public/validate';
 import { loadFirstDatasetPage } from 'public/wix-utils';
 import wixLocation from 'wix-location';

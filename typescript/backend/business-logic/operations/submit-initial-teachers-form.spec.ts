@@ -3,10 +3,10 @@ import { buildLanguage } from '../../../test/builders/language';
 import { buildInitialTeacherForm, buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
-import { InitialTeacherForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { InitialTeacherForm, TaskName, Teacher } from '../../universal/entities/teacher';
 import { GetCurrentTeacher } from './get-current-teacher';
 import { submitInitialTeachersFormFactory } from './submit-initial-teachers-form';
 

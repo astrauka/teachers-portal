@@ -1,5 +1,5 @@
-import { Teacher } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { Teacher } from '../../universal/entities/teacher';
 import { GetCurrentTeacher } from './get-current-teacher';
 
 export function getCuratingTeacherFactory(

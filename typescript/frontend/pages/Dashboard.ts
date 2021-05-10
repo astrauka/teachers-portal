@@ -1,6 +1,6 @@
-import { Tasks, TaskStatus, TeacherView } from 'public/common/entities/teacher';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { getCuratingTeacher } from 'public/global-state';
+import { Tasks, TaskStatus, TeacherView } from 'public/universal/entities/teacher';
 import wixLocation from 'wix-location';
 
 const TASK_STATUS_COLORS = {

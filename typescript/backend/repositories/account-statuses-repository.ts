@@ -1,5 +1,5 @@
-import { AccountStatus } from '../common/entities/teacher';
 import { Externals } from '../context/production-context';
+import { AccountStatus } from '../universal/entities/teacher';
 import { fetchRecords } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 

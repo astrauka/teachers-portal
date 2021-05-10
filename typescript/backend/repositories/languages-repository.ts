@@ -1,5 +1,5 @@
-import { Language } from '../common/entities/language';
 import { Externals } from '../context/production-context';
+import { Language } from '../universal/entities/language';
 import { findByIdOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 

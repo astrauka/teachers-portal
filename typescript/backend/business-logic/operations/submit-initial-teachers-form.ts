@@ -1,7 +1,7 @@
-import { InitialTeacherForm, TaskName, Teacher } from '../../common/entities/teacher';
 import { CountriesRepository } from '../../repositories/countries-repository';
 import { LanguagesRepository } from '../../repositories/languages-repository';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { InitialTeacherForm, TaskName, Teacher } from '../../universal/entities/teacher';
 import { addCompletedTask } from '../utils/teacher-tasks';
 import { validateInitialTeachersForm } from '../validate';
 import { GetCurrentTeacher } from './get-current-teacher';

@@ -1,8 +1,8 @@
 import { buildAdminFilledTeacher, buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
-import { Teacher, TEACHER_DEFAULTS } from '../../common/entities/teacher';
 import { TeachersRepository } from '../../repositories/teachers-repository';
+import { Teacher, TEACHER_DEFAULTS } from '../../universal/entities/teacher';
 import { IdProvider } from '../../utils/id';
 import { SyncSiteMemberInformation } from '../operations/sync-site-member-information';
 import { MAX_SLUG_POSTFIX, normalizeTeacherFactory } from './normalize-teacher';

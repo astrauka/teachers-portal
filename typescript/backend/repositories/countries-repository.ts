@@ -1,5 +1,5 @@
-import { Country } from '../common/entities/country';
 import { Externals } from '../context/production-context';
+import { Country } from '../universal/entities/country';
 import { findByIdOrThrow } from '../utils/database-queries';
 import { withLogger } from '../utils/logger';
 
