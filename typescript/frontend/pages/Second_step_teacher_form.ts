@@ -3,7 +3,6 @@ import { pick, some, transform, values } from 'lodash';
 import { forCurrentTeacher, InitialState } from 'public/for-current-teacher';
 import { idFromString } from 'public/forms';
 import { refreshInitialState } from 'public/global-state';
-import { ImageItem, MediaItemTypes } from 'public/universal/common-wix-types';
 import {
   SecondStepTeachersForm,
   SecondStepTeachersFormKey,
@@ -11,6 +10,7 @@ import {
 } from 'public/universal/entities/teacher';
 import { normalizeSecondStepTeacherFormInput } from 'public/universal/normalize-inputs/second-step-teacher-form-inputs';
 import { secondStepTeachersFormSchema } from 'public/universal/schemas/teacher-schemas';
+import { ImageItem, MediaItemTypes } from 'public/universal/wix-types';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
 import UploadedFile = $w.UploadButton.UploadedFile;

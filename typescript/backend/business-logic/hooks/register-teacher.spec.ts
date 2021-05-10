@@ -5,7 +5,7 @@ import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { SiteMembersRepository } from '../../repositories/site-members-repository';
 import { UsersService } from '../../services/users-service';
 import { SiteMember } from '../../types/wix-types';
-import { MemberStatus } from '../../universal/common-wix-types';
+import { MemberStatus } from '../../universal/wix-types';
 import { IdProvider } from '../../utils/id';
 import { registerTeacherFactory } from './register-teacher';
 
@@ -35,12 +35,8 @@ describe('registerTeacher', () => {
   });
 
   it('should register teacher', async () => {
-    const {
-      usersService,
-      siteMembersRepository,
-      generatePassword,
-      registerTeacher,
-    } = buildTestContext();
+    const { usersService, siteMembersRepository, generatePassword, registerTeacher } =
+      buildTestContext();
     expect(await registerTeacher(teacher)).to.eql(teacher);
     expect(generatePassword).calledOnceWithExactly();
     expect(usersService.registerUser).calledOnceWithExactly(teacher, password);
@@ -51,14 +47,10 @@ describe('registerTeacher', () => {
     const siteMember = buildSiteMember();
 
     it('should do nothing', async () => {
-      const {
-        usersService,
-        siteMembersRepository,
-        generatePassword,
-        registerTeacher,
-      } = buildTestContext({
-        siteMembersRepository: getSiteMembersRepository(siteMember),
-      });
+      const { usersService, siteMembersRepository, generatePassword, registerTeacher } =
+        buildTestContext({
+          siteMembersRepository: getSiteMembersRepository(siteMember),
+        });
       expect(await registerTeacher(teacher)).to.eql(teacher);
       expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
       expect(generatePassword).not.called;
@@ -73,12 +65,8 @@ describe('registerTeacher', () => {
       });
 
       it('should approve it', async () => {
-        const {
-          usersService,
-          siteMembersRepository,
-          generatePassword,
-          registerTeacher,
-        } = buildTestContext({ siteMembersRepository: getSiteMembersRepository(siteMember) });
+        const { usersService, siteMembersRepository, generatePassword, registerTeacher } =
+          buildTestContext({ siteMembersRepository: getSiteMembersRepository(siteMember) });
         expect(await registerTeacher(teacher)).to.eql(teacher);
         expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
         expect(generatePassword).not.called;

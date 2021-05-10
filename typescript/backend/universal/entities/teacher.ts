@@ -1,4 +1,4 @@
-import { ImageItem } from '../common-wix-types';
+import { ImageItem } from '../wix-types';
 import { Storable } from './storable';
 
 export interface AdminFilledInformation {
