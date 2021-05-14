@@ -7,6 +7,7 @@ import { UsersService } from '../../services/users-service';
 import { SiteMember } from '../../types/wix-types';
 import { MemberStatus } from '../../universal/wix-types';
 import { IdProvider } from '../../utils/id';
+
 import { registerTeacherFactory } from './register-teacher';
 
 describe('registerTeacher', () => {
@@ -66,7 +67,9 @@ describe('registerTeacher', () => {
 
       it('should approve it', async () => {
         const { usersService, siteMembersRepository, generatePassword, registerTeacher } =
-          buildTestContext({ siteMembersRepository: getSiteMembersRepository(siteMember) });
+          buildTestContext({
+            siteMembersRepository: getSiteMembersRepository(siteMember),
+          });
         expect(await registerTeacher(teacher)).to.eql(teacher);
         expect(siteMembersRepository.fetchMemberByEmail).calledOnceWithExactly(teacher.email);
         expect(generatePassword).not.called;

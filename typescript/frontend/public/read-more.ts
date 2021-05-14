@@ -1,4 +1,5 @@
 import { range } from 'lodash';
+
 import { forExistingElement } from './wix-utils';
 
 export function registerReadMoreButtons(buttonsCount: number) {

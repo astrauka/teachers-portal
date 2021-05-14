@@ -13,7 +13,9 @@ export function getCurrentTeacherFactory(
     const returnPrivateFields = true;
     return makeTeacherView(
       await teachersRepository.fetchTeacherByEmailOrThrow(teachersEmail, returnPrivateFields),
-      { returnPrivateFields }
+      {
+        returnPrivateFields,
+      }
     );
   };
 }

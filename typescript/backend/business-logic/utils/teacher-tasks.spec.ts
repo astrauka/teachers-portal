@@ -1,6 +1,7 @@
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { TaskName } from '../../universal/entities/teacher';
+
 import { addCompletedTask } from './teacher-tasks';
 
 describe('addCompletedTask', () => {

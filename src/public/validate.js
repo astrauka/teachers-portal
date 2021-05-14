@@ -3,9 +3,9 @@ import { pick } from 'lodash';
 import { getElementWhenExists } from './wix-utils';
 const validator = new FastestValidator();
 export function addFieldValidation(field, schema) {
-    // @ts-ignore Argument of type '"FormElement"' is not assignable to parameter of type...
+    // @ts-expect-error Argument of type '"FormElement"' is not assignable to parameter of type...
     $w(`#${field}`).onCustomValidation(
-    // @ts-ignore A function whose declared type is neither 'void' nor 'any' must return a value.
+    // @ts-expect-error A function whose declared type is neither 'void' nor 'any' must return a value.
     (value, reject) => {
         const $validationMessage = $w(`#${field}ValidationMessage`);
         const result = validator.validate({ [field]: value }, pick(schema, field));

@@ -1,4 +1,5 @@
 import { debounce } from 'lodash';
+
 import { addWixLocationQueryParams } from './wix-utils';
 
 export function setupInputChangeHandlers(textInputs: string[], dropdowns: string[]) {

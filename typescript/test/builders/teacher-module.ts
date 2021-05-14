@@ -1,5 +1,6 @@
 import { Module, TeacherModule } from '../../backend/universal/entities/teacher-module';
 import { inDaysAsDate } from '../utils/date';
+
 import { builder } from './builder';
 
 export const buildTeacherModule = builder<TeacherModule>((id) => ({

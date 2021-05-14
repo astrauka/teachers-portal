@@ -1,5 +1,6 @@
 import { ValidationSchema } from 'fastest-validator';
 import { chain, omit } from 'lodash';
+
 import { Storable } from '../entities/storable';
 import {
   AdminFilledInformation,
@@ -31,16 +32,17 @@ export const initialTeachersFormSchema: ValidationSchema<InitialTeacherForm> = {
   languageId: { type: 'string', empty: false },
 };
 
-export const initialFormFilledInformationSchema: ValidationSchema<InitialTeacherFormFilledInformation> = {
-  ...(chain(initialTeachersFormSchema)
-    .omit(['country', 'language'])
-    .transform((acc, definition, key) => {
-      acc[key] = { ...omit(definition, 'min'), empty: true };
-    }, {})
-    .value() as Omit<ValidationSchema<InitialTeacherForm>, 'country' | 'language'>),
-  countryId: { type: 'string', min: 3, max: 255, optional: true },
-  languageId: { type: 'string', min: 3, max: 255, optional: true },
-};
+export const initialFormFilledInformationSchema: ValidationSchema<InitialTeacherFormFilledInformation> =
+  {
+    ...(chain(initialTeachersFormSchema)
+      .omit(['country', 'language'])
+      .transform((acc, definition, key) => {
+        acc[key] = { ...omit(definition, 'min'), empty: true };
+      }, {})
+      .value() as Omit<ValidationSchema<InitialTeacherForm>, 'country' | 'language'>),
+    countryId: { type: 'string', min: 3, max: 255, optional: true },
+    languageId: { type: 'string', min: 3, max: 255, optional: true },
+  };
 
 export const secondStepTeachersFormSchema: ValidationSchema<SecondStepTeachersForm> = {
   facebook: {

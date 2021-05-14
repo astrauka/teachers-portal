@@ -1,6 +1,7 @@
 import { SiteMember, UserPicture } from '../../backend/types/wix-types';
 import { MemberStatus } from '../../backend/universal/wix-types';
 import { daysAgo, daysAgoAsDate } from '../utils/date';
+
 import { builder } from './builder';
 
 export const buildUserPicture = builder<UserPicture>((id) => ({
