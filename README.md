@@ -1,5 +1,7 @@
 # Teachers Portal
 
+Check out [wix-code-typescript-wrapper](https://github.com/astrauka/wix-code-typescript-wrapper) library to understand how TypeScript code connects to Wix Local Editor sources. 
+
 ## Install
 
 Clone the project from GitHub.
