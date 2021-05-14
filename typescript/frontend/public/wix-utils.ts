@@ -1,5 +1,6 @@
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
+
 import CollapsedMixin = $w.CollapsedMixin;
 import HiddenMixin = $w.HiddenMixin;
 import QueryObject = wix_location.QueryObject;
@@ -50,15 +51,16 @@ export function forExistingElement<Element extends { id: string }, Returned>(
 
 const EXECUTION_STATUS_LOADED = 'loaded';
 
-export async function executeOnce($status: $w.Text, executeFn: () => any): Promise<void> {
+export async function executeOnce<T>($status: $w.Text, executeFn: () => T): Promise<T> {
   if ($status.text === EXECUTION_STATUS_LOADED) {
     return;
   }
-  await executeFn();
+  const result = await executeFn();
   $status.text = EXECUTION_STATUS_LOADED;
+  return result;
 }
 
-export function expandIfHasData($element: CollapsedMixin, data: any): void {
+export function expandIfHasData($element: CollapsedMixin, data: unknown): void {
   if (data) {
     $element.expand();
   } else {
@@ -69,7 +71,7 @@ export function expandIfHasData($element: CollapsedMixin, data: any): void {
 export function showEnabledElement(
   $enabledElement: HiddenMixin,
   $disabledElement: HiddenMixin,
-  data: any
+  data: unknown
 ): void {
   if (data) {
     $enabledElement.show();
@@ -83,7 +85,7 @@ export function showEnabledElement(
 export function expandEnabledElement(
   $enabledElement: CollapsedMixin,
   $disabledElement: CollapsedMixin,
-  data: any
+  data: unknown
 ): void {
   if (data) {
     $enabledElement.expand();

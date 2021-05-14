@@ -13,6 +13,7 @@ import { secondStepTeachersFormSchema } from 'public/universal/schemas/teacher-s
 import { ImageItem, MediaItemTypes } from 'public/universal/wix-types';
 import { validateField } from 'public/validate';
 import wixLocation from 'wix-location';
+
 import UploadedFile = $w.UploadButton.UploadedFile;
 
 type ValidationMessages = { [key in SecondStepTeachersFormKey]: string };

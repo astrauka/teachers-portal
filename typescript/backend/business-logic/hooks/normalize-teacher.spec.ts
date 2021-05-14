@@ -5,6 +5,7 @@ import { TeachersRepository } from '../../repositories/teachers-repository';
 import { Teacher, TEACHER_DEFAULTS } from '../../universal/entities/teacher';
 import { IdProvider } from '../../utils/id';
 import { SyncSiteMemberInformation } from '../operations/sync-site-member-information';
+
 import { MAX_SLUG_POSTFIX, normalizeTeacherFactory } from './normalize-teacher';
 
 describe('normalizeTeacher', () => {
@@ -41,12 +42,8 @@ describe('normalizeTeacher', () => {
   });
 
   it('should sync site member information and return teacher with defaults, fullName and slug', async () => {
-    const {
-      teachersRepository,
-      syncSiteMemberInformation,
-      generateUuid,
-      normalizeTeacher,
-    } = buildTestContext();
+    const { teachersRepository, syncSiteMemberInformation, generateUuid, normalizeTeacher } =
+      buildTestContext();
     const normalizedTeacher = {
       ...TEACHER_DEFAULTS,
       ...update,

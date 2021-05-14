@@ -4,6 +4,7 @@ import { isLiveSite } from 'public/wix-utils';
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
 import wixWindow from 'wix-window';
+
 import { isInitialStateLoaded, loadInitialState } from './global-state';
 import { sleep } from './sleep';
 

@@ -1,4 +1,5 @@
 import { last } from 'lodash';
+
 import { SecondStepTeachersForm, SecondStepTeachersFormKey } from '../entities/teacher';
 
 export function normalizeSecondStepTeacherFormInput<

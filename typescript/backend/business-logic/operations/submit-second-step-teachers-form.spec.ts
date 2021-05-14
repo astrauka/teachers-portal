@@ -1,9 +1,11 @@
 import { pick } from 'lodash';
+
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { SecondStepTeachersForm, TaskName, Teacher } from '../../universal/entities/teacher';
+
 import { GetCurrentTeacher } from './get-current-teacher';
 import { submitSecondStepTeachersFormFactory } from './submit-second-step-teachers-form';
 
@@ -37,11 +39,8 @@ describe('submitSecondStepTeachersForm', () => {
   });
 
   it('should update, return current teacher and complete task', async () => {
-    const {
-      teachersRepository,
-      getCurrentTeacher,
-      submitSecondStepTeachersForm,
-    } = buildTestContext();
+    const { teachersRepository, getCurrentTeacher, submitSecondStepTeachersForm } =
+      buildTestContext();
     expect(await submitSecondStepTeachersForm(update)).to.eql(updatedTeachersProfile);
     expect(getCurrentTeacher).calledOnceWithExactly();
     expect(teachersRepository.updateTeacher).calledOnceWithExactly(updatedTeachersProfile);

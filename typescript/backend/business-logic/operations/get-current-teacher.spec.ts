@@ -4,6 +4,7 @@ import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { UsersService } from '../../services/users-service';
 import { MakeTeacherView } from '../hooks/make-teacher-view';
+
 import { getCurrentTeacherFactory } from './get-current-teacher';
 
 describe('getCurrentTeacher', () => {
@@ -34,12 +35,8 @@ describe('getCurrentTeacher', () => {
   });
 
   it('should return current teacher', async () => {
-    const {
-      teachersRepository,
-      usersService,
-      makeTeacherView,
-      getCurrentTeacher,
-    } = buildTestContext();
+    const { teachersRepository, usersService, makeTeacherView, getCurrentTeacher } =
+      buildTestContext();
     expect(await getCurrentTeacher()).to.eql(teacher);
     expect(usersService.getCurrentUserEmail).calledOnceWithExactly();
     expect(teachersRepository.fetchTeacherByEmailOrThrow).calledOnceWithExactly(

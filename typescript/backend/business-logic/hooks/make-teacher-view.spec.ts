@@ -1,6 +1,8 @@
 import { omit } from 'lodash';
+
 import { buildTeacher } from '../../../test/builders/teacher';
 import { expect } from '../../../test/utils/expectations';
+
 import { makeTeacherViewFactory } from './make-teacher-view';
 
 describe('makeTeacherView', function () {

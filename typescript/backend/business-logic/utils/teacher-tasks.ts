@@ -1,4 +1,5 @@
 import { uniq } from 'lodash';
+
 import { TaskName, Teacher } from '../../universal/entities/teacher';
 
 export function addCompletedTask(teacher: Teacher, taskName: TaskName): TaskName[] {

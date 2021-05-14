@@ -1,5 +1,6 @@
 import { compact, pick, trim } from 'lodash';
 import { convert } from 'url-slug';
+
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import {
   AdminFilledInformation,

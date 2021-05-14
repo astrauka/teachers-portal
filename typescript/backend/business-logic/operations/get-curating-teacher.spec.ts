@@ -3,6 +3,7 @@ import { expect } from '../../../test/utils/expectations';
 import { stubFn, stubType } from '../../../test/utils/stubbing';
 import { TeachersRepository } from '../../repositories/teachers-repository';
 import { Teacher } from '../../universal/entities/teacher';
+
 import { getCuratingTeacherFactory } from './get-curating-teacher';
 import { GetCurrentTeacher } from './get-current-teacher';
 

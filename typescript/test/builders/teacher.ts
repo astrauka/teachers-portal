@@ -1,4 +1,5 @@
 import { pick } from 'lodash';
+
 import {
   AdminFilledInformation,
   InitialTeacherForm,
@@ -8,6 +9,7 @@ import {
   TEACHER_PUBLIC_FIELDS,
 } from '../../backend/universal/entities/teacher';
 import { inDaysAsDate } from '../utils/date';
+
 import { builder } from './builder';
 
 export const buildTeacher = builder<Teacher>((id) => ({

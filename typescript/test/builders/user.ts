@@ -1,6 +1,8 @@
 import { RegistrationResult } from '../../backend/types/wix-types';
 import { RegistrationResultStatus } from '../../backend/universal/wix-types';
+
 import { builder } from './builder';
+
 import User = wix_users.User;
 
 export const buildUser = builder<User>((id) => ({

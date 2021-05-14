@@ -1,6 +1,9 @@
-const Validator = require('fastest-validator'); // tslint:disable-line:no-var-requires
 import { ValidationError, ValidationSchema } from 'fastest-validator';
+
 import { InvalidRequestError } from './errors';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const Validator = require('fastest-validator');
 
 const validator = new Validator();
 

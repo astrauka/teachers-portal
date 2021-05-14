@@ -1,4 +1,5 @@
 import { ValidationSchema } from 'fastest-validator';
+
 import { TeacherModule } from '../entities/teacher-module';
 
 export const teacherModuleSchema: ValidationSchema<TeacherModule> = {

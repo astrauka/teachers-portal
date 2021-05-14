@@ -1,5 +1,6 @@
 import * as sinon from 'sinon';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Fn = (...args: any) => any;
 
 export type Stub<T> = T & sinon.SinonStubbedInstance<T>;

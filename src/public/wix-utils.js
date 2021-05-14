@@ -32,8 +32,9 @@ export async function executeOnce($status, executeFn) {
     if ($status.text === EXECUTION_STATUS_LOADED) {
         return;
     }
-    await executeFn();
+    const result = await executeFn();
     $status.text = EXECUTION_STATUS_LOADED;
+    return result;
 }
 export function expandIfHasData($element, data) {
     if (data) {

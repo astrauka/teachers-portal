@@ -5,6 +5,7 @@ import { stubType } from '../../../test/utils/stubbing';
 import { SiteMembersRepository } from '../../repositories/site-members-repository';
 import { UsersService } from '../../services/users-service';
 import { SiteMember } from '../../types/wix-types';
+
 import { syncSiteMemberInformationFactory } from './sync-site-member-information';
 
 describe('SyncSiteMemberInformation', () => {

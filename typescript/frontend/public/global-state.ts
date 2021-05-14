@@ -5,6 +5,7 @@ import {
 } from 'backend/backend-api';
 import { AccountStatus, TeacherView } from 'public/universal/entities/teacher';
 import { memory } from 'wix-storage';
+
 import { InitialState } from './for-current-teacher';
 
 enum GlobalState {
