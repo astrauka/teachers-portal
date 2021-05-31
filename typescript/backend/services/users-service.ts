@@ -1,4 +1,5 @@
 import { Externals } from '../context/production-context';
+import { SiteMembersRepository } from '../repositories/site-members-repository';
 import { ContactInfo } from '../types/wix-types';
 import { Teacher } from '../universal/entities/teacher';
 import { withLogger } from '../utils/logger';
@@ -7,12 +8,15 @@ import User = wix_users.User;
 import UserInfo = wix_users_backend.UserInfo;
 
 export class UsersService {
-  constructor(private readonly externals: Externals) {}
+  constructor(
+    private readonly externals: Externals,
+    private readonly siteMembersRepository: SiteMembersRepository
+  ) {}
 
-  public async signInTeacher(teacher: Teacher, password: string): Promise<string> {
+  public async generateSessionToken(teacher: Teacher): Promise<string> {
     return withLogger(
       `signInTeacher ${teacher.email}`,
-      this.externals.wixUsers.login(teacher.email, password)
+      this.externals.wixUsers.generateSessionToken(teacher.email)
     );
   }
 
@@ -42,6 +46,16 @@ export class UsersService {
 
   public getCurrentUserEmail(): Promise<string> {
     return this.getCurrentUser().getEmail();
+  }
+
+  public async deleteUserByEmail(email: string): Promise<void> {
+    const siteMember = await this.siteMembersRepository.fetchMemberByEmail(email);
+    if (siteMember) {
+      return withLogger(
+        `deleteUserByEmail ${email}`,
+        this.externals.wixUsers.deleteUser(siteMember._id)
+      );
+    }
   }
 
   private getCurrentUser(): User {

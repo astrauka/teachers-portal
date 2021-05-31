@@ -15,6 +15,8 @@ import { validateTeacher } from '../validate';
 
 export const MAX_SLUG_POSTFIX = 20;
 
+export type NormalizeTeacher = ReturnType<typeof normalizeTeacherFactory>;
+
 export function normalizeTeacherFactory(
   teachersRepository: TeachersRepository,
   syncSiteMemberInformation: SyncSiteMemberInformation,

@@ -1,10 +1,11 @@
 import { withLogger } from '../utils/logger';
 export class UsersService {
-    constructor(externals) {
+    constructor(externals, siteMembersRepository) {
         this.externals = externals;
+        this.siteMembersRepository = siteMembersRepository;
     }
-    async signInTeacher(teacher, password) {
-        return withLogger(`signInTeacher ${teacher.email}`, this.externals.wixUsers.login(teacher.email, password));
+    async generateSessionToken(teacher) {
+        return withLogger(`signInTeacher ${teacher.email}`, this.externals.wixUsers.generateSessionToken(teacher.email));
     }
     async registerUser(teacher, password) {
         const contactInfo = {
@@ -29,6 +30,12 @@ export class UsersService {
     }
     getCurrentUserEmail() {
         return this.getCurrentUser().getEmail();
+    }
+    async deleteUserByEmail(email) {
+        const siteMember = await this.siteMembersRepository.fetchMemberByEmail(email);
+        if (siteMember) {
+            return withLogger(`deleteUserByEmail ${email}`, this.externals.wixUsers.deleteUser(siteMember._id));
+        }
     }
     getCurrentUser() {
         return this.externals.wixUsers.currentUser;

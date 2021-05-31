@@ -33,7 +33,7 @@ npm test
 Cypress tests require base url environment variable specified:
 
 ```bash
-CYPRESS_BASE_URL=https://www.site.com/ npm run cypress:open
+CYPRESS_BASE_URL=https://www.site.com/ CYPRESS_PASSWORD=test-password npm run cypress:open
 ```
 
 ## Deploy changes to Wix

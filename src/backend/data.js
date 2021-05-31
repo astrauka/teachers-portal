@@ -1,4 +1,5 @@
 import { context } from './context/setup-context';
+import { isOwner } from './utils/hooks';
 import { withLogger } from './utils/logger';
 export async function TeachersProfile_beforeInsert(teacher) {
     const { hooks } = context;
@@ -8,15 +9,15 @@ export async function TeachersProfile_beforeUpdate(teacher) {
     const { hooks } = context;
     return withLogger(`Hook TeachersProfile_beforeUpdate ${teacher.email}`, async () => hooks.registerTeacher(await hooks.normalizeTeacher(teacher, false)));
 }
-export async function TeachersProfile_afterGet(teacher) {
+export async function TeachersProfile_afterGet(teacher, hookContext) {
     const { hooks } = context;
     return withLogger(`Hook TeachersProfile_afterGet ${teacher.email}`, async () => {
-        return hooks.makeTeacherView(teacher);
+        return hooks.makeTeacherView(teacher, { returnPrivateFields: isOwner(hookContext) });
     });
 }
-export async function TeachersProfile_afterQuery(teacher) {
+export async function TeachersProfile_afterQuery(teacher, hookContext) {
     const { hooks } = context;
-    return withLogger(`Hook TeachersProfile_afterQuery ${teacher.email}`, hooks.makeTeacherView(teacher));
+    return withLogger(`Hook TeachersProfile_afterQuery ${teacher.email}`, hooks.makeTeacherView(teacher, { returnPrivateFields: isOwner(hookContext) }));
 }
 export async function TeacherModules_beforeInsert(teacherModule) {
     const { hooks } = context;
