@@ -1,6 +1,8 @@
 import { context } from './context/setup-context';
+import { HookContext } from './types/wix-types';
 import { Teacher, TeacherView } from './universal/entities/teacher';
 import { TeacherModule } from './universal/entities/teacher-module';
+import { isOwner } from './utils/hooks';
 import { withLogger } from './utils/logger';
 
 export async function TeachersProfile_beforeInsert(teacher: Teacher) {
@@ -17,18 +19,18 @@ export async function TeachersProfile_beforeUpdate(teacher: Teacher) {
   );
 }
 
-export async function TeachersProfile_afterGet(teacher: Teacher) {
+export async function TeachersProfile_afterGet(teacher: Teacher, hookContext: HookContext) {
   const { hooks } = context;
   return withLogger<TeacherView>(`Hook TeachersProfile_afterGet ${teacher.email}`, async () => {
-    return hooks.makeTeacherView(teacher);
+    return hooks.makeTeacherView(teacher, { returnPrivateFields: isOwner(hookContext) });
   });
 }
 
-export async function TeachersProfile_afterQuery(teacher: Teacher) {
+export async function TeachersProfile_afterQuery(teacher: Teacher, hookContext: HookContext) {
   const { hooks } = context;
   return withLogger<TeacherView>(
     `Hook TeachersProfile_afterQuery ${teacher.email}`,
-    hooks.makeTeacherView(teacher)
+    hooks.makeTeacherView(teacher, { returnPrivateFields: isOwner(hookContext) })
   );
 }
 

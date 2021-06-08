@@ -9,7 +9,7 @@ export async function submitInitialTeachersForm(update) {
     return withLogger('submitInitialTeachersForm', actions.submitInitialTeachersForm(update));
 }
 export async function submitSecondStepTeachersForm(update) {
-    const { actions, hooks } = context;
+    const { actions } = context;
     return withLogger('submitSecondStepTeachersForm', actions.submitSecondStepTeachersForm(update));
 }
 export async function getCuratingTeacherView() {
@@ -19,4 +19,13 @@ export async function getCuratingTeacherView() {
 export async function getAllAccountStatuses() {
     const { repositories } = context;
     return withLogger('getAllAccountStatuses', repositories.accountStatusesRepository.fetchAccountStatuses());
+}
+export async function resetTestTeacher() {
+    const { actions, services } = context;
+    return withLogger('resetTestTeacher', async () => {
+        await actions.cleanTestTeacher();
+        const teacher = await actions.createTestTeacher();
+        const sessionToken = await services.usersService.generateSessionToken(teacher);
+        return { teacher, sessionToken };
+    });
 }

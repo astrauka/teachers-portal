@@ -16,6 +16,8 @@
 
 # tests
 /cypress/integration/examples
+/cypress/screenshots
+/cypress/videos
 
 # dependencies
 /node_modules

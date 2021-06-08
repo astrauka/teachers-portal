@@ -47,4 +47,13 @@ export class TeachersRepository {
             suppressAuth: true,
         }));
     }
+    async removeTeacherByEmail(email) {
+        const teacher = await this.fetchTeacherByEmail(email);
+        if (teacher) {
+            return withLogger(`removeTeacherByEmail ${email}`, this.externals.wixData.remove(TEACHERS_COLLECTION, teacher._id, { suppressAuth: true }));
+        }
+    }
+    async createTeacher(teacher) {
+        return withLogger(`createTeacher ${teacher.email}`, this.externals.wixData.insert(TEACHERS_COLLECTION, teacher, { suppressAuth: true }));
+    }
 }

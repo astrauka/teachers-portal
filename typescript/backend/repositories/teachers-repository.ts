@@ -1,5 +1,5 @@
 import { Externals } from '../context/production-context';
-import { Teacher } from '../universal/entities/teacher';
+import { Teacher, TeacherWithMinimalData } from '../universal/entities/teacher';
 import {
   findById,
   findByIdOrThrow,
@@ -76,12 +76,29 @@ export class TeachersRepository {
     return undefined;
   }
 
-  public async updateTeacher(teacher: Teacher): Promise<Teacher> {
+  public async updateTeacher(teacher: TeacherWithMinimalData): Promise<Teacher> {
     return withLogger(
       `updateTeacher ${teacher.email}`,
       this.externals.wixData.update(TEACHERS_COLLECTION, teacher, {
         suppressAuth: true,
       })
+    );
+  }
+
+  public async removeTeacherByEmail(email: string): Promise<void> {
+    const teacher = await this.fetchTeacherByEmail(email);
+    if (teacher) {
+      return withLogger(
+        `removeTeacherByEmail ${email}`,
+        this.externals.wixData.remove(TEACHERS_COLLECTION, teacher._id, { suppressAuth: true })
+      );
+    }
+  }
+
+  public async createTeacher(teacher: TeacherWithMinimalData): Promise<Teacher> {
+    return withLogger(
+      `createTeacher ${teacher.email}`,
+      this.externals.wixData.insert(TEACHERS_COLLECTION, teacher, { suppressAuth: true })
     );
   }
 }

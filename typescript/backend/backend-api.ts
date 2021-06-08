@@ -3,6 +3,7 @@ import {
   AccountStatus,
   InitialTeacherForm,
   SecondStepTeachersForm,
+  Teacher,
   TeacherView,
 } from './universal/entities/teacher';
 import { withLogger } from './utils/logger';
@@ -20,7 +21,7 @@ export async function submitInitialTeachersForm(update: InitialTeacherForm): Pro
 export async function submitSecondStepTeachersForm(
   update: SecondStepTeachersForm
 ): Promise<TeacherView> {
-  const { actions, hooks } = context;
+  const { actions } = context;
   return withLogger('submitSecondStepTeachersForm', actions.submitSecondStepTeachersForm(update));
 }
 
@@ -35,4 +36,14 @@ export async function getAllAccountStatuses(): Promise<AccountStatus[]> {
     'getAllAccountStatuses',
     repositories.accountStatusesRepository.fetchAccountStatuses()
   );
+}
+
+export async function resetTestTeacher(): Promise<{ teacher: Teacher; sessionToken: string }> {
+  const { actions, services } = context;
+  return withLogger('resetTestTeacher', async () => {
+    await actions.cleanTestTeacher();
+    const teacher = await actions.createTestTeacher();
+    const sessionToken = await services.usersService.generateSessionToken(teacher);
+    return { teacher, sessionToken };
+  });
 }

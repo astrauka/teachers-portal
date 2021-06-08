@@ -54,6 +54,8 @@ export interface Teacher
     SecondStepTeachersForm,
     ComputedTeacherInformation {}
 
+export type TeacherWithMinimalData = Partial<Teacher> & AdminFilledInformation;
+
 export const TEACHER_PUBLIC_FIELDS: (keyof Teacher)[] = [
   '_id',
   'email',

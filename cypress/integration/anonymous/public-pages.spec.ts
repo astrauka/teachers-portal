@@ -4,7 +4,7 @@ describe('Public pages', () => {
   });
 
   it('shows terms and conditions', () => {
-    cy.visit('site-terms-and-conditions').contains('h1', 'Site terms and conditions');
+    cy.visit('terms-and-conditions').contains('span', 'Kas yra slapukai?');
   });
 
   it('shows error screen', () => {

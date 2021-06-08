@@ -34,3 +34,16 @@ export class InvalidRequestError extends CustomError {
     super(message);
   }
 }
+
+export class NoDataProvidedError extends CustomError {
+  constructor(message = 'No data provided') {
+    super(message);
+  }
+}
+
+export function throwOnNotProvided(data: string | number | undefined, message: string) {
+  if (data) {
+    return;
+  }
+  throw new NoDataProvidedError(message);
+}
