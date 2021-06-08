@@ -28,22 +28,21 @@ export function invokeTestApi({
   });
 }
 
-const loginWithEmail = memoize(() => {
-  cy.visit('');
-  cy.get('[data-testid=switchToEmailLink]').click();
-  cy.get('[data-testid=emailAuth]').within(() => {
-    cy.get('input[type=email]').type(TEST_TEACHER_EMAIL, {
-      parseSpecialCharSequences: true,
-      delay,
-    });
-    cy.get('input[id=input_input_passwordInput_SM_ROOT_COMP1]').type(getPassword(), {
-      parseSpecialCharSequences: true,
-      delay,
-    });
-    cy.get('[data-testid=submit]').click();
-  });
-});
-
 export function login() {
-  loginWithEmail();
+  cy.visit('');
+  cy.getCookie('svSession').then((cookie) => {
+    const svSession = cookie.value;
+    cy.request({
+      method: 'POST',
+      url: '/_api/wix-sm-webapp/v1/auth/login',
+      headers: { svSession },
+      body: {
+        email: TEST_TEACHER_EMAIL,
+        password: getPassword(),
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      cy.setCookie('smSession', response.body.session.token);
+    });
+  });
 }
