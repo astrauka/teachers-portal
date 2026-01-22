@@ -76,7 +76,7 @@
   },
   "dependencies": {
     "fastest-validator": "1.10.0",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "url-slug": "3.0.1",
     "uuid": "8.3.2"
   }
